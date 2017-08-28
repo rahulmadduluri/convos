@@ -1,17 +1,12 @@
-#<img src="https://tidwall.github.com/SwiftWebSocket/logo.png" height="45" width="60">&nbsp;SwiftWebSocket
+#<img src="/tools/res/logo.png" height="45" width="60">&nbsp;SwiftWebSocket
 
-<a href="https://tidwall.github.io/SwiftWebSocket/results/"><img src="https://tidwall.github.io/SwiftWebSocket/build.png" alt="" width="93" height="20" border="0" /></a>
-<a href="https://developer.apple.com/swift/"><img src="https://tidwall.github.io/SwiftWebSocket/swift2.png" alt="" width="65" height="20" border="0" /></a>
-<a href="https://tidwall.github.io/SwiftWebSocket/docs/"><img src="https://tidwall.github.io/SwiftWebSocket/docs.png" alt="" width="65" height="20" border="0" /></a>
+<a href="http://tidwall.com/SwiftWebSocket/results/"><img src="/tools/res/passing.png" alt="" width="93" height="20" border="0" /></a>
+<a href="https://developer.apple.com/swift/"><img src="/tools/res/swift.png" alt="" width="65" height="20" border="0" /></a>
+<a href="http://tidwall.com/SwiftWebSocket/docs/"><img src="/tools/res/docs.png" alt="" width="65" height="20" border="0" /></a>
 
-Conforming WebSocket ([RFC 6455](https://tools.ietf.org/html/rfc6455)) client library implemented in Swift.
+Conforming WebSocket ([RFC 6455](https://tools.ietf.org/html/rfc6455)) client library for iOS and Mac OSX.
 
 SwiftWebSocket passes all 521 of the Autobahn's fuzzing tests, including strict UTF-8, and message compression.
-
-**Important: Xcode 7.3 beta2 and Swift 2.2**  
-Xcode 7.3 and Swift 2.2 are still in beta. If you are developing in either environment then please use the `swift/2.2` branch. Once Xcode 7.3 goes live to the public the swift/2.2 branch will be merged with master.
-
-
 
 ## Features
 
@@ -24,7 +19,7 @@ Xcode 7.3 and Swift 2.2 are still in beta. If you are developing in either envir
 - Strict UTF-8 processing. 
 - `binaryType` property to choose between `[UInt8]` or `NSData` messages.
 - Zero asserts. All networking, stream, and protocol errors are routed through the `error` event.
-- Objective-C compatibility.
+- iOS / Objective-C support.
 
 ## Example
 
@@ -33,7 +28,8 @@ func echoTest(){
     var messageNum = 0
     let ws = WebSocket("wss://echo.websocket.org")
     let send : ()->() = {
-        let msg = "\(++messageNum): \(NSDate().description)"
+		messageNum += 1
+        let msg = "\(messageNum): \(NSDate().description)"
         print("send: \(msg)")
         ws.send(msg)
     }
@@ -105,52 +101,9 @@ ws.allowSelfSignedSSL = true
 ws.services = [.VoIP, .Background] 
 ```
 
-##Installation (iOS and OS X)
-
-### [Carthage]
-
-[Carthage]: https://github.com/Carthage/Carthage
-
-Add the following to your Cartfile:
-
-```
-github "tidwall/SwiftWebSocket"
-```
-
-Then run `carthage update`.
-
-Follow the current instructions in [Carthage's README][carthage-installation]
-for up to date installation instructions.
-
-[carthage-installation]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
-
-The `import SwiftWebSocket` directive is required in order to access SwiftWebSocket features.
-
-### [CocoaPods]
-
-[CocoaPods]: http://cocoapods.org
-
-Add the following to your [Podfile](http://guides.cocoapods.org/using/the-podfile.html):
-
-```ruby
-use_frameworks!
-pod 'SwiftWebSocket'
-```
-
-Then run `pod install` with CocoaPods 0.36 or newer.
-
-The `import SwiftWebSocket` directive is required in order to access SwiftWebSocket features.
-
-###Manually
-
-Copy the `SwiftWebSocket/WebSocket.swift` file into your project.  
-You must also add the `libz.dylib` library. `Project -> Target -> Build Phases -> Link Binary With Libraries`
-
-There is no need for `import SwiftWebSocket` when manually installing.
-
 ## Contact
 Josh Baker [@tidwall](http://twitter.com/tidwall)
 
 ## License
 
-The SwiftWebSocket source code is available under the MIT License.
+SwiftWebSocket source code is available under the MIT License.

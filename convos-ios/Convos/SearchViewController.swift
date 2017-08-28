@@ -13,6 +13,8 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    struct Constants {
+    }
 
 }
-

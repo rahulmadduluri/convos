@@ -1,7 +1,8 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 use_frameworks!
 
 target 'Convos' do
-  pod 'AFNetworking', '~> 3.0'
-  pod 'SwiftWebSocket'
+  pod 'Alamofire', '~> 4.4'
+  pod 'SwiftWebSocket', '~> 2.6.5'
+  pod 'SQLite.swift', '~> 0.11.3'
 end
