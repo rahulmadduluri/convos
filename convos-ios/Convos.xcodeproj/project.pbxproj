@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5BAACACEB8E50D903D8B7FDF /* Pods_Convos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
 		B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107E1F539D23009AC9FE /* SearchViewController.swift */; };
 		B78810821F539D23009AC9FE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B78810801F539D23009AC9FE /* Main.storyboard */; };
@@ -15,6 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.debug.xcconfig"; sourceTree = "<group>"; };
+		46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.release.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.release.xcconfig"; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B788107C1F539D23009AC9FE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B788107E1F539D23009AC9FE /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +25,7 @@
 		B78810831F539D23009AC9FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B78810861F539D23009AC9FE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B78810881F539D23009AC9FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +33,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BAACACEB8E50D903D8B7FDF /* Pods_Convos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2CFB8F503174597225A44054 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B78810701F539D23009AC9FE = {
 			isa = PBXGroup;
 			children = (
 				B788107B1F539D23009AC9FE /* Convos */,
 				B788107A1F539D23009AC9FE /* Products */,
+				EC94CA43C8E4709E320DB4AC /* Pods */,
+				2CFB8F503174597225A44054 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +79,15 @@
 			path = Convos;
 			sourceTree = "<group>";
 		};
+		EC94CA43C8E4709E320DB4AC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */,
+				46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -71,9 +95,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B788108B1F539D23009AC9FE /* Build configuration list for PBXNativeTarget "Convos" */;
 			buildPhases = (
+				10F5574BA99C75424A22A824 /* [CP] Check Pods Manifest.lock */,
 				B78810751F539D23009AC9FE /* Sources */,
 				B78810761F539D23009AC9FE /* Frameworks */,
 				B78810771F539D23009AC9FE /* Resources */,
+				9A8E76718A9A7331E2E840D5 /* [CP] Embed Pods Frameworks */,
+				F181B9C173407BC008CDADB4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -131,6 +158,62 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		10F5574BA99C75424A22A824 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Convos-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9A8E76718A9A7331E2E840D5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Convos/Pods-Convos-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftWebSocket/SwiftWebSocket.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftWebSocket.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Convos/Pods-Convos-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F181B9C173407BC008CDADB4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Convos/Pods-Convos-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B78810751F539D23009AC9FE /* Sources */ = {
@@ -257,6 +340,7 @@
 		};
 		B788108C1F539D23009AC9FE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 7KP2V8DA69;
@@ -270,6 +354,7 @@
 		};
 		B788108D1F539D23009AC9FE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 7KP2V8DA69;
