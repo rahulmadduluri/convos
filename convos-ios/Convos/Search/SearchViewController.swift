@@ -7,21 +7,19 @@
 //
 
 import UIKit
-import SwiftWebSocket
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, SocketManagerDelegate {
 
     var searchTextField: SearchTextField = SearchTextField()
     var conversationVC: ConversationViewController?
     
-    var webSocket: WebSocket?
-    
+    let socketManager: SocketManager = SocketManager.sharedInstance
+        
     // MARK: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureWebSocket()
         configureSearchTextField()
     }
     
@@ -29,6 +27,12 @@ class SearchViewController: UIViewController {
         super.viewDidAppear(animated)
 
         configureSubviews()
+    }
+    
+    // MARK: SocketManagerDelegate
+    
+    func received() {
+
     }
     
     // MARK: private
@@ -86,38 +90,5 @@ class SearchViewController: UIViewController {
         }
         callback(results)
     }
-    
-    fileprivate func configureWebSocket() {
-        var messageNum = 0
-        webSocket = WebSocket("wss://localhost:8000/ws")
-        if let ws = webSocket {
-            let send : ()->() = {
-                messageNum += 1
-                let msg = "\(messageNum): \(NSDate().description)"
-                print("send: \(msg)")
-                ws.send(msg)
-            }
-            ws.event.open = {
-                print("opened")
-                send()
-            }
-            ws.event.close = { code, reason, clean in
-                print("close")
-            }
-            ws.event.error = { error in
-                print("error \(error)")
-            }
-            ws.event.message = { message in
-                if let text = message as? String {
-                    print("recv: \(text)")
-                    if messageNum == 10 {
-                        ws.close()
-                    } else {
-                        send()
-                    }
-                }
-            }
-        }
-    }
-    
+        
 }
