@@ -73,24 +73,8 @@ open class SearchTextField: UITextField {
         indicator.stopAnimating()
     }
     
-    /// When InlineMode is true, the suggestions appear in the same line than the entered string. It's useful for email domains suggestion for example.
-    open var inlineMode: Bool = false {
-        didSet {
-            if inlineMode == true {
-                autocorrectionType = .no
-                spellCheckingType = .no
-            }
-        }
-    }
-    
-    /// Only valid when InlineMode is true. The suggestions appear after typing the provided string (or even better a character like '@')
-    open var startFilteringAfter: String?
-    
     /// Min number of characters to start filtering
     open var minCharactersNumberToStartFiltering: Int = 0
-    
-    /// If startFilteringAfter is set, and startSuggestingInmediately is true, the list of suggestions appear inmediately
-    open var startSuggestingInmediately = false
     
     /// Allow to decide the comparision options
     open var comparisonOptions: NSString.CompareOptions = [.caseInsensitive]
@@ -122,8 +106,6 @@ open class SearchTextField: UITextField {
         }
     }
     
-    fileprivate var currentInlineItem = ""
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -149,11 +131,8 @@ open class SearchTextField: UITextField {
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-        if inlineMode {
-            buildPlaceholderLabel()
-        } else {
-            buildSearchTableView()
-        }
+        buildPlaceholderLabel()
+        buildSearchTableView()
         
         // Create the loading indicator
         indicator.hidesWhenStopped = true
@@ -210,6 +189,7 @@ open class SearchTextField: UITextField {
             placeholderLabel.frame = newRect
         } else {
             placeholderLabel = UILabel(frame: newRect)
+            placeholderLabel?.text = "Enter the Convos"
             placeholderLabel?.font = self.font
             placeholderLabel?.backgroundColor = UIColor.clear
             placeholderLabel?.lineBreakMode = .byClipping
@@ -226,11 +206,6 @@ open class SearchTextField: UITextField {
     
     // Re-set frames and theme colors
     fileprivate func redrawSearchTableView() {
-        if inlineMode {
-            tableView?.isHidden = true
-            return
-        }
-        
         if let tableView = tableView {
             guard let frame = self.superview?.convert(self.frame, to: nil) else { return }
             
@@ -322,7 +297,7 @@ open class SearchTextField: UITextField {
     
     // Handle text field changes
     open func textFieldDidChange() {
-        if !inlineMode && tableView == nil {
+        if tableView == nil {
             buildSearchTableView()
         }
         
@@ -338,13 +313,10 @@ open class SearchTextField: UITextField {
             if startVisible || startVisibleWithoutInteraction {
                 filter(forceShowAll: true)
             }
-            self.placeholderLabel?.text = ""
         } else {
             filter(forceShowAll: false)
             prepareDrawTableResult()
         }
-        
-        buildPlaceholderLabel()
     }
     
     open func textFieldDidBeginEditing() {
@@ -352,6 +324,7 @@ open class SearchTextField: UITextField {
             clearResults()
             filter(forceShowAll: true)
         }
+        placeholderLabel?.text = nil
         placeholderLabel?.attributedText = nil
     }
     
@@ -359,21 +332,18 @@ open class SearchTextField: UITextField {
         clearResults()
         tableView?.reloadData()
         placeholderLabel?.attributedText = nil
+        placeholderLabel?.attributedText = nil
     }
     
     open func textFieldDidEndEditingOnExit() {
+        self.placeholderLabel?.text = nil
+
         if let firstElement = filteredResults.first {
             if let itemSelectionHandler = self.itemSelectionHandler {
                 itemSelectionHandler(filteredResults, 0)
             }
             else {
-                if inlineMode, let filterAfter = startFilteringAfter {
-                    let stringElements = self.text?.components(separatedBy: filterAfter)
-                    
-                    self.text = stringElements!.first! + filterAfter + firstElement.title
-                } else {
-                    self.text = firstElement.title
-                }
+                self.text = firstElement.title
             }
         }
     }
@@ -399,48 +369,25 @@ open class SearchTextField: UITextField {
             
             let item = filterDataSource[i]
             
-            if !inlineMode {
-                // Find text in title and subtitle
-                let titleFilterRange = (item.title as NSString).range(of: text!, options: comparisonOptions)
-                let subtitleFilterRange = item.subtitle != nil ? (item.subtitle! as NSString).range(of: text!, options: comparisonOptions) : NSMakeRange(NSNotFound, 0)
+            // Find text in title and subtitle
+            let titleFilterRange = (item.title as NSString).range(of: text!, options: comparisonOptions)
+            let subtitleFilterRange = item.subtitle != nil ? (item.subtitle! as NSString).range(of: text!, options: comparisonOptions) : NSMakeRange(NSNotFound, 0)
+            
+            if titleFilterRange.location != NSNotFound || subtitleFilterRange.location != NSNotFound || addAll {
+                item.attributedTitle = NSMutableAttributedString(string: item.title)
+                item.attributedSubtitle = NSMutableAttributedString(string: (item.subtitle != nil ? item.subtitle! : ""))
                 
-                if titleFilterRange.location != NSNotFound || subtitleFilterRange.location != NSNotFound || addAll {
-                    item.attributedTitle = NSMutableAttributedString(string: item.title)
-                    item.attributedSubtitle = NSMutableAttributedString(string: (item.subtitle != nil ? item.subtitle! : ""))
-                    
-                    item.attributedTitle!.setAttributes(highlightAttributes, range: titleFilterRange)
-                    
-                    if subtitleFilterRange.location != NSNotFound {
-                        item.attributedSubtitle!.setAttributes(highlightAttributesForSubtitle(), range: subtitleFilterRange)
-                    }
-                    
-                    filteredResults.append(item)
-                }
-            } else {
-                var textToFilter = text!.lowercased()
+                item.attributedTitle!.setAttributes(highlightAttributes, range: titleFilterRange)
                 
-                if inlineMode, let filterAfter = startFilteringAfter {
-                    if let suffixToFilter = textToFilter.components(separatedBy: filterAfter).last, (suffixToFilter != "" || startSuggestingInmediately == true), textToFilter != suffixToFilter {
-                        textToFilter = suffixToFilter
-                    } else {
-                        placeholderLabel?.text = ""
-                        return
-                    }
+                if subtitleFilterRange.location != NSNotFound {
+                    item.attributedSubtitle!.setAttributes(highlightAttributesForSubtitle(), range: subtitleFilterRange)
                 }
                 
-                if item.title.lowercased().hasPrefix(textToFilter) {
-                    let itemSuffix = item.title.substring(from: textToFilter.index(textToFilter.startIndex, offsetBy: textToFilter.characters.count))
-                    item.attributedTitle = NSMutableAttributedString(string: itemSuffix)
-                    filteredResults.append(item)
-                }
+                filteredResults.append(item)
             }
         }
         
         tableView?.reloadData()
-        
-        if inlineMode {
-            handleInlineFiltering()
-        }
     }
     
     // Clean filtered results
@@ -464,21 +411,6 @@ open class SearchTextField: UITextField {
         }
         
         return highlightAttributesForSubtitle
-    }
-    
-    // Handle inline behaviour
-    func handleInlineFiltering() {
-        if let text = self.text {
-            if text == "" {
-                self.placeholderLabel?.attributedText = nil
-            } else {
-                if let firstResult = filteredResults.first {
-                    self.placeholderLabel?.attributedText = firstResult.attributedTitle
-                } else {
-                    self.placeholderLabel?.attributedText = nil
-                }
-            }
-        }
     }
     
     // MARK: - Prepare for draw table result

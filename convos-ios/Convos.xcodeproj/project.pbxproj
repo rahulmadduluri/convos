@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5BAACACEB8E50D903D8B7FDF /* Pods_Convos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
+		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
 		B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107E1F539D23009AC9FE /* SearchViewController.swift */; };
 		B78810821F539D23009AC9FE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B78810801F539D23009AC9FE /* Main.storyboard */; };
@@ -20,6 +21,7 @@
 		38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.debug.xcconfig"; sourceTree = "<group>"; };
 		46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.release.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.release.xcconfig"; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
+		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B788107C1F539D23009AC9FE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B788107E1F539D23009AC9FE /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -59,6 +61,14 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
+		B78720FA1F5E85B4004F74E7 /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */,
+			);
+			path = Conversation;
+			sourceTree = "<group>";
+		};
 		B78810701F539D23009AC9FE = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
+				B78720FA1F5E85B4004F74E7 /* Conversation */,
 				B781CDA61F53BE0A0088FB3B /* Search */,
 				B78810801F539D23009AC9FE /* Main.storyboard */,
 				B78810831F539D23009AC9FE /* Assets.xcassets */,
@@ -235,6 +246,7 @@
 			files = (
 				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
+				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
