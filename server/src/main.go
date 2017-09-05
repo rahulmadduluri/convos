@@ -22,13 +22,6 @@ type ClientMessage struct {
 	Message json.RawMessage `json:"message"`
 }
 
-// Define our message object
-// type Message struct {
-// 	Email    string `json:"email"`
-// 	Username string `json:"username"`
-// 	Message  string `json:"message"`
-// }
-
 type SearchMessage struct {
 	Text string `json:"text"`
 }
@@ -66,6 +59,8 @@ func main() {
 	}
 }
 
+// Have a message queue, that is read and braodcasts to channels of receivers.
+// Else, its just normal response to connection, no broadcasting
 func handleConnections(w http.ResponseWriter, r *http.Request) {
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
@@ -92,15 +87,18 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		case 'SearchMessage': {
 			var msg SearchMessage
 			err := json.Unmarshal(cmsg.Message, &msg)
+			// do corresponding search in SQL, get result and send to client
 		}
 		case 'ResultMessage': {
-			
+			// do corresponding search in SQL, get result and send to client
+
 		}
 		case 'ScrollMessage': {
-			
+			// do corresponding search in SQL, get result and send to client
+
 		}
 		case 'SendMessage': {
-
+			// add to SQL database, send ack to client, put in broadcast que to send to clients
 		}
 		default:
 			panic("unrecognized message")
