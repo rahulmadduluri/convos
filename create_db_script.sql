@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS users (
 	mobile_number	varchar(36)		NOT NULL,
 	photo_url 		varchar(200),
 	date_created	timestamp		NOT NULL,
-	UNIQUE KEY (mobile_number),
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id)
 );

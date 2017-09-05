@@ -51,3 +51,6 @@ xcuserdata
 *.moved-aside
 DerivedData
 *.xcuserstate
+
+### Go ###
+go/pkg/
