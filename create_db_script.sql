@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS tags (
 	id 				int 			NOT NULL AUTO_INCREMENT,
 	uuid			varchar(36)		NOT NULL,
 	name 			varchar(200)	NOT NULL,
-	is_thread 		boolean			NOT NULL,
 	is_topic		boolean			NOT NULL,
 	date_created	timestamp		NOT NULL,
 	UNIQUE KEY (uuid),
@@ -29,9 +28,11 @@ CREATE TABLE IF NOT EXISTS messages (
 	link 			varchar(200),
 	date_created	timestamp		NOT NULL,
 	sender_id		int 			NOT NULL,
+	parent_id		int,
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id),
-	FOREIGN KEY	(sender_id) REFERENCES users (id)
+	FOREIGN KEY	(sender_id) REFERENCES users (id),
+	FOREIGN KEY (parent_id) REFERENCES messages (id)
 );
 
 CREATE TABLE IF NOT EXISTS users_messages (
