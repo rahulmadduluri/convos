@@ -41,6 +41,13 @@ CREATE TABLE IF NOT EXISTS users_messages (
 	FOREIGN KEY (message_id) REFERENCES messages (id)
 );
 
+CREATE TABLE IF NOT EXISTS users_tags (
+	user_id 	int	NOT NULL,
+	tag_id		int	NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users (id),
+	FOREIGN KEY (tag_id) REFERENCES tags (id)
+);
+
 CREATE TABLE IF NOT EXISTS tags_messages (
 	tag_id 		int	NOT NULL,
 	message_id	int	NOT NULL,
