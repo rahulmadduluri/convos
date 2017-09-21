@@ -1,3 +1,11 @@
+//
+//  SearchTextField.swift
+//  SearchTextField
+//
+//  Created by Alejandro Pasccon on 4/20/16.
+//  Copyright © 2016 Alejandro Pasccon. All rights reserved.
+//
+
 import UIKit
 
 open class SearchTextField: UITextField {
@@ -56,7 +64,7 @@ open class SearchTextField: UITextField {
     open var userStoppedTypingHandler: ((Void) -> Void)?
     
     /// Set your custom set of attributes in order to highlight the string found in each item
-    open var highlightAttributes: [String: AnyObject] = [NSFontAttributeName:UIFont.boldSystemFont(ofSize: 10)]
+    open var highlightAttributes: [String: AnyObject] = [NSFontAttributeName:UIFont.boldSystemFont(ofSize: 14)]
     
     /// Start showing the default loading indicator, useful for searches that take some time.
     open func showLoadingIndicator() {
@@ -86,7 +94,7 @@ open class SearchTextField: UITextField {
     fileprivate var tableView: UITableView?
     fileprivate var shadowView: UIView?
     fileprivate var direction: Direction = .down
-    fileprivate var fontConversionRate: CGFloat = 0.7
+    fileprivate var fontConversionRate: CGFloat = 1.0
     fileprivate var keyboardFrame: CGRect?
     fileprivate var timer: Timer? = nil
     fileprivate var placeholderLabel: UILabel?
@@ -308,12 +316,14 @@ open class SearchTextField: UITextField {
         timer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(SearchTextField.typingDidStop), userInfo: self, repeats: false)
         
         if text!.isEmpty {
+            placeholderLabel?.text = "Enter the Convos"
             clearResults()
             tableView?.reloadData()
             if startVisible || startVisibleWithoutInteraction {
                 filter(forceShowAll: true)
             }
         } else {
+            placeholderLabel?.text = ""
             filter(forceShowAll: false)
             prepareDrawTableResult()
         }
@@ -512,7 +522,7 @@ public struct SearchTextFieldTheme {
     }
     
     public static func lightTheme() -> SearchTextFieldTheme {
-        return SearchTextFieldTheme(cellHeight: 30, bgColor: UIColor (red: 1, green: 1, blue: 1, alpha: 0.6), borderColor: UIColor (red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0), separatorColor: UIColor.clear, font: UIFont.systemFont(ofSize: 10), fontColor: UIColor.black)
+        return SearchTextFieldTheme(cellHeight: 50, bgColor: UIColor (red: 1, green: 1, blue: 1, alpha: 0.6), borderColor: UIColor (red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0), separatorColor: UIColor.clear, font: UIFont.systemFont(ofSize: 14), fontColor: UIColor.black)
     }
     
 }

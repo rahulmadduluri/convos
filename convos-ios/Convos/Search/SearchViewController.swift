@@ -49,12 +49,12 @@ class SearchViewController: UIViewController, SocketManagerDelegate {
             // Just in case you need the item position
             let item = filteredResults[itemPosition]
             
-            if self.conversationVC != nil {
+            if self.conversationVC == nil {
                 self.conversationVC = ConversationViewController()
             }
             
             if let newVC = self.conversationVC {
-                self.present(newVC, animated: true, completion: nil)
+                self.present(newVC, animated: false, completion: nil)
             }
             print("Item at position \(itemPosition): \(item.title)")
         }
@@ -78,11 +78,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate {
             var item: SearchTextFieldItem?
             switch index {
             case 0:
-                item = SearchTextFieldItem(title: "Rahul", subtitle: "#Vienna", image: UIImage(named: "test_profile"))
+                item = SearchTextFieldItem(title: "Rahul", subtitle: "#Vienna", image: UIImage(named: "rahul_test_pic"))
             case 1:
-                item = SearchTextFieldItem(title: "Prafulla", subtitle: "#Baller", image: UIImage(named: "test_profile"))
+                item = SearchTextFieldItem(title: "Prafulla", subtitle: "#Baller", image: UIImage(named: "praful_test_pic"))
+            case 2:
+                item = SearchTextFieldItem(title: "Reia", subtitle: "#Scrub", image: UIImage(named: "reia_test_pic"))
             default:
-                item = SearchTextFieldItem(title: "Reia", subtitle: "#Scrub", image: UIImage(named: "test_profile"))
+                item = SearchTextFieldItem(title: "Rahul", subtitle: "#Vienna", image: UIImage(named: "rahul_test_pic"))
             }
             if let i = item {
                 results.append(i)

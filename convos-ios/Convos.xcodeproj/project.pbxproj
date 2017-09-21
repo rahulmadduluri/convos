@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5BAACACEB8E50D903D8B7FDF /* Pods_Convos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */; };
+		B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF641F728D1600735F5D /* MainConversationView.swift */; };
+		B748CF671F728F7500735F5D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF661F728F7500735F5D /* User.swift */; };
+		B748CF6A1F728FE200735F5D /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF691F728FE200735F5D /* Message.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -21,6 +24,9 @@
 /* Begin PBXFileReference section */
 		38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.debug.xcconfig"; sourceTree = "<group>"; };
 		46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.release.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.release.xcconfig"; sourceTree = "<group>"; };
+		B748CF641F728D1600735F5D /* MainConversationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConversationView.swift; sourceTree = "<group>"; };
+		B748CF661F728F7500735F5D /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		B748CF691F728FE200735F5D /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -54,6 +60,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B748CF681F728F7D00735F5D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B748CF661F728F7500735F5D /* User.swift */,
+				B748CF691F728FE200735F5D /* Message.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		B781CDA61F53BE0A0088FB3B /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -67,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */,
+				B748CF641F728D1600735F5D /* MainConversationView.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -94,6 +110,7 @@
 			children = (
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
 				B78720FB1F5E98DD004F74E7 /* SocketManager.swift */,
+				B748CF681F728F7D00735F5D /* Models */,
 				B78720FA1F5E85B4004F74E7 /* Conversation */,
 				B781CDA61F53BE0A0088FB3B /* Search */,
 				B78810801F539D23009AC9FE /* Main.storyboard */,
@@ -247,11 +264,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
+				B748CF6A1F728FE200735F5D /* Message.swift in Sources */,
 				B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */,
+				B748CF671F728F7500735F5D /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

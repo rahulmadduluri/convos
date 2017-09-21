@@ -8,17 +8,43 @@
 
 import UIKit
 
-class ConversationViewController: UIViewController {
+struct MessageViewData {
+    var userPhoto: UIImage?
+    var text: String?
+    var isTopLevel: Bool = true
+    var isCollapsed: Bool = false
+}
+
+class ConversationViewController: UIViewController, SocketManagerDelegate {
+    
+    var conversationView: MainConversationView? = nil
+    
+    // MARK: UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureConversation()
+    }
+    
+    override func loadView() {
+        self.conversationView = MainConversationView()
+        self.view = conversationView
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // MARK: SocketManagerDelegate
+    
+    func received() {
+        let messageData = MessageViewData()
+        conversationView?.addMessage(data: messageData)
+    }
+    
+    // MARK: Private
+    
+    fileprivate func configureConversation() {
+        if conversationView == nil {
+            conversationView = MainConversationView()
+        }
     }
     
 }
