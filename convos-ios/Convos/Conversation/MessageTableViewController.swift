@@ -13,35 +13,60 @@ protocol MessageTableVCProtocol {
     func addMessage(newMessage: MessageViewData, parentMessage: MessageViewData?)
 }
 
-//
-// MARK: - View Controller
-//
 class MessageTableViewController: UITableViewController, MessageTableVCProtocol {
     
     var messageViews: [MessageViewData] = []
+    var delegate: MessageTableVCDelegate? = nil
+    
+    // MARK: - View Controller
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = UIColor.white
         // Auto resizing the height of the cell
         tableView.estimatedRowHeight = 44.0
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = .none
+     
+        // Add test messages
+        let testMessage = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "YOYOYO", dateUpdatedText: "9/8/17")
+        let testMessage2 = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "My Name is Jo", dateUpdatedText: "9/8/18")
+        let testMessage3 = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "I have a big fro", dateUpdatedText: "9/8/19")
+        let testMessage4 = MessageViewData(userPhoto: UIImage(named: "praful_test_pic"), messageText: "What would Bahubali do?", dateUpdatedText: "9/8/20")
+        addMessage(newMessage: testMessage, parentMessage: nil)
+        addMessage(newMessage: testMessage2, parentMessage: nil)
+        addMessage(newMessage: testMessage3, parentMessage: testMessage2)
+        addMessage(newMessage: testMessage4, parentMessage: testMessage2)
         
-        self.title = "Apple Products"
+        // Setup Gesture recognizer
+        tableView.panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
+    }
+    
+    // MARK: Public
+    
+    func respondToPanGesture(gesture: UIGestureRecognizer) {
+        if let panGesture = gesture as? UIPanGestureRecognizer {
+            let translation = panGesture.translation(in: self.view)
+            if (translation.x > 150) {
+                delegate?.goBack()
+            }
+        }
     }
     
     // MARK: MessageTableVCProtocol
     
     func loadMessageData(messageData: [MessageViewData]) {
         messageViews = messageData
+        tableView.reloadData()
     }
     
     func addMessage(newMessage: MessageViewData, parentMessage: MessageViewData?) {
         var foundParent = false
         if let parent = parentMessage {
-            for var message in messageViews {
-                if message == parent {
-                    message.children.append(newMessage)
+            for index in 0...messageViews.count-1 {
+                if messageViews[index] == parent {
+                    messageViews[index].children.append(newMessage)
                     foundParent = true
                 }
             }
@@ -74,8 +99,9 @@ extension MessageTableViewController {
         
         let messageViewData: MessageViewData = messageViews[indexPath.section].children[indexPath.row]
         
-        cell.nameLabel.text = messageViewData.messageText ?? "message text is nil"
-        cell.detailLabel.text = messageViewData.dateUpdatedText ?? "date updated text is nil"
+        cell.messageTextLabel.text = messageViewData.messageText ?? "EMPTY"
+        cell.dateLabel.text = messageViewData.dateUpdatedText ?? "NO DATE"
+        cell.profImage.image = messageViewData.userPhoto
         
         return cell
     }
@@ -88,8 +114,8 @@ extension MessageTableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "header")
         
-        header.titleLabel.text = messageViews[section].messageText ?? "message text is nil"
-        header.arrowLabel.text = messageViews[section].children.count > 0 ? String(messageViews[section].children.count) : ""
+        header.titleLabel.text = messageViews[section].messageText ?? "EMPTY"
+        header.arrowLabel.text = String(messageViews[section].children.count)
         header.setCollapsed(messageViews[section].isCollapsed)
         
         header.section = section
@@ -103,7 +129,7 @@ extension MessageTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 1.0
+        return 0.0
     }
     
 }

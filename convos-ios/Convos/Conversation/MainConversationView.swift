@@ -10,39 +10,36 @@ import UIKit
 
 class MainConversationView: UIView {
     
-    let titleLabel = UILabel()
+    var topBarView: ConversationTopBarView
     var messagesTableContainerView: UIView? = nil
+    
+    // MARK: Init
+    
+    override init(frame: CGRect) {
+        topBarView = ConversationTopBarView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: 60))
+        super.init(frame: frame)
+        
+        self.backgroundColor = UIColor.white
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: UIView
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.backgroundColor = UIColor.white
-        self.bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         
-        // Title
-        titleLabel.text = "TEST_TITLE"
-        titleLabel.center = CGPoint(x: bounds.width/2, y: 50)
-        titleLabel.bounds.size = titleLabel.intrinsicContentSize
-        self.addSubview(titleLabel)
+        // Conversation Top Bar View
+        topBarView.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: self.frame.width, height: 50)
+        self.addSubview(topBarView)
         
         // Messages Table
         if let mTCV = messagesTableContainerView {
-            mTCV.backgroundColor = UIColor.blue
             mTCV.bounds = CGRect(x: self.bounds.minX, y: self.bounds.minY + 100, width: self.bounds.width, height: self.bounds.maxY - 150)
             
             self.addSubview(mTCV)
         }
-    }
-    
-    // MARK: Public
-    
-    // MUST be called after layout subviews
-    func addConversationTableSubview(tableContainerView: UIView) {
-
-    }
-    
-    func setTitle(newTitle: String) {
-        titleLabel.text = newTitle
-    }
+    }    
 }

@@ -13,7 +13,7 @@ struct MessageViewData: Equatable {
     var messageText: String?
     var dateUpdatedText: String?
     var isTopLevel: Bool = true
-    var isCollapsed: Bool = false
+    var isCollapsed: Bool = true
     var children: [MessageViewData] = []
     
     init(userPhoto: UIImage?, messageText: String?, dateUpdatedText: String?) {
@@ -27,10 +27,14 @@ func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
     return lhs.messageText == rhs.messageText && lhs.dateUpdatedText == rhs.dateUpdatedText
 }
 
-class ConversationViewController: UIViewController, SocketManagerDelegate {
+protocol MessageTableVCDelegate {
+    func goBack()
+}
+
+class ConversationViewController: UIViewController, SocketManagerDelegate, MessageTableVCDelegate {
     
     var containerView: MainConversationView? = nil
-    var conversationTableVC = MessageTableViewController()
+    var messageTableVC = MessageTableViewController()
     
     // MARK: UIViewController
 
@@ -41,10 +45,10 @@ class ConversationViewController: UIViewController, SocketManagerDelegate {
     }
     
     override func loadView() {
-        self.addChildViewController(conversationTableVC)
+        self.addChildViewController(messageTableVC)
     
-        containerView = MainConversationView()
-        containerView?.messagesTableContainerView = conversationTableVC.view
+        containerView = MainConversationView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        containerView?.messagesTableContainerView = messageTableVC.view
         self.view = containerView
     }
     
@@ -59,16 +63,23 @@ class ConversationViewController: UIViewController, SocketManagerDelegate {
     func received(json: Dictionary<String, Any>) {
         let message = MessageViewData(userPhoto: nil, messageText: nil, dateUpdatedText: nil)
         let parentMessage = MessageViewData(userPhoto: nil, messageText: nil, dateUpdatedText: nil)
-        conversationTableVC.addMessage(newMessage: message, parentMessage: parentMessage)
+        messageTableVC.addMessage(newMessage: message, parentMessage: parentMessage)
     }
     
     func send(json: Dictionary<String, Any>) {
         // package message view data into a JSON query object and send
     }
     
+    // MARK: MessageTableVCDelegate
+    
+    func goBack() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     // MARK: Private
     
     fileprivate func configureConversation() {
+        messageTableVC.delegate = self
     }
     
 }
