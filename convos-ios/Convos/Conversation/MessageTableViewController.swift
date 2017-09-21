@@ -16,19 +16,13 @@ protocol MessageTableVCProtocol {
 class MessageTableViewController: UITableViewController, MessageTableVCProtocol {
     
     var messageViews: [MessageViewData] = []
-    var delegate: MessageTableVCDelegate? = nil
+    var messageTableVCDelegate: MessageTableVCDelegate? = nil
     
     // MARK: - View Controller
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        view.backgroundColor = UIColor.white
-        // Auto resizing the height of the cell
-        tableView.estimatedRowHeight = 44.0
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.separatorStyle = .none
-     
         // Add test messages
         let testMessage = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "YOYOYO", dateUpdatedText: "9/8/17")
         let testMessage2 = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "My Name is Jo", dateUpdatedText: "9/8/18")
@@ -38,6 +32,19 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol 
         addMessage(newMessage: testMessage2, parentMessage: nil)
         addMessage(newMessage: testMessage3, parentMessage: testMessage2)
         addMessage(newMessage: testMessage4, parentMessage: testMessage2)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = UIColor.white
+        // Auto resizing the height of the cell
+        tableView.estimatedSectionHeaderHeight = 44.0
+        tableView.sectionHeaderHeight = 44.0
+        tableView.estimatedRowHeight = 44.0
+        tableView.rowHeight = UITableViewAutomaticDimension
+        // Other table view config
+        tableView.separatorStyle = .none
         
         // Setup Gesture recognizer
         tableView.panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
@@ -49,7 +56,7 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol 
         if let panGesture = gesture as? UIPanGestureRecognizer {
             let translation = panGesture.translation(in: self.view)
             if (translation.x > 150) {
-                delegate?.goBack()
+                messageTableVCDelegate?.goBack()
             }
         }
     }
@@ -58,6 +65,7 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol 
     
     func loadMessageData(messageData: [MessageViewData]) {
         messageViews = messageData
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
     
@@ -106,10 +114,6 @@ extension MessageTableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
     // Header
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "header")
@@ -122,14 +126,6 @@ extension MessageTableViewController {
         header.delegate = self
         
         return header
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44.0
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.0
     }
     
 }
@@ -146,7 +142,7 @@ extension MessageTableViewController: CollapsibleTableViewHeaderDelegate {
         messageViews[section].isCollapsed = collapsed
         header.setCollapsed(collapsed)
         
-        tableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
+        self.tableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
     }
     
 }

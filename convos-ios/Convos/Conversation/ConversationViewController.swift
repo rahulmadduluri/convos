@@ -79,7 +79,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     // MARK: Private
     
     fileprivate func configureConversation() {
-        messageTableVC.delegate = self
+        messageTableVC.messageTableVCDelegate = self
     }
     
 }
