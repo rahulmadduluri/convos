@@ -11,6 +11,9 @@
 		B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF641F728D1600735F5D /* MainConversationView.swift */; };
 		B748CF671F728F7500735F5D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF661F728F7500735F5D /* User.swift */; };
 		B748CF6A1F728FE200735F5D /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF691F728FE200735F5D /* Message.swift */; };
+		B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */; };
+		B748CF701F73D8F000735F5D /* CollapsibleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6F1F73D8F000735F5D /* CollapsibleTableViewCell.swift */; };
+		B748CF721F73D91A00735F5D /* CollapsibleTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF711F73D91A00735F5D /* CollapsibleTableViewHeader.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -27,6 +30,9 @@
 		B748CF641F728D1600735F5D /* MainConversationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConversationView.swift; sourceTree = "<group>"; };
 		B748CF661F728F7500735F5D /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B748CF691F728FE200735F5D /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewController.swift; sourceTree = "<group>"; };
+		B748CF6F1F73D8F000735F5D /* CollapsibleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewCell.swift; sourceTree = "<group>"; };
+		B748CF711F73D91A00735F5D /* CollapsibleTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewHeader.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -83,6 +89,9 @@
 			children = (
 				B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */,
 				B748CF641F728D1600735F5D /* MainConversationView.swift */,
+				B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */,
+				B748CF6F1F73D8F000735F5D /* CollapsibleTableViewCell.swift */,
+				B748CF711F73D91A00735F5D /* CollapsibleTableViewHeader.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -264,7 +273,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
+				B748CF721F73D91A00735F5D /* CollapsibleTableViewHeader.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
+				B748CF701F73D8F000735F5D /* CollapsibleTableViewCell.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,

@@ -10,11 +10,11 @@ import UIKit
 import SwiftWebSocket
 
 protocol SocketManaging {
-    func send()
 }
 
 protocol SocketManagerDelegate {
-    func received()
+    func send(json: Dictionary<String, Any>)
+    func received(json: Dictionary<String, Any>)
 }
 
 final class SocketManager: NSObject, SocketManaging {
@@ -59,10 +59,5 @@ final class SocketManager: NSObject, SocketManaging {
                 }
             }
         }
-    }
-    
-    // MARK: SocketManaging
-    
-    func send() {
     }
 }

@@ -31,11 +31,15 @@ class SearchViewController: UIViewController, SocketManagerDelegate {
     
     // MARK: SocketManagerDelegate
     
-    func received() {
-
+    func received(json: Dictionary<String, Any>) {
+        //fill search query data w/ results
     }
     
-    // MARK: private
+    func send(json: Dictionary<String, Any>) {
+        // package search query into a JSON object and send
+    }
+    
+    // MARK: Private
     
     fileprivate func configureSubviews() {
         searchTextField.frame = CGRect(x: 100, y: 200, width: 200, height: 100)
