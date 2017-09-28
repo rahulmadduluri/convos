@@ -115,7 +115,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 				log.Printf("Joined: %v", msg.Username)
 				// get all new messages in background? yeah. send a timestamp of this update, so that client can send it back and we only query from that point onwards.
 				// messages have uid created on client,
-				db.
+				//db.
 			}
 		case "SearchMessage":
 			{
