@@ -10,13 +10,12 @@ import UIKit
 
 class MainConversationView: UIView {
     
-    var topBarView: ConversationTopBarView
+    var topBarView: ConversationTopBarView = ConversationTopBarView()
     var messagesTableContainerView: UIView? = nil
     
     // MARK: Init
     
     override init(frame: CGRect) {
-        topBarView = ConversationTopBarView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: 60))
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.white

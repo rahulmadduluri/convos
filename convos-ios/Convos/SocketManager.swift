@@ -7,14 +7,15 @@
 //
 
 import UIKit
+import SwiftyJSON
 import SwiftWebSocket
 
 protocol SocketManaging {
+    func send(json: JSON)
 }
 
 protocol SocketManagerDelegate {
-    func send(json: Dictionary<String, Any>)
-    func received(json: Dictionary<String, Any>)
+    func received(json: JSON)
 }
 
 final class SocketManager: NSObject, SocketManaging {
@@ -23,41 +24,46 @@ final class SocketManager: NSObject, SocketManaging {
     var webSocket: WebSocket?
     var delegate: SocketManagerDelegate?
     
+    // MARK: Init
+    
     private override init() {
         super.init()
         configureWebSocket()
     }
     
+    // MARK: SocketManaging
+    
+    func send(json: JSON) {
+        if let data = try? json.rawData() {
+            webSocket?.send(data)
+        } else {
+            print("Failed to send. JSON object could not be converted to type Data")
+        }
+    }
+    
+    // MARK: Private
+    
     fileprivate func configureWebSocket() {
-        var messageNum = 0
         webSocket = WebSocket("wss://localhost:8000/ws")
         if let ws = webSocket {
-            let send : ()->() = {
-                messageNum += 1
-                let msg = "\(messageNum): \(NSDate().description)"
-                print("send: \(msg)")
-                ws.send(msg)
-            }
             ws.event.open = {
-                print("opened")
-                send()
+                print("Web Socket Opened!")
             }
             ws.event.close = { code, reason, clean in
-                print("close")
+                print("Web Socket Closed!")
+                print(reason)
+                print("Trying to reopn")
+                ws.open()
+                print("Web Socket Reopened!")
             }
             ws.event.error = { error in
                 print("error \(error)")
             }
             ws.event.message = { message in
-                if let text = message as? String {
-                    print("recv: \(text)")
-                    if messageNum == 10 {
-                        ws.close()
-                    } else {
-                        send()
-                    }
-                }
+                let jsonMessage = JSON(message)
+                self.delegate?.received(json: jsonMessage)
             }
+            ws.open()
         }
     }
 }

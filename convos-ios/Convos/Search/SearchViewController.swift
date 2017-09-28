@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import SwiftyJSON
+import SwiftWebSocket
 
-class SearchViewController: UIViewController, SocketManagerDelegate {
 
-    var searchTextField: SearchTextField = SearchTextField()
-    var conversationVC: ConversationViewController?
+class SearchViewController: UIViewController, SocketManagerDelegate, SearchTableVCDelegate {
+
+    var containerView: MainSearchView? = nil
+    var searchTableVC = SearchTableViewController() // search results table
+    var conversationVC: ConversationViewController? // conversation VC to transition to
     
     let socketManager: SocketManager = SocketManager.sharedInstance
         
@@ -20,36 +24,76 @@ class SearchViewController: UIViewController, SocketManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureSearchTextField()
+        configureSearch()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        configureSubviews()
+    override func loadView() {
+        self.addChildViewController(searchTableVC)
+        
+        containerView = MainSearchView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 450))
+        
+        containerView?.searchTableContainerView = searchTableVC.view
+        self.view = containerView
+    }
+    
+    override func didMove(toParentViewController parent: UIViewController?) {
+        for childVC in self.childViewControllers {
+            childVC.removeFromParentViewController()
+        }
+        
+        super.didMove(toParentViewController: parent)
+    }
+    
+    // MARK: SearchTableVCDelegate
+    
+    func itemSelected(viewData: CollapsibleTableViewData) {
+        if let searchViewData = viewData as? SearchViewData {
+            if self.conversationVC == nil {
+                let vc = ConversationViewController()
+                vc.setConversationTitle(newTitle: searchViewData.text)
+                self.conversationVC = ConversationViewController()
+                
+            }
+            
+            if let newVC = self.conversationVC {
+                self.present(newVC, animated: false, completion: nil)
+            }
+        }
     }
     
     // MARK: SocketManagerDelegate
     
-    func received(json: Dictionary<String, Any>) {
-        //fill search query data w/ results
-    }
-    
-    func send(json: Dictionary<String, Any>) {
-        // package search query into a JSON object and send
+    func received(json: JSON) {
+        switch json["dataType"].stringValue {
+        case "searchResponse":
+            let dataJson: JSON = json["data"]
+            if let searchResponse = SearchResponse(json: dataJson) {
+                received(response: searchResponse)
+            }
+        default:
+            break
+        }
     }
     
     // MARK: Private
     
-    fileprivate func configureSubviews() {
-        searchTextField.frame = CGRect(x: 100, y: 200, width: 200, height: 100)
-        self.view.addSubview(searchTextField)
+    fileprivate func received(response: SearchResponse) {
+        /*
+        let res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul")
+        let res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful")
+        let res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia")
+        */
     }
     
-    fileprivate func configureSearchTextField() {
-        searchTextField.startVisibleWithoutInteraction = true
+    fileprivate func searchForResults(_ searchText: String) {
+        let searchRequest = SearchRequest(senderUuid: "", searchText: searchText)
+        socketManager.send(json: searchRequest.toJSON())
+    }
+    
+    fileprivate func configureSearch() {
+        containerView?.searchTextField.startVisibleWithoutInteraction = true
         
-        searchTextField.itemSelectionHandler = { filteredResults, itemPosition  in
+        containerView?.searchTextField.itemSelectionHandler = { filteredResults, itemPosition  in
             // Just in case you need the item position
             let item = filteredResults[itemPosition]
             
@@ -63,38 +107,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate {
             print("Item at position \(itemPosition): \(item.title)")
         }
         
-        searchTextField.userStoppedTypingHandler = {
-            if let searchText = self.searchTextField.text {
+        containerView?.searchTextField.userStoppedTypingHandler = {
+            if let searchText = self.containerView?.searchTextField.text {
                 if searchText.characters.count > 0 {
-                    self.searchTextField.showLoadingIndicator()
-                    self.searchForResultsInBackground(searchText) { results in
-                        self.searchTextField.filterItems(results)
-                        self.searchTextField.stopLoadingIndicator()
-                    }
+                    self.containerView?.searchTextField.showLoadingIndicator()
+                    self.searchForResults(searchText)
                 }
             }
         }
     }
-    
-    fileprivate func searchForResultsInBackground(_ searchText: String, callback: @escaping ((_ results: [SearchTextFieldItem]) -> Void)) {
-        var results = [SearchTextFieldItem]()
-        for index in 0...2 {
-            var item: SearchTextFieldItem?
-            switch index {
-            case 0:
-                item = SearchTextFieldItem(title: "Rahul", subtitle: "#Vienna", image: UIImage(named: "rahul_test_pic"))
-            case 1:
-                item = SearchTextFieldItem(title: "Prafulla", subtitle: "#Baller", image: UIImage(named: "praful_test_pic"))
-            case 2:
-                item = SearchTextFieldItem(title: "Reia", subtitle: "#Scrub", image: UIImage(named: "reia_test_pic"))
-            default:
-                item = SearchTextFieldItem(title: "Rahul", subtitle: "#Vienna", image: UIImage(named: "rahul_test_pic"))
-            }
-            if let i = item {
-                results.append(i)
-            }
-        }
-        callback(results)
-    }
-        
 }

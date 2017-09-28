@@ -7,34 +7,12 @@
 //
 
 import UIKit
-
-struct MessageViewData: Equatable {
-    var userPhoto: UIImage?
-    var messageText: String?
-    var dateUpdatedText: String?
-    var isTopLevel: Bool = true
-    var isCollapsed: Bool = true
-    var children: [MessageViewData] = []
-    
-    init(userPhoto: UIImage?, messageText: String?, dateUpdatedText: String?) {
-        self.userPhoto = userPhoto
-        self.messageText = messageText
-        self.dateUpdatedText = dateUpdatedText
-    }
-}
-
-func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
-    return lhs.messageText == rhs.messageText && lhs.dateUpdatedText == rhs.dateUpdatedText
-}
-
-protocol MessageTableVCDelegate {
-    func goBack()
-}
+import SwiftyJSON
 
 class ConversationViewController: UIViewController, SocketManagerDelegate, MessageTableVCDelegate {
     
-    var containerView: MainConversationView? = nil
     var messageTableVC = MessageTableViewController()
+    var containerView: MainConversationView?
     
     // MARK: UIViewController
 
@@ -53,27 +31,31 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     override func didMove(toParentViewController parent: UIViewController?) {
-        self.childViewControllers.last?.removeFromParentViewController()
+        for childVC in self.childViewControllers {
+            childVC.removeFromParentViewController()
+        }
         
         super.didMove(toParentViewController: parent)
     }
     
     // MARK: SocketManagerDelegate
     
-    func received(json: Dictionary<String, Any>) {
-        let message = MessageViewData(userPhoto: nil, messageText: nil, dateUpdatedText: nil)
-        let parentMessage = MessageViewData(userPhoto: nil, messageText: nil, dateUpdatedText: nil)
+    func received(json: JSON) {
+        let message = MessageViewData(photo: nil, text: "", dateUpdatedText: nil)
+        let parentMessage = MessageViewData(photo: nil, text: "", dateUpdatedText: nil)
         messageTableVC.addMessage(newMessage: message, parentMessage: parentMessage)
     }
-    
-    func send(json: Dictionary<String, Any>) {
-        // package message view data into a JSON query object and send
-    }
-    
+        
     // MARK: MessageTableVCDelegate
     
     func goBack() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: Public
+    
+    func setConversationTitle(newTitle: String) {
+        containerView?.topBarView.setTitle(newTitle: newTitle)
     }
     
     // MARK: Private

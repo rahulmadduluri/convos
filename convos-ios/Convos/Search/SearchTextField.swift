@@ -381,18 +381,22 @@ open class SearchTextField: UITextField {
             
             let item = filterDataSource[i]
             
-            // Find text in title and subtitle
+            // Find text in title and subtitles
             let titleFilterRange = (item.title as NSString).range(of: text!, options: comparisonOptions)
-            let subtitleFilterRange = item.subtitle != nil ? (item.subtitle! as NSString).range(of: text!, options: comparisonOptions) : NSMakeRange(NSNotFound, 0)
             
-            if titleFilterRange.location != NSNotFound || subtitleFilterRange.location != NSNotFound || addAll {
+            if titleFilterRange.location != NSNotFound || addAll {
                 item.attributedTitle = NSMutableAttributedString(string: item.title)
-                item.attributedSubtitle = NSMutableAttributedString(string: (item.subtitle != nil ? item.subtitle! : ""))
-                
                 item.attributedTitle!.setAttributes(highlightAttributes, range: titleFilterRange)
                 
-                if subtitleFilterRange.location != NSNotFound {
-                    item.attributedSubtitle!.setAttributes(highlightAttributesForSubtitle(), range: subtitleFilterRange)
+                for subtitle in item.subtitles {
+                    let subtitleFilterRange = subtitle != nil ? (subtitle! as NSString).range(of: text!, options: comparisonOptions) : NSMakeRange(NSNotFound, 0)
+                    
+                    if subtitleFilterRange.location != NSNotFound {
+                        let attributedSubtitle = NSMutableAttributedString(string: (subtitle != nil ? subtitle! : ""))
+                        attributedSubtitle.setAttributes(highlightAttributesForSubtitle(), range: subtitleFilterRange)
+                        item.attributedSubtitles.append(attributedSubtitle)
+                    }
+
                 }
                 
                 filteredResults.append(item)
@@ -532,22 +536,22 @@ public struct SearchTextFieldTheme {
 open class SearchTextFieldItem {
     // private vars
     fileprivate var attributedTitle: NSMutableAttributedString?
-    fileprivate var attributedSubtitle: NSMutableAttributedString?
+    fileprivate var attributedSubtitles: [NSMutableAttributedString?]
     
     // public vars
     public var title: String
-    public var subtitle: String?
+    public var subtitles: [String?]
     public var image: UIImage?
     
-    public init(title: String, subtitle: String?, image: UIImage?) {
+    public init(title: String, subtitles: [String?], image: UIImage?) {
         self.title = title
-        self.subtitle = subtitle
+        self.subtitles = subtitles
         self.image = image
     }
     
-    public init(title: String, subtitle: String?) {
+    public init(title: String, subtitles: [String?]) {
         self.title = title
-        self.subtitle = subtitle
+        self.subtitles = subtitles
     }
     
     public init(title: String) {

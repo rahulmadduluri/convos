@@ -1,19 +1,45 @@
 //
-//  CollapsibleTableViewController.swift
+//  MessageTableViewController.swift
 //
-//  Created by Yong Su on 5/30/16.
-//  Copyright © 2016 Yong Su. All rights reserved.
+//  Created by Rahul Madduluri on 9/21/17.
+//  Copyright © 2017 rahulm. All rights reserved.
 //
-//  Modified by Rahul Madduluri on 7/21/17.
 
 import UIKit
+
+struct MessageViewData: CollapsibleTableViewData, Equatable {
+    var photo: UIImage?
+    var text: String
+    var isTopLevel: Bool
+    var isCollapsed: Bool
+    var children: [CollapsibleTableViewData]
+    
+    var dateUpdatedText: String?
+    
+    init(photo: UIImage?, text: String, dateUpdatedText: String?, isTopLevel: Bool = true, isCollapsed: Bool = true) {
+        self.photo = photo
+        self.text = text
+        self.dateUpdatedText = dateUpdatedText
+        self.isTopLevel = isTopLevel
+        self.isCollapsed = isCollapsed
+        self.children = []
+    }
+}
+
+func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
+    return lhs.text == rhs.text && lhs.dateUpdatedText == rhs.dateUpdatedText
+}
+
+protocol MessageTableVCDelegate {
+    func goBack()
+}
 
 protocol MessageTableVCProtocol {
     func loadMessageData(messageData: [MessageViewData])
     func addMessage(newMessage: MessageViewData, parentMessage: MessageViewData?)
 }
 
-class MessageTableViewController: UITableViewController, MessageTableVCProtocol {
+class MessageTableViewController: CollapsibleTableViewController, MessageTableVCProtocol {
     
     var messageViews: [MessageViewData] = []
     var messageTableVCDelegate: MessageTableVCDelegate? = nil
@@ -24,10 +50,10 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol 
         super.viewDidAppear(animated)
         
         // Add test messages
-        let testMessage = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "YOYOYO", dateUpdatedText: "9/8/17")
-        let testMessage2 = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "My Name is Jo", dateUpdatedText: "9/8/18")
-        let testMessage3 = MessageViewData(userPhoto: UIImage(named: "rahul_test_pic"), messageText: "I have a big fro", dateUpdatedText: "9/8/19")
-        let testMessage4 = MessageViewData(userPhoto: UIImage(named: "praful_test_pic"), messageText: "What would Bahubali do?", dateUpdatedText: "9/8/20")
+        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "YOYOYO", dateUpdatedText: "9/8/17")
+        let testMessage2 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "My Name is Jo", dateUpdatedText: "9/8/18")
+        let testMessage3 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "I have a big fro", dateUpdatedText: "9/8/19")
+        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "What would Bahubali do?", dateUpdatedText: "9/8/20")
         addMessage(newMessage: testMessage, parentMessage: nil)
         addMessage(newMessage: testMessage2, parentMessage: nil)
         addMessage(newMessage: testMessage3, parentMessage: testMessage2)
@@ -88,61 +114,36 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol 
 }
 
 //
-// MARK: - View Controller DataSource and Delegate
+// MARK: - Custom Cell & Header
 //
 extension MessageTableViewController {
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return messageViews.count
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messageViews[section].isCollapsed ? 0 : messageViews[section].children.count
-    }
-    
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: CollapsibleTableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? CollapsibleTableViewCell ??
-            CollapsibleTableViewCell(style: .default, reuseIdentifier: "cell")
+        let cell: ConversationTableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? ConversationTableViewCell ??
+            ConversationTableViewCell(style: .default, reuseIdentifier: "cell")
         
-        let messageViewData: MessageViewData = messageViews[indexPath.section].children[indexPath.row]
-        
-        cell.messageTextLabel.text = messageViewData.messageText ?? "EMPTY"
-        cell.dateLabel.text = messageViewData.dateUpdatedText ?? "NO DATE"
-        cell.profImage.image = messageViewData.userPhoto
+        if let messageViewData = viewDataModels[indexPath.section].children[indexPath.row] as? MessageViewData {
+            cell.textLabel.text = messageViewData.text
+            cell.photoImageView.image = messageViewData.photo
+        }
         
         return cell
     }
     
     // Header
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "header")
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? ConversationTableViewHeader ?? ConversationTableViewHeader(reuseIdentifier: "header")
         
-        header.titleLabel.text = messageViews[section].messageText ?? "EMPTY"
-        header.arrowLabel.text = String(messageViews[section].children.count)
-        header.setCollapsed(messageViews[section].isCollapsed)
+        if let messageViewData = viewDataModels[section] as? MessageViewData {
+            header.customTextLabel.text = messageViewData.text
+            header.rightSideLabel.text = String(messageViewData.children.count)
+        }
         
         header.section = section
         header.delegate = self
         
         return header
-    }
-    
-}
-
-//
-// MARK: - Section Header Delegate
-//
-extension MessageTableViewController: CollapsibleTableViewHeaderDelegate {
-    
-    func toggleSection(_ header: CollapsibleTableViewHeader, section: Int) {
-        let collapsed = !messageViews[section].isCollapsed
-        
-        // Toggle collapse
-        messageViews[section].isCollapsed = collapsed
-        header.setCollapsed(collapsed)
-        
-        self.tableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
     }
     
 }

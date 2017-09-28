@@ -9,12 +9,20 @@
 /* Begin PBXBuildFile section */
 		5BAACACEB8E50D903D8B7FDF /* Pods_Convos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */; };
 		B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF641F728D1600735F5D /* MainConversationView.swift */; };
-		B748CF671F728F7500735F5D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF661F728F7500735F5D /* User.swift */; };
-		B748CF6A1F728FE200735F5D /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF691F728FE200735F5D /* Message.swift */; };
 		B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */; };
-		B748CF701F73D8F000735F5D /* CollapsibleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6F1F73D8F000735F5D /* CollapsibleTableViewCell.swift */; };
-		B748CF721F73D91A00735F5D /* CollapsibleTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF711F73D91A00735F5D /* CollapsibleTableViewHeader.swift */; };
+		B748CF701F73D8F000735F5D /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6F1F73D8F000735F5D /* ConversationTableViewCell.swift */; };
+		B748CF721F73D91A00735F5D /* ConversationTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF711F73D91A00735F5D /* ConversationTableViewHeader.swift */; };
 		B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */; };
+		B748CF781F7B2B1700735F5D /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF771F7B2B1700735F5D /* Models.swift */; };
+		B748CF7C1F7B48D000735F5D /* CollapsibleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */; };
+		B748CF7F1F7B497600735F5D /* CollasibleTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF7E1F7B497600735F5D /* CollasibleTableViewHeader.swift */; };
+		B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF801F7C789400735F5D /* MainSearchView.swift */; };
+		B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF821F7CA98500735F5D /* SearchTableViewController.swift */; };
+		B748CF871F7CAC0300735F5D /* CollapsibleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */; };
+		B748CF891F7CD2B400735F5D /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF881F7CD2B400735F5D /* SearchTableViewCell.swift */; };
+		B748CF8B1F7CFB6D00735F5D /* SearchTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8A1F7CFB6D00735F5D /* SearchTableViewHeader.swift */; };
+		B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8C1F7D036000735F5D /* HomeViewController.swift */; };
+		B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8F1F7D03B300735F5D /* MainHomeView.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -29,12 +37,20 @@
 		38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.debug.xcconfig"; sourceTree = "<group>"; };
 		46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Convos.release.xcconfig"; path = "Pods/Target Support Files/Pods-Convos/Pods-Convos.release.xcconfig"; sourceTree = "<group>"; };
 		B748CF641F728D1600735F5D /* MainConversationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConversationView.swift; sourceTree = "<group>"; };
-		B748CF661F728F7500735F5D /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		B748CF691F728FE200735F5D /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewController.swift; sourceTree = "<group>"; };
-		B748CF6F1F73D8F000735F5D /* CollapsibleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewCell.swift; sourceTree = "<group>"; };
-		B748CF711F73D91A00735F5D /* CollapsibleTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewHeader.swift; sourceTree = "<group>"; };
+		B748CF6F1F73D8F000735F5D /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
+		B748CF711F73D91A00735F5D /* ConversationTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTableViewHeader.swift; sourceTree = "<group>"; };
 		B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTopBarView.swift; sourceTree = "<group>"; };
+		B748CF771F7B2B1700735F5D /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewCell.swift; sourceTree = "<group>"; };
+		B748CF7E1F7B497600735F5D /* CollasibleTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollasibleTableViewHeader.swift; sourceTree = "<group>"; };
+		B748CF801F7C789400735F5D /* MainSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSearchView.swift; sourceTree = "<group>"; };
+		B748CF821F7CA98500735F5D /* SearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewController.swift; sourceTree = "<group>"; };
+		B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewController.swift; sourceTree = "<group>"; };
+		B748CF881F7CD2B400735F5D /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
+		B748CF8A1F7CFB6D00735F5D /* SearchTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewHeader.swift; sourceTree = "<group>"; };
+		B748CF8C1F7D036000735F5D /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		B748CF8F1F7D03B300735F5D /* MainHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -71,16 +87,38 @@
 		B748CF681F728F7D00735F5D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				B748CF661F728F7500735F5D /* User.swift */,
-				B748CF691F728FE200735F5D /* Message.swift */,
+				B748CF771F7B2B1700735F5D /* Models.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		B748CF7D1F7B492800735F5D /* CustomUI */ = {
+			isa = PBXGroup;
+			children = (
+				B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */,
+				B748CF7E1F7B497600735F5D /* CollasibleTableViewHeader.swift */,
+				B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */,
+			);
+			path = CustomUI;
+			sourceTree = "<group>";
+		};
+		B748CF8E1F7D037F00735F5D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				B748CF8C1F7D036000735F5D /* HomeViewController.swift */,
+				B748CF8F1F7D03B300735F5D /* MainHomeView.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 		B781CDA61F53BE0A0088FB3B /* Search */ = {
 			isa = PBXGroup;
 			children = (
 				B788107E1F539D23009AC9FE /* SearchViewController.swift */,
+				B748CF821F7CA98500735F5D /* SearchTableViewController.swift */,
+				B748CF801F7C789400735F5D /* MainSearchView.swift */,
+				B748CF881F7CD2B400735F5D /* SearchTableViewCell.swift */,
+				B748CF8A1F7CFB6D00735F5D /* SearchTableViewHeader.swift */,
 				B781CDA71F53BE920088FB3B /* SearchTextField.swift */,
 			);
 			path = Search;
@@ -90,11 +128,11 @@
 			isa = PBXGroup;
 			children = (
 				B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */,
+				B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */,
 				B748CF641F728D1600735F5D /* MainConversationView.swift */,
 				B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */,
-				B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */,
-				B748CF6F1F73D8F000735F5D /* CollapsibleTableViewCell.swift */,
-				B748CF711F73D91A00735F5D /* CollapsibleTableViewHeader.swift */,
+				B748CF6F1F73D8F000735F5D /* ConversationTableViewCell.swift */,
+				B748CF711F73D91A00735F5D /* ConversationTableViewHeader.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -122,6 +160,8 @@
 			children = (
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
 				B78720FB1F5E98DD004F74E7 /* SocketManager.swift */,
+				B748CF8E1F7D037F00735F5D /* Home */,
+				B748CF7D1F7B492800735F5D /* CustomUI */,
 				B748CF681F728F7D00735F5D /* Models */,
 				B78720FA1F5E85B4004F74E7 /* Conversation */,
 				B781CDA61F53BE0A0088FB3B /* Search */,
@@ -242,12 +282,14 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftWebSocket/SwiftWebSocket.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftWebSocket.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -276,18 +318,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B748CF871F7CAC0300735F5D /* CollapsibleTableViewController.swift in Sources */,
 				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
-				B748CF721F73D91A00735F5D /* CollapsibleTableViewHeader.swift in Sources */,
+				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
+				B748CF721F73D91A00735F5D /* ConversationTableViewHeader.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
-				B748CF701F73D8F000735F5D /* CollapsibleTableViewCell.swift in Sources */,
+				B748CF701F73D8F000735F5D /* ConversationTableViewCell.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
 				B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */,
+				B748CF781F7B2B1700735F5D /* Models.swift in Sources */,
+				B748CF8B1F7CFB6D00735F5D /* SearchTableViewHeader.swift in Sources */,
+				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
+				B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
+				B748CF891F7CD2B400735F5D /* SearchTableViewCell.swift in Sources */,
+				B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
-				B748CF6A1F728FE200735F5D /* Message.swift in Sources */,
+				B748CF7C1F7B48D000735F5D /* CollapsibleTableViewCell.swift in Sources */,
+				B748CF7F1F7B497600735F5D /* CollasibleTableViewHeader.swift in Sources */,
 				B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */,
-				B748CF671F728F7500735F5D /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
