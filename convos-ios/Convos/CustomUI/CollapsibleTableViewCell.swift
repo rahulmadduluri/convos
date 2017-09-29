@@ -9,7 +9,7 @@ import UIKit
 
 class CollapsibleTableViewCell: UITableViewCell {
     
-    let textLabel = UILabel()
+    let customTextLabel = UILabel()
     let photoImageView = UIImageView()
     
     // MARK: Initalizers

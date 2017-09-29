@@ -30,9 +30,10 @@ func ==(lhs: SearchViewData, rhs: SearchViewData) -> Bool {
 
 protocol SearchTableVCProtocol {
     func loadSearchResultsData(searchData: [SearchViewData])
+    func resetSearchResultsData()
 }
 
-protocol SearchTableVCDelegate: CollapsibleTableVCDelegate {
+protocol SearchTableVCDelegate: CollapsibleTableVCDelegate, SearchComponentDelegate {
 }
 
 class SearchTableViewController: CollapsibleTableViewController, SearchTableVCProtocol {
@@ -72,6 +73,12 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
         tableView.reloadData()
     }
     
+    func resetSearchResultsData() {
+        viewDataModels = []
+        tableView.setContentOffset(.zero, animated: false)
+        tableView.reloadData()
+    }
+    
 }
     
 //
@@ -85,7 +92,7 @@ extension SearchTableViewController {
             SearchTableViewCell(style: .default, reuseIdentifier: "cell")
         
         if let searchViewData = viewDataModels[indexPath.section].children[indexPath.row] as? SearchViewData {
-            cell.textLabel.text = searchViewData.text
+            cell.customTextLabel.text = searchViewData.text
             cell.photoImageView.image = searchViewData.photo
         }
         

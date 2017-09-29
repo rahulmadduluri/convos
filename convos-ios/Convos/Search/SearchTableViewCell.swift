@@ -38,13 +38,13 @@ class SearchTableViewCell: CollapsibleTableViewCell {
         photoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.imageHeight).isActive = true
         
         // configure text label
-        contentView.addSubview(textLabel)
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
-        textLabel.leadingAnchor.constraint(equalTo: photoImageView.trailingAnchor, constant: Constants.leadingTextAnchorConstant).isActive = true
-        textLabel.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
-        textLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
-        textLabel.numberOfLines = 0
-        textLabel.font = UIFont.systemFont(ofSize: Constants.textFontSize)
+        contentView.addSubview(customTextLabel)
+        customTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        customTextLabel.leadingAnchor.constraint(equalTo: photoImageView.trailingAnchor, constant: Constants.leadingTextAnchorConstant).isActive = true
+        customTextLabel.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
+        customTextLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
+        customTextLabel.numberOfLines = 0
+        customTextLabel.font = UIFont.systemFont(ofSize: Constants.textFontSize)
         
         // cell config
         self.selectionStyle = .none

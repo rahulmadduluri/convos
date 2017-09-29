@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, SearchVCDelegate {
     var containerView: MainHomeView? = nil
 
     var searchVC = SearchViewController() // search VC
@@ -31,6 +31,29 @@ class HomeViewController: UIViewController {
         }
         
         super.didMove(toParentViewController: parent)
+    }
+    
+    // MARK: SearchVCDelegate
+    
+    func resultSelected(result: SearchViewData) {
+        if self.conversationVC == nil {
+            let vc = ConversationViewController()
+            vc.setConversationTitle(newTitle: result.text)
+            self.conversationVC = ConversationViewController()
+            
+        }
+        
+        if let newVC = self.conversationVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
+    }
+    
+    func keyboardWillShow() {
+        
+    }
+    
+    func keyboardWillHide() {
+        
     }
     
 }

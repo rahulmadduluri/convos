@@ -124,7 +124,7 @@ extension MessageTableViewController {
             ConversationTableViewCell(style: .default, reuseIdentifier: "cell")
         
         if let messageViewData = viewDataModels[indexPath.section].children[indexPath.row] as? MessageViewData {
-            cell.textLabel.text = messageViewData.text
+            cell.customTextLabel.text = messageViewData.text
             cell.photoImageView.image = messageViewData.photo
         }
         

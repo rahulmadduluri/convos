@@ -10,14 +10,27 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
+protocol SearchVCDelegate {
+    func resultSelected(result: SearchViewData)
+    func keyboardWillShow()
+    func keyboardWillHide()
+}
 
-class SearchViewController: UIViewController, SocketManagerDelegate, SearchTableVCDelegate {
+protocol SearchComponentDelegate {
+    var filteredResults: [SearchViewData] { get set }
+    var allCachedResults: [SearchViewData] { get }
+}
+
+class SearchViewController: UIViewController, SocketManagerDelegate, SearchTableVCDelegate, SearchTextFieldDelegate {
 
     var containerView: MainSearchView? = nil
     var searchTableVC = SearchTableViewController() // search results table
-    var conversationVC: ConversationViewController? // conversation VC to transition to
+    var searchVCDelegate: SearchVCDelegate? = nil
     
     let socketManager: SocketManager = SocketManager.sharedInstance
+    
+    var filteredResults: [SearchViewData] = []
+    var allCachedResults: [SearchViewData] = []
         
     // MARK: UIViewController
     
@@ -44,21 +57,61 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         super.didMove(toParentViewController: parent)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidChangeFrame(_:)), name: NSNotification.Name.UIKeyboardDidChangeFrame, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: Handle keyboard events
+    
+    func keyboardWillShow(_ notification: Notification) {
+        containerView?.searchTextField.hasInteracted = true
+        searchVCDelegate?.keyboardWillShow()
+    }
+    
+    func keyboardWillHide(_ notification: Notification) {
+        searchVCDelegate?.keyboardWillHide()
+    }
+    
+    func keyboardDidChangeFrame(_ notification: Notification) {
+        /*
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.keyboardFrame = ((notification as NSNotification).userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        }
+        */
+    }
+    
     // MARK: SearchTableVCDelegate
     
     func itemSelected(viewData: CollapsibleTableViewData) {
         if let searchViewData = viewData as? SearchViewData {
-            if self.conversationVC == nil {
-                let vc = ConversationViewController()
-                vc.setConversationTitle(newTitle: searchViewData.text)
-                self.conversationVC = ConversationViewController()
-                
-            }
-            
-            if let newVC = self.conversationVC {
-                self.present(newVC, animated: false, completion: nil)
-            }
+            searchVCDelegate?.resultSelected(result: searchViewData)
         }
+    }
+    
+    // MARK: SearchTextFieldDelegate
+    
+    func searchTextUpdated(searchText: String) {
+        if searchText.isEmpty {
+            filteredResults = Array(allCachedResults.prefix(3))
+        } else {
+            filteredResults = filter(searchText: searchText)
+        }
+    }
+    
+    func keyboardWillShow() {
+        searchVCDelegate?.keyboardWillShow()
+    }
+    
+    func keyboardWillHide() {
+        searchVCDelegate?.keyboardWillHide()
     }
     
     // MARK: SocketManagerDelegate
@@ -83,6 +136,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         let res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful")
         let res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia")
         */
+        // convert response into SearchViewData
+        // append SearchViewData to All Cached Results
+        // if there is a collision, replace cached result with search view
     }
     
     fileprivate func searchForResults(_ searchText: String) {
@@ -91,21 +147,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     }
     
     fileprivate func configureSearch() {
-        containerView?.searchTextField.startVisibleWithoutInteraction = true
+        searchForResults("")
         
-        containerView?.searchTextField.itemSelectionHandler = { filteredResults, itemPosition  in
-            // Just in case you need the item position
-            let item = filteredResults[itemPosition]
-            
-            if self.conversationVC == nil {
-                self.conversationVC = ConversationViewController()
-            }
-            
-            if let newVC = self.conversationVC {
-                self.present(newVC, animated: false, completion: nil)
-            }
-            print("Item at position \(itemPosition): \(item.title)")
-        }
+        // test
+        let res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul")
+        let res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful")
+        let res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia")
+        allCachedResults = [res1, res2, res3]
         
         containerView?.searchTextField.userStoppedTypingHandler = {
             if let searchText = self.containerView?.searchTextField.text {
@@ -115,5 +163,41 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
                 }
             }
         }
+    }
+    
+    fileprivate func filter(searchText: String) -> [SearchViewData] {
+        /*
+        fileprivate func filter(forceShowAll addAll: Bool) {
+            if text!.characters.count < minCharactersNumberToStartFiltering {
+                return
+            }
+            
+            for i in 0 ..< filterDataSource.count {
+                
+                let item = filterDataSource[i]
+                
+                // Find text in title and subtitles
+                let titleFilterRange = (item.title as NSString).range(of: text!, options: comparisonOptions)
+                
+                if titleFilterRange.location != NSNotFound || addAll {
+                    item.attributedTitle = NSMutableAttributedString(string: item.title)
+                    
+                    for subtitle in item.subtitles {
+                        let subtitleFilterRange = subtitle != nil ? (subtitle! as NSString).range(of: text!, options: comparisonOptions) : NSMakeRange(NSNotFound, 0)
+                        
+                        if subtitleFilterRange.location != NSNotFound {
+                            let attributedSubtitle = NSMutableAttributedString(string: (subtitle != nil ? subtitle! : ""))
+                            item.attributedSubtitles.append(attributedSubtitle)
+                        }
+                        
+                    }
+                    
+                    filteredResults.append(item)
+                }
+            }
+        }
+        */
+        return allCachedResults
+
     }
 }
