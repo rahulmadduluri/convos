@@ -18,7 +18,6 @@ protocol SearchVCDelegate {
 
 protocol SearchComponentDelegate {
     var filteredResults: [SearchViewData] { get set }
-    var allCachedResults: [SearchViewData] { get }
 }
 
 class SearchViewController: UIViewController, SocketManagerDelegate, SearchTableVCDelegate, SearchTextFieldDelegate {
@@ -30,7 +29,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     let socketManager: SocketManager = SocketManager.sharedInstance
     
     var filteredResults: [SearchViewData] = []
-    var allCachedResults: [SearchViewData] = []
+    fileprivate var allCachedResults: [SearchViewData] = []
         
     // MARK: UIViewController
     
@@ -43,7 +42,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     override func loadView() {
         self.addChildViewController(searchTableVC)
         
-        containerView = MainSearchView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 450))
+        containerView = MainSearchView(frame: CGRect(x: 0, y: 100, width: UIScreen.main.bounds.width, height: 400))
         
         containerView?.searchTableContainerView = searchTableVC.view
         self.view = containerView
@@ -102,8 +101,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         if searchText.isEmpty {
             filteredResults = Array(allCachedResults.prefix(3))
         } else {
-            filteredResults = filter(searchText: searchText)
+            localSearch(searchText: searchText)
+            remoteSearch(searchText: searchText)
         }
+        searchTableVC.reloadSearchResultsData()
     }
     
     func keyboardWillShow() {
@@ -139,6 +140,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         // convert response into SearchViewData
         // append SearchViewData to All Cached Results
         // if there is a collision, replace cached result with search view
+        containerView?.searchTextField.stopLoadingIndicator()
     }
     
     fileprivate func searchForResults(_ searchText: String) {
@@ -147,13 +149,26 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     }
     
     fileprivate func configureSearch() {
+        searchTableVC.searchTableVCDelegate = self
+        containerView?.searchTextField.searchTextFieldDelegate = self
+        
         searchForResults("")
         
         // test
-        let res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul")
-        let res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful")
-        let res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia")
+        var res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul", isCollapsed: false)
+        var res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful", isCollapsed: false)
+        var res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia", isCollapsed: false)
+        let res4 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "#Amrendra", isTopLevel: false)
+        let res5 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "#Mahendra", isTopLevel: false)
+        let res6 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "#Scrub", isTopLevel: false)
+        let res7 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "#BAHUBALI", isTopLevel: false)
+        res1.children.append(res4)
+        res1.children.append(res7)
+        res2.children.append(res5)
+        res3.children.append(res6)
         allCachedResults = [res1, res2, res3]
+        filteredResults = allCachedResults
+        searchTableVC.reloadSearchResultsData()
         
         containerView?.searchTextField.userStoppedTypingHandler = {
             if let searchText = self.containerView?.searchTextField.text {
@@ -165,39 +180,37 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         }
     }
     
-    fileprivate func filter(searchText: String) -> [SearchViewData] {
-        /*
-        fileprivate func filter(forceShowAll addAll: Bool) {
-            if text!.characters.count < minCharactersNumberToStartFiltering {
-                return
-            }
+    fileprivate func localSearch(searchText: String) {
+        filteredResults = []
+        
+        for p in allCachedResults {
+            var parentResult = p // NOTE: When we separate view model from search response make this is a copy()
             
-            for i in 0 ..< filterDataSource.count {
-                
-                let item = filterDataSource[i]
-                
-                // Find text in title and subtitles
-                let titleFilterRange = (item.title as NSString).range(of: text!, options: comparisonOptions)
-                
-                if titleFilterRange.location != NSNotFound || addAll {
-                    item.attributedTitle = NSMutableAttributedString(string: item.title)
-                    
-                    for subtitle in item.subtitles {
-                        let subtitleFilterRange = subtitle != nil ? (subtitle! as NSString).range(of: text!, options: comparisonOptions) : NSMakeRange(NSNotFound, 0)
-                        
-                        if subtitleFilterRange.location != NSNotFound {
-                            let attributedSubtitle = NSMutableAttributedString(string: (subtitle != nil ? subtitle! : ""))
-                            item.attributedSubtitles.append(attributedSubtitle)
-                        }
-                        
-                    }
-                    
-                    filteredResults.append(item)
+            var foundMatchInParent = false
+            
+            let parentFilterRange = (parentResult.text as NSString).range(of: searchText, options: [.caseInsensitive])
+            if parentFilterRange.location != NSNotFound {
+                foundMatchInParent = true
+            }
+            var matchedChildren: [SearchViewData] = []
+            for c in parentResult.children {
+                guard let childResult = c as? SearchViewData else {
+                    continue
+                }
+                let childFilterRange = (childResult.text as NSString).range(of: searchText, options: [.caseInsensitive])
+                if childFilterRange.location != NSNotFound {
+                    matchedChildren.append(childResult)
                 }
             }
+            parentResult.children = matchedChildren
+            
+            if foundMatchInParent == true || parentResult.children.count > 0 {
+                filteredResults.append(parentResult)
+            }
         }
-        */
-        return allCachedResults
-
+    }
+    
+    fileprivate func remoteSearch(searchText: String) {
+        
     }
 }

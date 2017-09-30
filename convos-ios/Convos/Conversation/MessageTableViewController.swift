@@ -128,6 +128,10 @@ extension MessageTableViewController {
             cell.photoImageView.image = messageViewData.photo
         }
         
+        cell.row = indexPath.row
+        cell.section = indexPath.section
+        cell.delegate = self
+        
         return cell
     }
     

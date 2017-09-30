@@ -14,6 +14,8 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     var messageTableVC = MessageTableViewController()
     var containerView: MainConversationView?
     
+    fileprivate var titleText: String = ""
+    
     // MARK: UIViewController
 
     override func viewDidLoad() {
@@ -28,6 +30,10 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         containerView = MainConversationView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         containerView?.messagesTableContainerView = messageTableVC.view
         self.view = containerView
+    }
+    
+    override func viewDidLayoutSubviews() {
+        containerView?.topBarView.setTitle(newTitle: titleText)
     }
     
     override func didMove(toParentViewController parent: UIViewController?) {
@@ -55,6 +61,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     // MARK: Public
     
     func setConversationTitle(newTitle: String) {
+        self.titleText = newTitle
         containerView?.topBarView.setTitle(newTitle: newTitle)
     }
     

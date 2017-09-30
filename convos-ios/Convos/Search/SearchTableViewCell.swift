@@ -11,7 +11,8 @@ class SearchTableViewCell: CollapsibleTableViewCell {
     
     let separator = UIView()
     
-    // MARK: Initalizers
+    // MARK: Init
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -21,26 +22,15 @@ class SearchTableViewCell: CollapsibleTableViewCell {
         contentView.addSubview(separator)
         separator.backgroundColor = UIColor.blue
         separator.translatesAutoresizingMaskIntoConstraints = false
-        separator.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
+        separator.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor, constant: Constants.separatorLeadingAnchor).isActive = true
         separator.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.separatorWidth).isActive = true
         separator.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
         separator.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
         
-        // configure image view
-        contentView.addSubview(photoImageView)
-        photoImageView.backgroundColor = UIColor.white
-        photoImageView.layer.cornerRadius = 5.0
-        photoImageView.layer.masksToBounds = true
-        photoImageView.translatesAutoresizingMaskIntoConstraints = false
-        photoImageView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
-        photoImageView.leadingAnchor.constraint(equalTo: separator.trailingAnchor, constant: Constants.leadingImageAnchorConstant).isActive = true
-        photoImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.imageWidth).isActive = true
-        photoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.imageHeight).isActive = true
-        
         // configure text label
         contentView.addSubview(customTextLabel)
         customTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        customTextLabel.leadingAnchor.constraint(equalTo: photoImageView.trailingAnchor, constant: Constants.leadingTextAnchorConstant).isActive = true
+        customTextLabel.leadingAnchor.constraint(equalTo: separator.trailingAnchor, constant: Constants.leadingTextAnchorConstant).isActive = true
         customTextLabel.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
         customTextLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
         customTextLabel.numberOfLines = 0
@@ -59,10 +49,7 @@ class SearchTableViewCell: CollapsibleTableViewCell {
 
 private struct Constants {
     static let textFontSize: CGFloat = 16
-    static let leadingImageAnchorConstant: CGFloat = 20
     static let leadingTextAnchorConstant: CGFloat = 20
-    static let messageTextDateTextGap: CGFloat = 5
-    static let separatorWidth: CGFloat = 3
-    static let imageWidth: CGFloat = 30
-    static let imageHeight: CGFloat = 30
+    static let separatorWidth: CGFloat = 2
+    static let separatorLeadingAnchor: CGFloat = 10
 }

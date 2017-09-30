@@ -43,15 +43,18 @@ extension CollapsibleTableViewController {
 //
 // MARK: - Section Header Delegate
 //
-extension CollapsibleTableViewController: CollapsibleTableViewHeaderDelegate {
+extension CollapsibleTableViewController: CollapsibleTableViewHeaderDelegate, CollapsibleTableViewCellDelegate {
     
-    func toggleSection(_ header: CollapsibleTableViewHeader, section: Int) {
+    func headerTapped(section: Int) {
         let collapsed = !viewDataModels[section].isCollapsed
         
         // Toggle collapse
         viewDataModels[section].isCollapsed = collapsed
         
         self.tableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .automatic)
+    }
+    
+    func cellTapped(row: Int, section: Int) {
     }
     
 }

@@ -40,13 +40,7 @@ class SearchTextField: UITextField {
         self.rightViewMode = .never
         indicator.stopAnimating()
     }
-    
-    /// Min number of characters to start filtering
-    open var minCharactersNumberToStartFiltering: Int = 0
-    
-    /// Allow to decide the comparision options
-    open var comparisonOptions: NSString.CompareOptions = [.caseInsensitive]
-    
+        
     // private vars
     fileprivate var timer: Timer? = nil
     fileprivate var placeholderLabel: UILabel?
@@ -129,7 +123,9 @@ class SearchTextField: UITextField {
         } else {
             placeholderLabel?.text = ""
         }
-        searchTextFieldDelegate?.searchTextUpdated(searchText: "")
+        
+        let updatedText = text ?? ""
+        searchTextFieldDelegate?.searchTextUpdated(searchText: updatedText)
     }
     
     func textFieldDidBeginEditing() {

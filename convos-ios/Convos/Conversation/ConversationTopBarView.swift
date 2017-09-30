@@ -19,8 +19,7 @@ class ConversationTopBarView: UIView {
         backgroundColor = UIColor.white
 
         // Setup Title
-        setTitle(newTitle: "P-Diddy")
-        self.addSubview(titleLabel)        
+        self.addSubview(titleLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {

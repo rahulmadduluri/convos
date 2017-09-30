@@ -15,6 +15,12 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     var conversationVC: ConversationViewController? // conversation VC to transition to
     
     // MARK: UIViewController
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configureHome()
+    }
         
     override func loadView() {
         self.addChildViewController(searchVC)
@@ -37,11 +43,9 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     
     func resultSelected(result: SearchViewData) {
         if self.conversationVC == nil {
-            let vc = ConversationViewController()
-            vc.setConversationTitle(newTitle: result.text)
             self.conversationVC = ConversationViewController()
-            
         }
+        conversationVC?.setConversationTitle(newTitle: result.text)
         
         if let newVC = self.conversationVC {
             self.present(newVC, animated: false, completion: nil)
@@ -54,6 +58,12 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     
     func keyboardWillHide() {
         
+    }
+    
+    // MARK: Private
+    
+    fileprivate func configureHome() {
+        searchVC.searchVCDelegate = self
     }
     
 }

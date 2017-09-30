@@ -31,12 +31,12 @@ class MainConversationView: UIView {
         super.layoutSubviews()
         
         // Conversation Top Bar View
-        topBarView.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: self.frame.width, height: 50)
+        topBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.origin.y, width: self.bounds.width, height: 50)
         self.addSubview(topBarView)
         
         // Messages Table
         if let mTCV = messagesTableContainerView {
-            mTCV.bounds = CGRect(x: self.bounds.minX, y: self.bounds.minY + 100, width: self.bounds.width, height: self.bounds.maxY - 150)
+            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + 100, width: self.bounds.width, height: self.bounds.maxY - 150)
             
             self.addSubview(mTCV)
         }

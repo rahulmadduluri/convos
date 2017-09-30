@@ -31,12 +31,12 @@ class MainSearchView: UIView {
         super.layoutSubviews()
         
         // SearchTextField
-        searchTextField.frame = Constants.searchTextFieldFrame
+        searchTextField.frame = CGRect(x: self.bounds.minX + Constants.searchTextFieldOriginXOffset, y: self.bounds.minY, width: Constants.searchTextFieldWidth, height: Constants.searchTextFieldHeight)
         self.addSubview(searchTextField)
         
         // Search Table
         if let sCTV = searchTableContainerView {
-            sCTV.bounds = CGRect(x: self.bounds.minX, y: Constants.searchTextFieldFrame.maxY, width: self.bounds.width, height: Constants.searchResultsTableHeight)
+            sCTV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.searchTextFieldHeight, width: self.bounds.width, height: Constants.searchResultsTableHeight)
             
             self.addSubview(sCTV)
         }
@@ -44,7 +44,9 @@ class MainSearchView: UIView {
 }
 
 private struct Constants {
-    static let searchTextFieldFrame = CGRect(x: 100, y: 200, width: 200, height: 100)
+    static let searchTextFieldOriginXOffset: CGFloat = 100
+    static let searchTextFieldWidth: CGFloat = 200
+    static let searchTextFieldHeight: CGFloat = 100
     static let searchResultsTableHeight: CGFloat = 300
 }
 

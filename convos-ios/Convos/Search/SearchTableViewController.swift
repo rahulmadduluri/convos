@@ -29,8 +29,7 @@ func ==(lhs: SearchViewData, rhs: SearchViewData) -> Bool {
 }
 
 protocol SearchTableVCProtocol {
-    func loadSearchResultsData(searchData: [SearchViewData])
-    func resetSearchResultsData()
+    func reloadSearchResultsData()
 }
 
 protocol SearchTableVCDelegate: CollapsibleTableVCDelegate, SearchComponentDelegate {
@@ -45,11 +44,7 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Add test messages
-        let res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul")
-        let res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful")
-        let res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia")
-        loadSearchResultsData(searchData: [res1,res2,res3])
+        reloadSearchResultsData()
     }
     
     override func viewDidLoad() {
@@ -60,25 +55,30 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
         tableView.estimatedSectionHeaderHeight = 44.0
         tableView.sectionHeaderHeight = 44.0
         tableView.estimatedRowHeight = 44.0
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = 44.0
         // Other table view config
         tableView.separatorStyle = .none
     }
     
     // MARK: SearchTableVCProtocol
     
-    func loadSearchResultsData(searchData: [SearchViewData]) {
-        viewDataModels = searchData
+    func reloadSearchResultsData() {
+        viewDataModels = searchTableVCDelegate?.filteredResults ?? []
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
     
-    func resetSearchResultsData() {
-        viewDataModels = []
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
+    // MARK: UIGestureRecognizer Functions
+    
+    override func cellTapped(row: Int, section: Int) {
+        let viewData = viewDataModels[section].children[row]
+        searchTableVCDelegate?.itemSelected(viewData: viewData)
     }
     
+    override func headerTapped(section: Int) {
+        let viewData = viewDataModels[section]
+        searchTableVCDelegate?.itemSelected(viewData: viewData)
+    }
 }
     
 //
@@ -93,8 +93,11 @@ extension SearchTableViewController {
         
         if let searchViewData = viewDataModels[indexPath.section].children[indexPath.row] as? SearchViewData {
             cell.customTextLabel.text = searchViewData.text
-            cell.photoImageView.image = searchViewData.photo
         }
+        
+        cell.row = indexPath.row
+        cell.section = indexPath.section
+        cell.delegate = self
         
         return cell
     }
@@ -105,7 +108,7 @@ extension SearchTableViewController {
         
         if let searchViewData = viewDataModels[section] as? SearchViewData {
             header.customTextLabel.text = searchViewData.text
-            header.rightSideLabel.text = String(searchViewData.children.count)
+            header.photoImageView.image = searchViewData.photo
         }
         
         header.section = section
