@@ -16,12 +16,12 @@ class ConversationTableViewCell: CollapsibleTableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         let marginGuide = contentView.layoutMarginsGuide
-        
+                
         // configure separator
         contentView.addSubview(separator)
         separator.backgroundColor = UIColor.blue
         separator.translatesAutoresizingMaskIntoConstraints = false
-        separator.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
+        separator.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor, constant: Constants.leadingSeparatorAnchorConstant).isActive = true
         separator.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.separatorWidth).isActive = true
         separator.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
         separator.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
@@ -29,7 +29,7 @@ class ConversationTableViewCell: CollapsibleTableViewCell {
         // configure image view
         contentView.addSubview(photoImageView)
         photoImageView.backgroundColor = UIColor.white
-        photoImageView.layer.cornerRadius = 5.0
+        photoImageView.layer.cornerRadius = 15.0
         photoImageView.layer.masksToBounds = true
         photoImageView.translatesAutoresizingMaskIntoConstraints = false
         photoImageView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
@@ -45,7 +45,7 @@ class ConversationTableViewCell: CollapsibleTableViewCell {
         customTextLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
         customTextLabel.numberOfLines = 0
         customTextLabel.font = UIFont.systemFont(ofSize: Constants.messageTextFontSize)
-        
+                
         // cell config
         self.selectionStyle = .none
         
@@ -58,11 +58,12 @@ class ConversationTableViewCell: CollapsibleTableViewCell {
 }
 
 private struct Constants {
+    static let leadingSeparatorAnchorConstant: CGFloat = 30
     static let messageTextFontSize: CGFloat = 16
     static let leadingImageAnchorConstant: CGFloat = 20
     static let leadingMessageAnchorConstant: CGFloat = 20
     static let messageTextDateTextGap: CGFloat = 5
-    static let separatorWidth: CGFloat = 3
+    static let separatorWidth: CGFloat = 2
     static let imageWidth: CGFloat = 30
     static let imageHeight: CGFloat = 30
 }

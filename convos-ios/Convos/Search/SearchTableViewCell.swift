@@ -35,7 +35,7 @@ class SearchTableViewCell: CollapsibleTableViewCell {
         customTextLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
         customTextLabel.numberOfLines = 0
         customTextLabel.font = UIFont.systemFont(ofSize: Constants.textFontSize)
-        
+                
         // cell config
         self.selectionStyle = .none
         

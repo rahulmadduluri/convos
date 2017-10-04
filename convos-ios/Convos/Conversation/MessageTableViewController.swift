@@ -41,7 +41,6 @@ protocol MessageTableVCProtocol {
 
 class MessageTableViewController: CollapsibleTableViewController, MessageTableVCProtocol {
     
-    var messageViews: [MessageViewData] = []
     var messageTableVCDelegate: MessageTableVCDelegate? = nil
     
     // MARK: - View Controller
@@ -50,14 +49,16 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         super.viewDidAppear(animated)
         
         // Add test messages
-        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "YOYOYO", dateUpdatedText: "9/8/17")
+        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "yoyo", dateUpdatedText: "9/8/17")
         let testMessage2 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "My Name is Jo", dateUpdatedText: "9/8/18")
         let testMessage3 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "I have a big fro", dateUpdatedText: "9/8/19")
-        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "What would Bahubali do?", dateUpdatedText: "9/8/20")
+        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "teststestsetstestststeststsetsesdfasdfafsafsadfsadfafsadfsadfasd", dateUpdatedText: "9/8/20")
+        let testMessage5 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "teststststststststststets", dateUpdatedText: "9/9/20")
         addMessage(newMessage: testMessage, parentMessage: nil)
         addMessage(newMessage: testMessage2, parentMessage: nil)
         addMessage(newMessage: testMessage3, parentMessage: testMessage2)
         addMessage(newMessage: testMessage4, parentMessage: testMessage2)
+        addMessage(newMessage: testMessage5, parentMessage: testMessage2)
     }
     
     override func viewDidLoad() {
@@ -65,10 +66,10 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         
         view.backgroundColor = UIColor.white
         // Auto resizing the height of the cell
-        tableView.estimatedSectionHeaderHeight = 44.0
-        tableView.sectionHeaderHeight = 44.0
-        tableView.estimatedRowHeight = 44.0
-        tableView.rowHeight = UITableViewAutomaticDimension
+//        tableView.estimatedSectionHeaderHeight = 60.0
+//        tableView.sectionHeaderHeight = 60.0
+//        tableView.estimatedRowHeight = 44.0
+//        tableView.rowHeight = 44.0
         // Other table view config
         tableView.separatorStyle = .none
         
@@ -90,7 +91,7 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
     // MARK: MessageTableVCProtocol
     
     func loadMessageData(messageData: [MessageViewData]) {
-        messageViews = messageData
+        viewDataModels = messageData
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
@@ -98,16 +99,19 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
     func addMessage(newMessage: MessageViewData, parentMessage: MessageViewData?) {
         var foundParent = false
         if let parent = parentMessage {
-            for index in 0...messageViews.count-1 {
-                if messageViews[index] == parent {
-                    messageViews[index].children.append(newMessage)
+            for index in 0...viewDataModels.count-1 {
+                guard let dm = viewDataModels[index] as? MessageViewData else {
+                    continue
+                }
+                if dm == parent {
+                    viewDataModels[index].children.append(newMessage)
                     foundParent = true
                 }
             }
         }
         
         if !foundParent {
-            messageViews.append(newMessage)
+            viewDataModels.append(newMessage)
         }
         tableView.reloadData()
     }
@@ -131,7 +135,7 @@ extension MessageTableViewController {
         cell.row = indexPath.row
         cell.section = indexPath.section
         cell.delegate = self
-        
+                
         return cell
     }
     
@@ -142,6 +146,7 @@ extension MessageTableViewController {
         if let messageViewData = viewDataModels[section] as? MessageViewData {
             header.customTextLabel.text = messageViewData.text
             header.rightSideLabel.text = String(messageViewData.children.count)
+            header.photoImageView.image = messageViewData.photo
         }
         
         header.section = section

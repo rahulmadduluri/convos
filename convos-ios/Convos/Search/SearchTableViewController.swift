@@ -52,10 +52,10 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
         
         view.backgroundColor = UIColor.white
         // Auto resizing the height of the cell
-        tableView.estimatedSectionHeaderHeight = 44.0
-        tableView.sectionHeaderHeight = 44.0
-        tableView.estimatedRowHeight = 44.0
-        tableView.rowHeight = 44.0
+//        tableView.estimatedSectionHeaderHeight = 44.0
+//        tableView.sectionHeaderHeight = 44.0
+//        tableView.estimatedRowHeight = 44.0
+//        tableView.rowHeight = 44.0
         // Other table view config
         tableView.separatorStyle = .none
     }
@@ -98,7 +98,7 @@ extension SearchTableViewController {
         cell.row = indexPath.row
         cell.section = indexPath.section
         cell.delegate = self
-        
+                
         return cell
     }
     
@@ -110,10 +110,10 @@ extension SearchTableViewController {
             header.customTextLabel.text = searchViewData.text
             header.photoImageView.image = searchViewData.photo
         }
-        
+                
         header.section = section
         header.delegate = self
-        
+                
         return header
     }
     
