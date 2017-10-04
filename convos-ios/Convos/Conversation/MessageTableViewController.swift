@@ -49,10 +49,10 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         super.viewDidAppear(animated)
         
         // Add test messages
-        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "yoyo", dateUpdatedText: "9/8/17")
+        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "yoyoyoyoyoyoyoyoyo", dateUpdatedText: "9/8/17")
         let testMessage2 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "My Name is Jo", dateUpdatedText: "9/8/18")
         let testMessage3 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "I have a big fro", dateUpdatedText: "9/8/19")
-        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "teststestsetstestststeststsetsesdfasdfafsafsadfsadfafsadfsadfasd", dateUpdatedText: "9/8/20")
+        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "testtest", dateUpdatedText: "9/8/20")
         let testMessage5 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "teststststststststststets", dateUpdatedText: "9/9/20")
         addMessage(newMessage: testMessage, parentMessage: nil)
         addMessage(newMessage: testMessage2, parentMessage: nil)
