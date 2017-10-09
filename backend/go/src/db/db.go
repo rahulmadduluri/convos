@@ -1,16 +1,19 @@
 package db
 
 import (
-	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+	"github.com/nleof/goyesql"
 	"log"
+	"models"
 )
 
-var db *sql.DB
+var db *sqlx.DB
+var queries goyesql.Queries
 
 func init() {
 	var err error
-	db, err = sql.Open("mysql",
+	db, err = sqlx.Open("mysql",
 		"root:webster93@tcp(127.0.0.1:3306)/convos")
 	if err != nil {
 		log.Fatal(err)
@@ -19,32 +22,27 @@ func init() {
 	if err != nil {
 		log.Printf("No ping %v", err)
 	}
+	queries = goyesql.MustParseFile("db/queries.sql")
 }
 
-func Query() {
-	var (
-		id   int
-		name string
-	)
-	stmt, err := db.Prepare("select id, name from users where id = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query(1)
+func getConversations(user_id int) []models.Conversations {
+	rows, err := db.Queryx(queries["findConversationsByUserId"], user_id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+	var objs []models.Conversations
 	for rows.Next() {
-		err := rows.Scan(&id, &name)
+		var obj models.Conversations
+		err := rows.StructScan(&obj)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Println(id, name)
+		objs = append(objs, obj)
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
+	return objs
 }

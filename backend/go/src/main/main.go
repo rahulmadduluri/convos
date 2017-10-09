@@ -1,7 +1,7 @@
 package main
 
 import (
-	"db"
+	_ "db"
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/websocket"
@@ -62,7 +62,7 @@ var upgrader = websocket.Upgrader{
 func main() {
 	// database := db.GetDB()
 	// defer database.Close()
-	db.Query()
+	// db.Queryx()
 	// Create a simple file server
 	fs := http.FileServer(http.Dir("../../public"))
 	http.Handle("/", fs)
@@ -148,6 +148,10 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 				json.Unmarshal(cmsg.Data, &msg)
 				var smsg ServerMessage = ServerMessage{msg.Username, msg.Receiver, msg.Message}
 				broadcast <- smsg
+			}
+		case "SearchRequest":
+			{
+
 			}
 		default:
 			panic("unrecognized message")

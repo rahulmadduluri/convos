@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 	FOREIGN KEY (topic_tag_id) REFERENCES tags (id)
 );
 
-CREATE TABLE IF NOT EXISTS group_member (
+CREATE TABLE IF NOT EXISTS group_members (
 	user_id 		int			NOT NULL,
 	conversation_id	int			NOT NULL,
 	is_admin		boolean 	DEFAULT false,
