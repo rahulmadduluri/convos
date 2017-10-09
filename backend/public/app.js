@@ -12,7 +12,7 @@ new Vue({
 
     created: function() {
         var self = this;
-        this.ws = new WebSocket('ws://' + window.location.host + '/ws');
+        this.ws = new WebSocket('ws://' + 'localhost:8000' + '/ws');
         this.ws.addEventListener('message', function(e) {
             var msg = JSON.parse(e.data);
             self.chatContent += '<div class="chip">'
@@ -31,7 +31,7 @@ new Vue({
                 this.ws.send(
                     JSON.stringify({
                         type: "Message",
-                        message: {
+                        data: {
                             username: this.username,
                             receiver: this.receiver,
                             message: $('<p>').html(this.newMsg).text() // Strip out html
@@ -52,7 +52,7 @@ new Vue({
             this.ws.send(
                     JSON.stringify({
                         type: "JoinMessage",
-                        message: {
+                        data: {
                             username: this.username,
                         }
                     }

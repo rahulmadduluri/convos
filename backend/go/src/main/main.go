@@ -17,7 +17,7 @@ type ServerMessage struct {
 
 type ClientMessage struct {
 	Type string          `json:"type"`
-	Data json.RawMessage `json:"message"`
+	Data json.RawMessage `json:"data"`
 }
 
 type SearchMessage struct {
@@ -64,7 +64,7 @@ func main() {
 	// defer database.Close()
 	db.Query()
 	// Create a simple file server
-	fs := http.FileServer(http.Dir("../public"))
+	fs := http.FileServer(http.Dir("../../public"))
 	http.Handle("/", fs)
 
 	// Configure websocket route
@@ -110,7 +110,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		case "JoinMessage":
 			{
 				var msg JoinMessage
-				json.Unmarshal(cmsg.Message, &msg)
+				json.Unmarshal(cmsg.Data, &msg)
 				receivers[msg.Username] = ws
 				log.Printf("Joined: %v", msg.Username)
 				// get all new messages in background? yeah. send a timestamp of this update, so that client can send it back and we only query from that point onwards.
@@ -120,7 +120,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		case "SearchMessage":
 			{
 				var msg SearchMessage
-				json.Unmarshal(cmsg.Message, &msg)
+				json.Unmarshal(cmsg.Data, &msg)
 				// do corresponding search in SQL, get result and send to client
 			}
 		case "ResultMessage":
@@ -137,7 +137,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 			{
 				// add to SQL database, send ack to client, put in broadcast que to send to clients
 				var msg SendMessage
-				json.Unmarshal(cmsg.Message, &msg)
+				json.Unmarshal(cmsg.Data, &msg)
 			}
 		case "Message":
 			{
@@ -145,7 +145,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 				// handle thread gets info that D was updated, so updates view accordingly
 				// easiest version is for every message, send the db update to receivers with the receiver UUID
 				var msg Message
-				json.Unmarshal(cmsg.Message, &msg)
+				json.Unmarshal(cmsg.Data, &msg)
 				var smsg ServerMessage = ServerMessage{msg.Username, msg.Receiver, msg.Message}
 				broadcast <- smsg
 			}
