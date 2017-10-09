@@ -48,7 +48,7 @@ class SearchTableViewCell: CollapsibleTableViewCell {
 }
 
 private struct Constants {
-    static let textFontSize: CGFloat = 16
+    static let textFontSize: CGFloat = 14
     static let leadingTextAnchorConstant: CGFloat = 20
     static let separatorWidth: CGFloat = 2
     static let separatorLeadingAnchor: CGFloat = 30

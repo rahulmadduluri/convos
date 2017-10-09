@@ -32,67 +32,46 @@ class User: NSObject, Model {
 
 // MARK: Message Models
 
-
-
 class Message: NSObject, Model {
 
-    /*
     var uuid: String
-    var senderUuid: String?
+    var senderUUID: String
     var messageText: String?
     var serverTimestamp: String?
-    var localTimestamp: String?
+    var createdLocalTimestamp: String?
     var isTopLevel: Bool
-    var isCollapsed: Bool
     var children: [Message]
-    */
 
-    required init?(json: JSON) {
-        
-    }
-    
-    func toJSON() -> JSON {
-        return JSON([:])
-    }
-}
-
-// MARK: Search Models
-
-class SearchRequest: NSObject, Model {
-    
-    // vars
-    let senderUuid: String
-    let searchText: String
-    
-    // init
-    init(senderUuid: String, searchText: String) {
-        self.senderUuid = senderUuid
-        self.searchText = searchText
-    }
-    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
-            let senderUuidObject = dictionary["senderUuid"],
-            let searchTextObject = dictionary["searchText"] else {
-            return nil
+            let uuidObject = dictionary["uuid"],
+            let senderUUIDObject = dictionary["senderUUID"] else {
+                return nil
         }
-        senderUuid = senderUuidObject.stringValue
-        searchText = searchTextObject.stringValue
+        uuid = uuidObject.stringValue
+        senderUUID = senderUUIDObject.stringValue
+        messageText = dictionary["messageText"]?.stringValue
+        serverTimestamp = dictionary["serverTimestamp"]?.stringValue
+        createdLocalTimestamp = dictionary["createdLocalTimestamp"]?.stringValue
+        isTopLevel = dictionary["isTopLevel"]?.boolValue ?? true
+        children = []
+        if let receivedChildren = dictionary["children"]?.arrayValue {
+            for child in receivedChildren {
+                guard let newMessage = Message.init(json: child) else {
+                    continue
+                }
+                children.append(newMessage)
+            }
+        }
     }
     
     func toJSON() -> JSON {
-        let dict = ["senderUuid": senderUuid, "searchText": searchText]
+        var dict: [String: Any?] = ["uuid": uuid, "senderUUID": senderUUID, "messageText": messageText, "serverTimestamp": serverTimestamp, "createdLocalTimestamp": createdLocalTimestamp, "isTopLevel": isTopLevel]
+        var jsonChildren: [JSON] = []
+        for child in children {
+            jsonChildren.append(child.toJSON())
+        }
+        dict["children"] = jsonChildren
         return JSON(dict)
-    }
-}
-
-class SearchResponse: NSObject, Model {
-        
-    required init?(json: JSON) {
-        
-    }
-    
-    func toJSON() -> JSON {
-        return JSON([:])
     }
 }

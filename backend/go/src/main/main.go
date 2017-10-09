@@ -16,8 +16,8 @@ type ServerMessage struct {
 }
 
 type ClientMessage struct {
-	Type    string          `json:"type"`
-	Message json.RawMessage `json:"message"`
+	Type string          `json:"type"`
+	Data json.RawMessage `json:"message"`
 }
 
 type SearchMessage struct {

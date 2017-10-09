@@ -47,11 +47,17 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     // MARK: SocketManagerDelegate
     
     func received(json: JSON) {
-        let message = MessageViewData(photo: nil, text: "", dateUpdatedText: nil)
-        let parentMessage = MessageViewData(photo: nil, text: "", dateUpdatedText: nil)
-        messageTableVC.addMessage(newMessage: message, parentMessage: parentMessage)
+        switch json["type"].stringValue {
+        case "messageResponse":
+            let dataJson: JSON = json["data"]
+            if let messageResponse = MessageResponse(json: dataJson) {
+                received(response: messageResponse)
+            }
+        default:
+            break
+        }
     }
-        
+    
     // MARK: MessageTableVCDelegate
     
     func goBack() {
@@ -69,6 +75,10 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     fileprivate func configureConversation() {
         messageTableVC.messageTableVCDelegate = self
+    }
+    
+    fileprivate func received(response: MessageResponse) {
+        
     }
     
 }

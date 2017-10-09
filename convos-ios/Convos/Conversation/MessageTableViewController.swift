@@ -135,7 +135,7 @@ extension MessageTableViewController {
         cell.row = indexPath.row
         cell.section = indexPath.section
         cell.delegate = self
-                
+        
         return cell
     }
     

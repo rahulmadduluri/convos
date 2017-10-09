@@ -29,7 +29,7 @@ class ConversationTableViewCell: CollapsibleTableViewCell {
         // configure image view
         contentView.addSubview(photoImageView)
         photoImageView.backgroundColor = UIColor.white
-        photoImageView.layer.cornerRadius = 15.0
+        photoImageView.layer.cornerRadius = 12.0
         photoImageView.layer.masksToBounds = true
         photoImageView.translatesAutoresizingMaskIntoConstraints = false
         photoImageView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
@@ -64,6 +64,6 @@ private struct Constants {
     static let leadingMessageAnchorConstant: CGFloat = 20
     static let messageTextDateTextGap: CGFloat = 5
     static let separatorWidth: CGFloat = 2
-    static let imageWidth: CGFloat = 30
-    static let imageHeight: CGFloat = 30
+    static let imageWidth: CGFloat = 24
+    static let imageHeight: CGFloat = 24
 }

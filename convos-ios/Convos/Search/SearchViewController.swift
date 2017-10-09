@@ -118,7 +118,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     // MARK: SocketManagerDelegate
     
     func received(json: JSON) {
-        switch json["dataType"].stringValue {
+        switch json["type"].stringValue {
         case "searchResponse":
             let dataJson: JSON = json["data"]
             if let searchResponse = SearchResponse(json: dataJson) {
