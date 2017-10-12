@@ -20,12 +20,36 @@ protocol Model {
 
 class User: NSObject, Model {
     
+    // vars
+    let uuid: String
+    let username: String
+    let mobileNumber: String
+    let createdServerTimestamp: Int
+    let photoURL: String?
+    
+    // init
     required init?(json: JSON) {
-        
+        guard let dictionary = json.dictionary,
+            let uuidJSON = dictionary["uuid"],
+            let usernameJSON = dictionary["username"],
+            let mobileNumberJSON = dictionary["mobileNumber"],
+            let createdServerTimestampJSON = dictionary["createdServerTimestamp"] else {
+                return nil
+        }
+        uuid = uuidJSON.stringValue
+        username = usernameJSON.stringValue
+        mobileNumber = mobileNumberJSON.stringValue
+        createdServerTimestamp = createdServerTimestampJSON.intValue
+        photoURL = dictionary["photoURL"]?.string
     }
     
+    // Model
     func toJSON() -> JSON {
-        return JSON([:])
+        var dict: [String: JSON] = ["uuid": JSON(uuid), "username": JSON(username), "mobileNumber": JSON(mobileNumber), "createdServerTimestamp": JSON(createdServerTimestamp)]
+        if let photoURL = photoURL {
+            dict["photoURL"] = JSON(photoURL)
+        }
+        return JSON(dict)
     }
     
 }
@@ -35,12 +59,13 @@ class User: NSObject, Model {
 class Message: NSObject, Model {
 
     // vars
-    var uuid: String
-    var senderUUID: String
-    var messageText: String?
-    var createdServerTimestamp: Int
-    var isTopLevel: Bool
-    var children: [Message]
+    let uuid: String
+    let senderUUID: String
+    let messageText: String?
+    let createdServerTimestamp: Int
+    let isTopLevel: Bool
+    let upvotes: Int
+    let children: [Message]
 
     // init
     required init?(json: JSON) {
@@ -48,23 +73,28 @@ class Message: NSObject, Model {
             let uuidJSON = dictionary["uuid"],
             let senderUUIDJSON = dictionary["senderUUID"],
             let createdServerTimestampJSON = dictionary["createdServerTimestamp"],
-            let isTopLevelJSON = dictionary["isTopLevel"] else {
+            let isTopLevelJSON = dictionary["isTopLevel"],
+            let upvotesJSON = dictionary["upvotes"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         senderUUID = senderUUIDJSON.stringValue
         createdServerTimestamp = createdServerTimestampJSON.intValue
         isTopLevel = isTopLevelJSON.boolValue
-        children = []
+        upvotes = upvotesJSON.intValue
+        messageText = dictionary["messageText"]?.string
+        
+        var tempChildren: [Message] = []
         
         if let receivedChildrenJSON = dictionary["children"]?.arrayValue {
             for child in receivedChildrenJSON {
                 guard let newMessage = Message.init(json: child) else {
                     continue
                 }
-                children.append(newMessage)
+                tempChildren.append(newMessage)
             }
         }
+        children = tempChildren
     }
     
     // Model
@@ -87,11 +117,11 @@ class Message: NSObject, Model {
 
 class Conversation: NSObject, Model {
     // vars
-    var uuid: String
-    var photoURL: String?
-    var createdTimestampServer: Int
-    var updatedTimestampServer: Int
-    var topicTagUUID: String
+    let uuid: String
+    let photoURL: String?
+    let createdTimestampServer: Int
+    let updatedTimestampServer: Int
+    let topicTagUUID: String
     
     // init
     required init?(json: JSON) {
@@ -117,4 +147,37 @@ class Conversation: NSObject, Model {
         }
         return JSON(dict)
     }
+}
+
+// MARK: Tag Model
+
+class Tag: NSObject, Model {
+    
+    // vars
+    let uuid: String
+    let name: String
+    let isTopic: Bool
+    let createdServerTimestamp: Int
+    
+    // init
+    required init?(json: JSON) {
+        guard let dictionary = json.dictionary,
+            let uuidJSON = dictionary["uuid"],
+            let nameJSON = dictionary["name"],
+            let isTopicJSON = dictionary["isTopic"],
+            let createdServerTimestampJSON = dictionary["createdServerTimestamp"] else {
+                return nil
+        }
+        uuid = uuidJSON.stringValue
+        name = nameJSON.stringValue
+        isTopic = isTopicJSON.boolValue
+        createdServerTimestamp = createdServerTimestampJSON.intValue
+    }
+    
+    // Model
+    func toJSON() -> JSON {
+        let dict: [String: JSON] = ["uuid": JSON(uuid), "name": JSON(name), "isTopic": JSON(isTopic), "createdServerTimestamp": JSON(createdServerTimestamp)]
+        return JSON(dict)
+    }
+    
 }

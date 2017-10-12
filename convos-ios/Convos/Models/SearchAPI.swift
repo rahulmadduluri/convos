@@ -32,14 +32,32 @@ class SearchRequest: NSObject, Model {
 
 class SearchResponse: NSObject, Model {
     // vars
+    let conversations: [Conversation]
     
     // init
+    init (conversations: [Conversation]) {
+        self.conversations = conversations
+    }
+    
     required init?(json: JSON) {
-        
+        guard let conversationsJSON = json.array else {
+            return nil
+        }
+        var tempConversations: [Conversation] = []
+        for conversationJSON in conversationsJSON {
+            if let conversation = Conversation(json: conversationJSON) {
+                tempConversations.append(conversation)
+            }
+        }
+        conversations = tempConversations
     }
     
     // Model
     func toJSON() -> JSON {
-        return JSON([:])
+        var jsonConversations: [JSON] = []
+        for conversation in conversations {
+            jsonConversations.append(conversation.toJSON())
+        }
+        return JSON(jsonConversations)
     }
 }
