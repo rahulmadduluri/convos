@@ -15,6 +15,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     var containerView: MainConversationView?
     
     fileprivate var titleText: String = ""
+    fileprivate var latestTimestampServer: Int = 0
     
     // MARK: UIViewController
 
@@ -48,10 +49,15 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     func received(json: JSON) {
         switch json["type"].stringValue {
-        case "messageResponse":
+        case "pullMessagesResponse":
             let dataJson: JSON = json["data"]
-            if let messageResponse = MessageResponse(json: dataJson) {
-                received(response: messageResponse)
+            if let pullMessagesResponse = PullMessagesResponse(json: dataJson) {
+                received(response: pullMessagesResponse)
+            }
+        case "pushMessageResponse":
+            let dataJson: JSON = json["data"]
+            if let pushMessageResponse = PushMessageResponse(json: dataJson) {
+                received(response: pushMessageResponse)
             }
         default:
             break
@@ -77,8 +83,16 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         messageTableVC.messageTableVCDelegate = self
     }
     
-    fileprivate func received(response: MessageResponse) {
-        
+    fileprivate func received(response: PullMessagesResponse) {
+        if let messages = response.messages {
+            // create array of MessageViewData from messages and send
+            // find latest server timestamp in messages and store that in memory as latest timestamp
+        }
     }
     
+    fileprivate func received(response: PushMessageResponse) {
+        if let messages = response.message {
+            // create MessageViewData from Message and addMessage
+        }
+    }
 }

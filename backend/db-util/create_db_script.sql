@@ -1,20 +1,20 @@
 CREATE TABLE IF NOT EXISTS users (
-	id 				int 			NOT NULL AUTO_INCREMENT,
-	uuid			varchar(36)		NOT NULL,
-	name 			varchar(200)	NOT NULL,
-	mobile_number	varchar(36)		NOT NULL,
-	photo_url 		varchar(200),
-	date_created	timestamp		NOT NULL,
+	id 							int 			NOT NULL AUTO_INCREMENT,
+	uuid						varchar(36)		NOT NULL,
+	username 					varchar(200)	NOT NULL,
+	mobile_number				varchar(36)		NOT NULL,
+	photo_url 					varchar(200),
+	created_server_timestamp	timestamp		NOT NULL,
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS tags (
-	id 				int 			NOT NULL AUTO_INCREMENT,
-	uuid			varchar(36)		NOT NULL,
-	name 			varchar(200)	NOT NULL,
-	is_topic		boolean			NOT NULL,
-	date_created	timestamp		NOT NULL,
+	id 							int 			NOT NULL AUTO_INCREMENT,
+	uuid						varchar(36)		NOT NULL,
+	name 						varchar(200)	NOT NULL,
+	is_topic					boolean			NOT NULL,
+	created_server_timestamp	timestamp		NOT NULL,
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id)
 );
@@ -22,12 +22,9 @@ CREATE TABLE IF NOT EXISTS tags (
 CREATE TABLE IF NOT EXISTS messages (
 	id  			int 			NOT NULL AUTO_INCREMENT,
 	uuid			varchar(36)		NOT NULL,
-	is_text 		boolean			DEFAULT true,
 	full_text		varchar(1000),
-	is_link			boolean			DEFAULT false,
-	link 			varchar(200),
 	upvotes			int 			DEFAULT 0,
-	date_created	timestamp		NOT NULL,
+	created_server_timestamp	timestamp		NOT NULL,
 	sender_id		int 			NOT NULL,
 	parent_id		int,
 	UNIQUE KEY (uuid),
@@ -40,7 +37,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 	id  			int 			NOT NULL AUTO_INCREMENT,
 	uuid			varchar(36)		NOT NULL,
 	photo_url 		varchar(200),
-	date_created	timestamp		NOT NULL,
+	created_server_timestamp	timestamp		NOT NULL,
 	topic_tag_id	int 			NOT NULL,
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id),
