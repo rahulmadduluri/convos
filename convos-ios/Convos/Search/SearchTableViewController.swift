@@ -15,6 +15,11 @@ struct SearchViewData: CollapsibleTableViewData, Equatable {
     var isCollapsed: Bool
     var children: [CollapsibleTableViewData]
     
+    init(conversation: Conversation) {
+        self.photo = nil
+        self.text = conversation
+    }
+    
     init(photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = true) {
         self.photo = photo
         self.text = text
@@ -32,7 +37,8 @@ protocol SearchTableVCProtocol {
     func reloadSearchResultsData()
 }
 
-protocol SearchTableVCDelegate: CollapsibleTableVCDelegate, SearchComponentDelegate {
+protocol SearchTableVCDelegate: CollapsibleTableVCDelegate {
+    func filteredViewData() -> [SearchViewData]
 }
 
 class SearchTableViewController: CollapsibleTableViewController, SearchTableVCProtocol {

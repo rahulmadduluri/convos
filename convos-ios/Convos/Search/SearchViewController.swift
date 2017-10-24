@@ -16,10 +16,6 @@ protocol SearchVCDelegate {
     func keyboardWillHide()
 }
 
-protocol SearchComponentDelegate {
-    var filteredResults: [SearchViewData] { get set }
-}
-
 class SearchViewController: UIViewController, SocketManagerDelegate, SearchTableVCDelegate, SearchTextFieldDelegate {
 
     var containerView: MainSearchView? = nil
@@ -28,8 +24,8 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     let socketManager: SocketManager = SocketManager.sharedInstance
     
-    var filteredResults: [SearchViewData] = []
-    fileprivate var allCachedResults: [SearchViewData] = []
+    var filteredResults: [Conversation] = []
+    fileprivate var allCachedResults: [Conversation] = []
         
     // MARK: UIViewController
     
@@ -93,6 +89,15 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         if let searchViewData = viewData as? SearchViewData {
             searchVCDelegate?.resultSelected(result: searchViewData)
         }
+    }
+    
+    func filteredViewData() -> [SearchViewData] {
+        var filteredViewData: [SearchViewData] = []
+        for var result in filteredResults {
+            var viewData = SearchViewData(conversation: result)
+            filteredViewData.append(viewData)
+        }
+        return filteredViewData
     }
     
     // MARK: SearchTextFieldDelegate

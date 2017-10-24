@@ -1,6 +1,6 @@
 package models
 
-import "time"
+import ()
 
 type User struct {
 	id                       int
@@ -8,7 +8,7 @@ type User struct {
 	username                 string
 	mobile_number            string
 	photo_url                *string
-	created_timestamp_server time.Time
+	created_timestamp_server int64
 }
 
 type Tag struct {
@@ -16,7 +16,7 @@ type Tag struct {
 	uuid                     string
 	name                     string
 	is_topic                 bool
-	created_timestamp_server time.Time
+	created_timestamp_server int64
 }
 
 type Message struct {
@@ -24,7 +24,7 @@ type Message struct {
 	uuid                     string
 	full_text                *string
 	upvotes                  int
-	created_timestamp_server time.Time
+	created_timestamp_server int64
 	parent_uuid              int
 }
 
@@ -32,6 +32,6 @@ type Conversation struct {
 	id                       int
 	uuid                     string
 	photo_url                *string
-	created_timestamp_server time.Time
+	created_timestamp_server int64
 	topic_tag_uuid           int
 }

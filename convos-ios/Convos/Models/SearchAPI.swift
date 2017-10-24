@@ -32,32 +32,43 @@ class SearchRequest: NSObject, Model {
 
 class SearchResponse: NSObject, Model {
     // vars
-    let conversations: [Conversation]
+    let conversations: [Conversation]?
+    let errorMsg: String?
     
     // init
-    init (conversations: [Conversation]) {
-        self.conversations = conversations
-    }
-    
     required init?(json: JSON) {
-        guard let conversationsJSON = json.array else {
-            return nil
+        guard let dict = json.dictionary else {
+            conversations = nil
+            errorMsg = nil
+            return
         }
-        var tempConversations: [Conversation] = []
-        for conversationJSON in conversationsJSON {
-            if let conversation = Conversation(json: conversationJSON) {
-                tempConversations.append(conversation)
+        if let conversationsJSON = dict["conversations"]?.array {
+            var tempConversations: [Conversation] = []
+            for conversationJSON in conversationsJSON {
+                if let conversation = Conversation(json: conversationJSON) {
+                    tempConversations.append(conversation)
+                }
             }
+            conversations = tempConversations
+        } else {
+            conversations = nil
         }
-        conversations = tempConversations
+        errorMsg = dict["errorMsg"]?.string
     }
     
     // Model
     func toJSON() -> JSON {
-        var jsonConversations: [JSON] = []
-        for conversation in conversations {
-            jsonConversations.append(conversation.toJSON())
+        var dict: [String: JSON] = [:]
+        if let conversations = conversations {
+            var conversationsJSON: [JSON] = []
+            for conversation in conversations {
+                conversationsJSON.append(conversation.toJSON())
+            }
+            dict["conversations"] = JSON(conversationsJSON)
         }
-        return JSON(jsonConversations)
+        if let errorMsg = errorMsg {
+            dict["errorMsg"] = JSON(errorMsg)
+        }
+        return JSON(dict)
     }
 }

@@ -1,11 +1,12 @@
 package db
 
 import (
-	_ "github.com/go-sql-driver/mysql"
+	"log"
+
+	"models"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/nleof/goyesql"
-	"log"
-	"models"
 )
 
 var db *sqlx.DB
@@ -25,15 +26,15 @@ func init() {
 	queries = goyesql.MustParseFile("db/queries.sql")
 }
 
-func getConversations(user_id int) []models.Conversations {
+func getConversations(user_id int) []models.Conversation {
 	rows, err := db.Queryx(queries["findConversationsByUserId"], user_id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	var objs []models.Conversations
+	var objs []models.Conversation
 	for rows.Next() {
-		var obj models.Conversations
+		var obj models.Conversation
 		err := rows.StructScan(&obj)
 		if err != nil {
 			log.Fatal(err)

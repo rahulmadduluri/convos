@@ -54,6 +54,10 @@ class User: NSObject, Model {
     
 }
 
+func ==(lhs: User, rhs: User) -> Bool {
+    return lhs.uuid == rhs.uuid
+}
+
 // MARK: Message Models
 
 class Message: NSObject, Model {
@@ -122,6 +126,7 @@ class Conversation: NSObject, Model {
     let createdTimestampServer: Int
     let updatedTimestampServer: Int
     let topicTagUUID: String
+    let title: String // should match title in topic tag
     
     // init
     required init?(json: JSON) {
@@ -129,13 +134,15 @@ class Conversation: NSObject, Model {
             let uuidJSON = dictionary["uuid"],
             let createdTimestampServerJSON = dictionary["createdTimestampServer"],
             let updatedTimestampServerJSON = dictionary["updatedTimestampServer"],
-            let topicTagUUIDJSON = dictionary["topicTagUUID"] else {
+            let topicTagUUIDJSON = dictionary["topicTagUUID"],
+            let titleJSON = dictionary["title"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         createdTimestampServer = createdTimestampServerJSON.intValue
         updatedTimestampServer = updatedTimestampServerJSON.intValue
         topicTagUUID = topicTagUUIDJSON.stringValue
+        title = titleJSON.stringValue
         photoURL = dictionary["photoURL"]?.stringValue
     }
     
@@ -147,6 +154,10 @@ class Conversation: NSObject, Model {
         }
         return JSON(dict)
     }
+}
+
+func ==(lhs: Message, rhs: Message) -> Bool {
+    return lhs.uuid == rhs.uuid
 }
 
 // MARK: Tag Model
@@ -180,4 +191,8 @@ class Tag: NSObject, Model {
         return JSON(dict)
     }
     
+}
+
+func ==(lhs: Tag, rhs: Tag) -> Bool {
+    return lhs.uuid == rhs.uuid
 }
