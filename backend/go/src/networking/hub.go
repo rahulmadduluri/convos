@@ -55,7 +55,7 @@ func (h *hub) Run() {
 // send packet to client with given UUID
 func (h *hub) Send(packet Packet, uuid uuid.UUID) error {
 	if recvClient, ok := h.clients[uuid]; ok {
-		recvClient.Send(packet)
+		recvClient.Send(&packet)
 		return nil
 	} else {
 		errText := "failed to send packet to uuid " + uuid.String()

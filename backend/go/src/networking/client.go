@@ -1,15 +1,26 @@
 package networking
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"api"
+	"models"
 
 	"encoding/json"
 
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
+)
+
+const (
+	_searchRequest        = "SearchRequest"
+	_searchResponse       = "SearchRequest"
+	_pullMessagesRequest  = "PullMessagesRequest"
+	_pullMessagesResponse = "PullMessagesResponse"
+	_pushMessageRequest   = "PushMessageRequest"
+	_pushMessageResponse  = "PushMessageResponse"
 )
 
 type Packet struct {
@@ -24,7 +35,7 @@ type Client interface {
 	GetSocket() *websocket.Conn
 	RunRead(h Hub)
 	RunWrite(h Hub)
-	Send(packet Packet)
+	Send(packet *Packet)
 	Close()
 }
 
@@ -61,29 +72,26 @@ func (c *client) RunRead(h Hub) {
 			fmt.Println("Couldn't unmarshall packet")
 			continue
 		}
-		var serverTimestamp time.Time
-		serverTimestamp = time.Now()
-		packet.ServerTimestamp = &serverTimestamp
-
-		//store packet data
 
 		switch packet.Type {
-		case "SearchRequest":
-			var searchRequest api.SearchRequest
-			err = json.Unmarshal(packet.Data, &searchRequest)
-			api.RecvSearchRequest(searchRequest)
-		case "SearchResponse":
-			var searchResponse api.SearchResponse
-			err = json.Unmarshal(packet.Data, &searchResponse)
-			api.RecvSearchResponse(searchResponse)
-		case "PullMessagesRequest":
-		case "PullMessagesResponse":
-		case "PushMessageRequest":
-		case "PushMessageResponse":
-		}
-		if err != nil {
-			fmt.Println("Couldn't unmarshall packet into its type")
-			continue
+		case _searchRequest:
+			searchPacket, err := requestToPacket(packet.Data, _searchRequest)
+			if err != nil {
+				fmt.Println(err)
+			}
+			c.Send(searchPacket)
+		case _pullMessagesRequest:
+			pullMessagesPacket, err := requestToPacket(packet.Data, _pullMessagesRequest)
+			if err != nil {
+				fmt.Println(err)
+			}
+			c.Send(pullMessagesPacket)
+		case _pushMessageRequest:
+			pushMessagePacket, err := requestToPacket(packet.Data, _pushMessageRequest)
+			if err != nil {
+				fmt.Println(err)
+			}
+			c.Send(pushMessagePacket)
 		}
 	}
 }
@@ -113,11 +121,62 @@ func (c *client) GetSocket() *websocket.Conn {
 	return c.socket
 }
 
-func (c *client) Send(packet Packet) {
-	c.sendQueue <- packet
+func (c *client) Send(packet *Packet) {
+	c.sendQueue <- *packet
 }
 
 func (c *client) Close() {
 	close(c.sendQueue)
 	c.socket.Close()
+}
+
+func requestToPacket(data json.RawMessage, apiType string) (*Packet, error) {
+	errMsg := "Failed to turn api request: " + apiType + " into a Packet"
+	err := errors.New(errMsg)
+	var res models.Model
+
+	switch apiType {
+	case _searchRequest:
+		var searchRequest api.SearchRequest
+		err = json.Unmarshal(data, &searchRequest)
+		if err != nil {
+			return nil, err
+		}
+		res, err = api.Search(searchRequest)
+		if err != nil {
+			return nil, err
+		}
+	case _pullMessagesRequest:
+		var pullMessagesRequest api.PullMessagesRequest
+		err = json.Unmarshal(data, &pullMessagesRequest)
+		if err != nil {
+			return nil, err
+		}
+		res, err = api.PullMessages(pullMessagesRequest)
+		if err != nil {
+			return nil, err
+		}
+	case _pushMessageRequest:
+		var pushMessageRequest api.PushMessageRequest
+		err = json.Unmarshal(data, &pushMessageRequest)
+		if err != nil {
+			return nil, err
+		}
+		res, err = api.PushMessage(pushMessageRequest)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	serverTimestamp := time.Now()
+	responseData, err := json.Marshal(res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Packet{
+		Type:            apiType,
+		ServerTimestamp: &serverTimestamp,
+		Data:            responseData,
+	}, nil
 }
