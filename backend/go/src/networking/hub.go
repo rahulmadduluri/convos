@@ -20,6 +20,7 @@ type Hub interface {
 // keeps track of connections/disconnections
 type hub struct {
 	clients    map[uuid.UUID]Client
+	users      map[uuid.UUID]Client
 	register   chan Client
 	unregister chan Client
 }
@@ -39,12 +40,12 @@ func (h *hub) Run() {
 		select {
 		case client := <-h.register:
 			h.clients[client.GetUUID()] = client
-			createdMsg, _ := json.Marshal("socket created for client")
+			createdMsg, _ := json.Marshal("Client Registered")
 			packet := Packet{Data: createdMsg}
 			h.Send(packet, client.GetUUID())
 		case client := <-h.unregister:
 			if _, ok := h.clients[client.GetUUID()]; ok {
-				client.CloseSendQueue()
+				client.Close()
 				delete(h.clients, client.GetUUID())
 			}
 		}

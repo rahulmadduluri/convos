@@ -44,6 +44,7 @@ func createWebsocket(res http.ResponseWriter, req *http.Request) {
 	// Upgrade HTTP request handler to a websocket
 	ws, err := upgrader.Upgrade(res, req, nil)
 	if err != nil {
+		fmt.Println("Failed to upgrade to websocket", err)
 		http.NotFound(res, req)
 		return
 	}

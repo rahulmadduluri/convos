@@ -1,6 +1,7 @@
 package networking
 
 import (
+	"fmt"
 	"time"
 
 	"api"
@@ -24,7 +25,7 @@ type Client interface {
 	RunRead(h Hub)
 	RunWrite(h Hub)
 	Send(packet Packet)
-	CloseSendQueue()
+	Close()
 }
 
 type client struct {
@@ -46,22 +47,19 @@ func NewClient(ws *websocket.Conn) Client {
 func (c *client) RunRead(h Hub) {
 	defer func() {
 		h.Unregister(c)
-		c.socket.Close()
 	}()
 
 	for {
 		_, data, err := c.socket.ReadMessage()
 		if err != nil {
-			h.Unregister(c)
-			c.socket.Close()
+			fmt.Println("Socket ended")
 			break
 		}
 		var packet Packet
 		err = json.Unmarshal(data, &packet)
 		if err != nil {
-			h.Unregister(c)
-			c.socket.Close()
-			break
+			fmt.Println("Couldn't unmarshall packet")
+			continue
 		}
 		var serverTimestamp time.Time
 		serverTimestamp = time.Now()
@@ -84,9 +82,8 @@ func (c *client) RunRead(h Hub) {
 		case "PushMessageResponse":
 		}
 		if err != nil {
-			h.Unregister(c)
-			c.socket.Close()
-			break
+			fmt.Println("Couldn't unmarshall packet into its type")
+			continue
 		}
 	}
 }
@@ -94,19 +91,17 @@ func (c *client) RunRead(h Hub) {
 // Write loop
 func (c *client) RunWrite(h Hub) {
 	defer func() {
-		c.socket.Close()
+		h.Unregister(c)
 	}()
 
 	for {
-		select {
-		case packet, ok := <-c.sendQueue:
-			if !ok {
-				c.socket.WriteMessage(websocket.CloseMessage, []byte{})
-				return
-			}
-
-			c.socket.WriteJSON(packet)
+		packet, ok := <-c.sendQueue
+		if !ok {
+			fmt.Println("Failed to pull message from send queue")
+			break
 		}
+
+		c.socket.WriteJSON(packet)
 	}
 }
 
@@ -122,6 +117,7 @@ func (c *client) Send(packet Packet) {
 	c.sendQueue <- packet
 }
 
-func (c *client) CloseSendQueue() {
+func (c *client) Close() {
 	close(c.sendQueue)
+	c.socket.Close()
 }
