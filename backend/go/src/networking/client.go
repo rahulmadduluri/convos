@@ -1,7 +1,6 @@
 package networking
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -66,6 +65,7 @@ func (c *client) RunRead(h Hub) {
 			fmt.Println("Socket ended")
 			break
 		}
+
 		var packet Packet
 		err = json.Unmarshal(data, &packet)
 		if err != nil {
@@ -73,29 +73,13 @@ func (c *client) RunRead(h Hub) {
 			continue
 		}
 
-		switch packet.Type {
-		case _searchRequest:
-			searchPacket, err := requestToPacket(packet.Data, _searchRequest)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			c.Send(searchPacket)
-		case _pullMessagesRequest:
-			pullMessagesPacket, err := requestToPacket(packet.Data, _pullMessagesRequest)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			c.Send(pullMessagesPacket)
-		case _pushMessageRequest:
-			pushMessagePacket, err := requestToPacket(packet.Data, _pushMessageRequest)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			c.Send(pushMessagePacket)
+		res, err := performAPI(packet.Data, packet.Type)
+		if err != nil {
+			fmt.Println(err)
+			continue
 		}
+
+		c.Send(res)
 	}
 }
 
@@ -133,9 +117,8 @@ func (c *client) Close() {
 	c.socket.Close()
 }
 
-func requestToPacket(data json.RawMessage, apiType string) (*Packet, error) {
-	errMsg := "Failed to turn api request: " + apiType + " into a Packet"
-	err := errors.New(errMsg)
+func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
+	var err error
 	var res models.Model
 
 	switch apiType {
