@@ -78,18 +78,21 @@ func (c *client) RunRead(h Hub) {
 			searchPacket, err := requestToPacket(packet.Data, _searchRequest)
 			if err != nil {
 				fmt.Println(err)
+				continue
 			}
 			c.Send(searchPacket)
 		case _pullMessagesRequest:
 			pullMessagesPacket, err := requestToPacket(packet.Data, _pullMessagesRequest)
 			if err != nil {
 				fmt.Println(err)
+				continue
 			}
 			c.Send(pullMessagesPacket)
 		case _pushMessageRequest:
 			pushMessagePacket, err := requestToPacket(packet.Data, _pushMessageRequest)
 			if err != nil {
 				fmt.Println(err)
+				continue
 			}
 			c.Send(pushMessagePacket)
 		}
