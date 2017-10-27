@@ -17,7 +17,7 @@ struct SearchViewData: CollapsibleTableViewData, Equatable {
     
     init(conversation: Conversation) {
         self.photo = nil
-        self.text = conversation
+        self.text = conversation.title
     }
     
     init(photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = true) {

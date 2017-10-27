@@ -35,26 +35,21 @@ class PullMessagesRequest: NSObject, Model {
 class PullMessagesResponse: NSObject, Model {
     
     // vars
-    let messages: [Message]?
+    var messages: [Message] = []
     let errorMsg: String?
     
     // init
     required init?(json: JSON) {
         guard let dict = json.dictionary else {
-            messages = nil
             errorMsg = nil
             return
         }
         if let messagesJSON = dict["messages"]?.array {
-            var tempMessages: [Message] = []
             for messageJSON in messagesJSON {
                 if let message = Message(json: messageJSON) {
-                    tempMessages.append(message)
+                    messages.append(message)
                 }
             }
-            messages = tempMessages
-        } else {
-            messages = nil
         }
         errorMsg = dict["errorMsg"]?.string
     }
@@ -62,13 +57,11 @@ class PullMessagesResponse: NSObject, Model {
     // Model
     func toJSON() -> JSON {
         var dict: [String: JSON] = [:]
-        if let messages = messages {
-            var jsonMessages: [JSON] = []
-            for message in messages {
-                jsonMessages.append(message.toJSON())
-            }
-            dict["messages"] = JSON(jsonMessages)
+        var jsonMessages: [JSON] = []
+        for message in messages {
+            jsonMessages.append(message.toJSON())
         }
+        dict["messages"] = JSON(jsonMessages)
         if let errorMsg = errorMsg {
             dict["errorMsg"] = JSON(errorMsg)
         }
