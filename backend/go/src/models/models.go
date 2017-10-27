@@ -8,35 +8,35 @@ type Model interface {
 }
 
 type User struct {
-	id                       int
-	uuid                     string
-	username                 string
-	mobile_number            string
-	photo_url                *string
-	created_timestamp_server int64
+	ID                       int
+	UUID                     string
+	Username                 string
+	Mobile_number            string
+	Photo_url                *string
+	Created_timestamp_server int
 }
 
 type Tag struct {
-	id                       int
-	uuid                     string
-	name                     string
-	is_topic                 bool
-	created_timestamp_server int64
+	ID                       int
+	UUID                     string
+	Name                     string
+	Is_topic                 bool
+	Created_timestamp_server int
 }
 
 type Message struct {
-	id                       int
-	uuid                     string
-	full_text                *string
-	upvotes                  int
-	created_timestamp_server int64
-	parent_uuid              int
+	ID                       int
+	UUID                     string
+	Full_text                *string
+	Upvotes                  int
+	Created_timestamp_server int
+	Parent_uuid              int
 }
 
 type Conversation struct {
-	id                       int
-	uuid                     string
-	photo_url                *string
-	created_timestamp_server int64
-	topic_tag_uuid           int
+	ID                       int
+	UUID                     string
+	Photo_url                *string
+	Created_timestamp_server int
+	Topic_tag_uuid           int
 }

@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	// "db"
-	// "models"
+	"db"
 	"networking"
 
 	"net/http"
@@ -21,21 +20,20 @@ var upgrader = websocket.Upgrader{
 var hub = networking.NewHub()
 
 func main() {
-	// database := db.GetDB()
-	// defer database.Close()
 	// db.Queryx()
 	// Create a simple file server
-
-	fmt.Println("Start application")
+	log.SetFlags(0 | log.Lshortfile)
+	log.Println("Start application")
 	go hub.Run()
 
 	http.HandleFunc("/ws", createWebsocket)
+	log.Println("call", *db.GetDbHandler().GetUsersByName("R")[0].Photo_url)
 
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
-		fmt.Println("ListenAndServe: ", err)
+		log.Println("ListenAndServe: ", err)
 	} else {
-		fmt.Println("http server started on :8000")
+		log.Println("http server started on :8000")
 	}
 }
 
@@ -44,7 +42,7 @@ func createWebsocket(res http.ResponseWriter, req *http.Request) {
 	// Upgrade HTTP request handler to a websocket
 	ws, err := upgrader.Upgrade(res, req, nil)
 	if err != nil {
-		fmt.Println("Failed to upgrade to websocket", err)
+		log.Println("Failed to upgrade to websocket", err)
 		http.NotFound(res, req)
 		return
 	}
