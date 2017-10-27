@@ -1,10 +1,12 @@
 package api
 
 import (
-	"fmt"
-
+	"db"
+	"log"
 	"models"
 )
+
+var dbh = db.GetDbHandler()
 
 type SearchRequest struct {
 	SenderUUID string
@@ -18,8 +20,10 @@ type SearchResponse struct {
 
 func Search(req SearchRequest) (SearchResponse, error) {
 	// run SQL query with request to get correct response data
-	fmt.Println(req)
+	log.Println(req)
+	name := req.SearchText
+	// dbh.GetConversationsByName(name), not yet implemented
 	return SearchResponse{
-		Conversations: []models.Conversation{},
+		Users: []models.Conversation{},
 	}, nil
 }

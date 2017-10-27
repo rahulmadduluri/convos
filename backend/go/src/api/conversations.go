@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fmt"
+	"log"
 
 	"models"
 )
@@ -29,7 +29,7 @@ type PushMessageResponse struct {
 
 func PullMessages(req PullMessagesRequest) (PullMessagesResponse, error) {
 	// run SQL query with request to get correct response data
-	fmt.Println(req)
+	log.Println(req)
 	return PullMessagesResponse{
 		Messages: []models.Message{},
 	}, nil
@@ -37,6 +37,6 @@ func PullMessages(req PullMessagesRequest) (PullMessagesResponse, error) {
 
 func PushMessage(req PushMessageRequest) (PushMessageResponse, error) {
 	// run SQL query with request to get correct response data
-	fmt.Println(req)
+	log.Println(req)
 	return PushMessageResponse{}, nil
 }

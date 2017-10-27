@@ -1,7 +1,7 @@
 package networking
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"api"
@@ -62,20 +62,20 @@ func (c *client) RunRead(h Hub) {
 	for {
 		_, data, err := c.socket.ReadMessage()
 		if err != nil {
-			fmt.Println("Socket ended")
+			log.Println("Socket ended")
 			break
 		}
 
 		var packet Packet
 		err = json.Unmarshal(data, &packet)
 		if err != nil {
-			fmt.Println("Couldn't unmarshall packet")
+			log.Println("Couldn't unmarshall packet")
 			continue
 		}
 
 		res, err := performAPI(packet.Data, packet.Type)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			continue
 		}
 
@@ -92,7 +92,7 @@ func (c *client) RunWrite(h Hub) {
 	for {
 		packet, ok := <-c.sendQueue
 		if !ok {
-			fmt.Println("Failed to pull message from send queue")
+			log.Println("Failed to pull message from send queue")
 			break
 		}
 
