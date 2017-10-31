@@ -10,6 +10,11 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
+
+protocol SearchUIDelegate {
+    func filteredViewData() -> [SearchViewData]
+}
+
 protocol SearchVCDelegate {
     func resultSelected(result: SearchViewData)
     func keyboardWillShow()
@@ -93,9 +98,15 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     func filteredViewData() -> [SearchViewData] {
         var filteredViewData: [SearchViewData] = []
-        for var result in filteredResults {
-            var viewData = SearchViewData(conversation: result)
-            filteredViewData.append(viewData)
+        for result in filteredResults {
+            let viewData = SearchViewData(conversation: result)
+            var hasParent = false
+            for data in filteredViewData {
+                
+            }
+            if !hasParent {
+                filteredViewData.append(viewData)
+            }
         }
         return filteredViewData
     }
@@ -193,7 +204,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
             
             var foundMatchInParent = false
             
-            let parentFilterRange = (parentResult.text as NSString).range(of: searchText, options: [.caseInsensitive])
+            let parentFilterRange = (parentResult.title as NSString).range(of: searchText, options: [.caseInsensitive])
             if parentFilterRange.location != NSNotFound {
                 foundMatchInParent = true
             }

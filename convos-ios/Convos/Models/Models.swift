@@ -11,20 +11,21 @@ import SwiftyJSON
 
 // MARK: Model Protocols
 
-protocol Model {
+protocol Model {}
+
+protocol APIModel {
     func toJSON() -> JSON
     init?(json: JSON)
 }
 
 // MARK: User Models
 
-class User: NSObject, Model {
+class User: NSObject, APIModel {
     
     // vars
     let uuid: String
     let username: String
     let mobileNumber: String
-    let createdTimestampServer: Int
     let photoURL: String?
     
     // init
@@ -32,20 +33,18 @@ class User: NSObject, Model {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["uuid"],
             let usernameJSON = dictionary["username"],
-            let mobileNumberJSON = dictionary["mobileNumber"],
-            let createdTimestampServerJSON = dictionary["createdTimestampServer"] else {
+            let mobileNumberJSON = dictionary["mobileNumber"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         username = usernameJSON.stringValue
         mobileNumber = mobileNumberJSON.stringValue
-        createdTimestampServer = createdTimestampServerJSON.intValue
         photoURL = dictionary["photoURL"]?.string
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["uuid": JSON(uuid), "username": JSON(username), "mobileNumber": JSON(mobileNumber), "createdTimestampServer": JSON(createdTimestampServer)]
+        var dict: [String: JSON] = ["uuid": JSON(uuid), "username": JSON(username), "mobileNumber": JSON(mobileNumber)]
         if let photoURL = photoURL {
             dict["photoURL"] = JSON(photoURL)
         }
@@ -60,7 +59,7 @@ func ==(lhs: User, rhs: User) -> Bool {
 
 // MARK: Message Models
 
-class Message: NSObject, Model {
+class Message: NSObject, APIModel {
 
     // vars
     let uuid: String
@@ -68,7 +67,6 @@ class Message: NSObject, Model {
     let fullText: String?
     let createdTimestampServer: Int
     let isTopLevel: Bool
-    let upvotes: Int
     let children: [Message]
 
     // init
@@ -77,15 +75,13 @@ class Message: NSObject, Model {
             let uuidJSON = dictionary["uuid"],
             let senderUUIDJSON = dictionary["senderUUID"],
             let createdTimestampServerJSON = dictionary["createdTimestampServer"],
-            let isTopLevelJSON = dictionary["isTopLevel"],
-            let upvotesJSON = dictionary["upvotes"] else {
+            let isTopLevelJSON = dictionary["isTopLevel"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         senderUUID = senderUUIDJSON.stringValue
         createdTimestampServer = createdTimestampServerJSON.intValue
         isTopLevel = isTopLevelJSON.boolValue
-        upvotes = upvotesJSON.intValue
         fullText = dictionary["fullText"]?.string
         
         var tempChildren: [Message] = []
@@ -101,7 +97,7 @@ class Message: NSObject, Model {
         children = tempChildren
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
         var dict: [String: JSON] = ["uuid": JSON(uuid), "senderUUID": JSON(senderUUID), "createdTimestampServer": JSON(createdTimestampServer), "isTopLevel": JSON(isTopLevel)]
         if let text = fullText {
@@ -117,52 +113,57 @@ class Message: NSObject, Model {
     }
 }
 
+func ==(lhs: Message, rhs: Message) -> Bool {
+    return lhs.uuid == rhs.uuid
+}
+
 // MARK: Conversation Models
 
-class Conversation: NSObject, Model {
+class Conversation: NSObject, APIModel {
     // vars
     let uuid: String
-    let photoURL: String?
+    let groupUUID: String
     let createdTimestampServer: Int
     let updatedTimestampServer: Int
     let topicTagUUID: String
-    let title: String // should match title in topic tag
+    let title: String
+    let isDefault: Bool
     
     // init
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["uuid"],
+            let groupUUIDJSON = dictionary["groupUUID"],
             let createdTimestampServerJSON = dictionary["createdTimestampServer"],
             let updatedTimestampServerJSON = dictionary["updatedTimestampServer"],
             let topicTagUUIDJSON = dictionary["topicTagUUID"],
-            let titleJSON = dictionary["title"] else {
+            let titleJSON = dictionary["title"],
+            let isDefaultJSON = dictionary["isDefault"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
+        groupUUID = groupUUIDJSON.stringValue
         createdTimestampServer = createdTimestampServerJSON.intValue
         updatedTimestampServer = updatedTimestampServerJSON.intValue
         topicTagUUID = topicTagUUIDJSON.stringValue
         title = titleJSON.stringValue
-        photoURL = dictionary["photoURL"]?.stringValue
+        isDefault = isDefaultJSON.boolValue
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["uuid": JSON(uuid), "createdTimestampServer": JSON(createdTimestampServer), "updatedTimestampServer": JSON(updatedTimestampServer), "topicTagUUID": JSON(topicTagUUID)]
-        if let url = photoURL {
-            dict["photoURL"] = JSON(url)
-        }
+        var dict: [String: JSON] = ["uuid": JSON(uuid), "groupUUID": JSON(groupUUID), "createdTimestampServer": JSON(createdTimestampServer), "updatedTimestampServer": JSON(updatedTimestampServer), "topicTagUUID": JSON(topicTagUUID), "title": JSON(title), "isDefault": JSON(isDefault)]
         return JSON(dict)
     }
 }
 
-func ==(lhs: Message, rhs: Message) -> Bool {
+func ==(lhs: Conversation, rhs: Conversation) -> Bool {
     return lhs.uuid == rhs.uuid
 }
 
 // MARK: Tag Model
 
-class Tag: NSObject, Model {
+class Tag: NSObject, APIModel {
     
     // vars
     let uuid: String
@@ -194,5 +195,41 @@ class Tag: NSObject, Model {
 }
 
 func ==(lhs: Tag, rhs: Tag) -> Bool {
+    return lhs.uuid == rhs.uuid
+}
+
+// MARK: Group Model
+
+class Group: NSObject, APIModel {
+    
+    // vars
+    let uuid: String
+    let name: String
+    let photoURL: String?
+    
+    // init
+    required init?(json: JSON) {
+        guard let dictionary = json.dictionary,
+            let uuidJSON = dictionary["uuid"],
+            let nameJSON = dictionary["name"] else {
+                return nil
+        }
+        uuid = uuidJSON.stringValue
+        name = nameJSON.stringValue
+        photoURL = dictionary["photoURL"]?.string
+    }
+    
+    // Model
+    func toJSON() -> JSON {
+        var dict: [String: JSON] = ["uuid": JSON(uuid), "name": JSON(name)]
+        if let url = photoURL {
+            dict["photoURL"] = JSON(url)
+        }
+        return JSON(dict)
+    }
+    
+}
+
+func ==(lhs: Group, rhs: Group) -> Bool {
     return lhs.uuid == rhs.uuid
 }

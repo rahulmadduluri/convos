@@ -37,8 +37,7 @@ protocol SearchTableVCProtocol {
     func reloadSearchResultsData()
 }
 
-protocol SearchTableVCDelegate: CollapsibleTableVCDelegate {
-    func filteredViewData() -> [SearchViewData]
+protocol SearchTableVCDelegate: CollapsibleTableVCDelegate, SearchUIDelegate {
 }
 
 class SearchTableViewController: CollapsibleTableViewController, SearchTableVCProtocol {
@@ -57,19 +56,13 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.white
-        // Auto resizing the height of the cell
-//        tableView.estimatedSectionHeaderHeight = 44.0
-//        tableView.sectionHeaderHeight = 44.0
-//        tableView.estimatedRowHeight = 44.0
-//        tableView.rowHeight = 44.0
-        // Other table view config
         tableView.separatorStyle = .none
     }
     
     // MARK: SearchTableVCProtocol
     
     func reloadSearchResultsData() {
-        viewDataModels = searchTableVCDelegate?.filteredResults ?? []
+        viewDataModels = searchTableVCDelegate?.filteredViewData() ?? []
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }

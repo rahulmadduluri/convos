@@ -10,7 +10,7 @@
 
 import UIKit
 
-protocol SearchTextFieldDelegate: SearchComponentDelegate {
+protocol SearchTextFieldDelegate: SearchUIDelegate {
     func searchTextUpdated(searchText: String)
 }
 
@@ -147,7 +147,7 @@ class SearchTextField: UITextField {
     func textFieldDidEndEditingOnExit() {
         self.placeholderLabel?.text = nil
 
-        if let firstElement = searchTextFieldDelegate?.filteredResults.first {
+        if let firstElement = searchTextFieldDelegate?.filteredViewData().first {
             self.text = firstElement.text
         }
     }

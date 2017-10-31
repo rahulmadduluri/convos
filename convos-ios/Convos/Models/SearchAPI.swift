@@ -1,7 +1,7 @@
 import UIKit
 import SwiftyJSON
 
-class SearchRequest: NSObject, Model {
+class SearchRequest: NSObject, APIModel {
     
     // vars
     let senderUuid: String
@@ -30,7 +30,7 @@ class SearchRequest: NSObject, Model {
     }
 }
 
-class SearchResponse: NSObject, Model {
+class SearchResponse: NSObject, APIModel {
     // vars
     let conversations: [Conversation]?
     let errorMsg: String?

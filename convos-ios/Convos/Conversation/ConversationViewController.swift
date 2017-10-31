@@ -84,15 +84,11 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     fileprivate func received(response: PullMessagesResponse) {
-        if let messages = response.messages {
-            // create array of MessageViewData from messages and send
-            // find latest server timestamp in messages and store that in memory as latest timestamp
-        }
+        // create array of MessageViewData from messages and send
+        // find latest server timestamp in messages and store that in memory as latest timestamp
     }
     
     fileprivate func received(response: PushMessageResponse) {
-        if let messages = response.message {
-            // create MessageViewData from Message and addMessage
-        }
+        // create MessageViewData from Message and addMessage
     }
 }

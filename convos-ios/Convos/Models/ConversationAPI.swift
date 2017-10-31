@@ -3,7 +3,7 @@ import SwiftyJSON
 
 // MARK: Pull Messages
 
-class PullMessagesRequest: NSObject, Model {
+class PullMessagesRequest: NSObject, APIModel {
     
     // vars
     let conversationUUID: String
@@ -32,7 +32,7 @@ class PullMessagesRequest: NSObject, Model {
     }
 }
 
-class PullMessagesResponse: NSObject, Model {
+class PullMessagesResponse: NSObject, APIModel {
     
     // vars
     var messages: [Message] = []
@@ -71,7 +71,7 @@ class PullMessagesResponse: NSObject, Model {
 
 // MARK: Push Message
 
-class PushMessageRequest: NSObject, Model {
+class PushMessageRequest: NSObject, APIModel {
     
     // vars
     let conversationUUID: String
@@ -95,7 +95,7 @@ class PushMessageRequest: NSObject, Model {
     }
 }
 
-class PushMessageResponse: NSObject, Model {
+class PushMessageResponse: NSObject, APIModel {
     
     // vars
     let message: Message?

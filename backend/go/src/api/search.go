@@ -14,8 +14,25 @@ type SearchRequest struct {
 }
 
 type SearchResponse struct {
-	Conversations []models.Conversation
+	Conversations []ConversationResponse
 	ErrorMsg      *string
+}
+
+type ConversationResponse struct {
+	conversationUUID         string
+	photo_url                string
+	created_timestamp_server int
+	title                    string
+	groupUUID                string
+	isDefault                bool
+}
+
+type Conversation struct {
+	ID                       int
+	UUID                     string
+	Photo_url                *string
+	Created_timestamp_server int
+	Topic_tag_uuid           int
 }
 
 func Search(req SearchRequest) (SearchResponse, error) {
@@ -24,6 +41,6 @@ func Search(req SearchRequest) (SearchResponse, error) {
 	name := req.SearchText
 	// dbh.GetConversationsByName(name), not yet implemented
 	return SearchResponse{
-		Users: []models.Conversation{},
+		Conversations: []ConversationResponse{},
 	}, nil
 }

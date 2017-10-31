@@ -28,7 +28,6 @@ type Message struct {
 	ID                       int
 	UUID                     string
 	Full_text                *string
-	Upvotes                  int
 	Created_timestamp_server int
 	Parent_uuid              int
 }
@@ -36,7 +35,14 @@ type Message struct {
 type Conversation struct {
 	ID                       int
 	UUID                     string
-	Photo_url                *string
 	Created_timestamp_server int
+	Updated_timestamp_server int
 	Topic_tag_uuid           int
+}
+
+type Groups struct {
+	ID        int
+	UUID      string
+	Name      string
+	Photo_url *string
 }

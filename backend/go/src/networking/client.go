@@ -15,7 +15,7 @@ import (
 
 const (
 	_searchRequest        = "SearchRequest"
-	_searchResponse       = "SearchRequest"
+	_searchResponse       = "SearchResponse"
 	_pullMessagesRequest  = "PullMessagesRequest"
 	_pullMessagesResponse = "PullMessagesResponse"
 	_pushMessageRequest   = "PushMessageRequest"
