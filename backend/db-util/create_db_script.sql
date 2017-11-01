@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS group_users (
 CREATE TABLE IF NOT EXISTS group_conversations (
 	group_id 		int			NOT NULL,
 	conversation_id	int			NOT NULL,
-	isDefault		boolean		DEFAULT 1,
+	is_default		boolean		DEFAULT 1,
 	FOREIGN KEY (group_id) REFERENCES groups (id),
 	FOREIGN KEY (conversation_id) REFERENCES conversations (id)
 );

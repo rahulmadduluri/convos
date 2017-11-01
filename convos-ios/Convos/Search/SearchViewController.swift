@@ -29,9 +29,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     let socketManager: SocketManager = SocketManager.sharedInstance
     
-    var filteredResults: [Conversation] = []
-    fileprivate var allCachedResults: [Conversation] = []
-        
+    var filteredConversations: [Conversation] = []
+    fileprivate var allCachedConversations: [String: Conversation] = [:]
+    
     // MARK: UIViewController
     
     override func viewDidLoad() {
@@ -98,15 +98,28 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     func filteredViewData() -> [SearchViewData] {
         var filteredViewData: [SearchViewData] = []
-        for result in filteredResults {
-            let viewData = SearchViewData(conversation: result)
-            var hasParent = false
-            for data in filteredViewData {
-                
+        var groupViewDataMap: [String: SearchViewData] = [:]
+        
+        // Add default conversations
+        for convo in filteredConversations {
+            if convo.isDefault {
+                let viewData = SearchViewData(photo: nil, text: convo.title)
+                groupViewDataMap[convo.groupUUID] = viewData
             }
-            if !hasParent {
-                filteredViewData.append(viewData)
+        }
+        
+        // Add non-default conversations as children
+        for convo in filteredConversations {
+            if !convo.isDefault {
+                if let _ = groupViewDataMap[convo.groupUUID] {
+                    let viewData = SearchViewData(photo: nil, text: convo.title, isTopLevel: false)
+                    groupViewDataMap[convo.groupUUID]?.children.append(viewData)
+                }
             }
+        }
+        
+        for d in groupViewDataMap.values {
+            filteredViewData.append(d)
         }
         return filteredViewData
     }
@@ -115,10 +128,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     func searchTextUpdated(searchText: String) {
         if searchText.isEmpty {
-            filteredResults = Array(allCachedResults.prefix(3))
+            filteredConversations = Array(allCachedConversations.values.prefix(7))
         } else {
             localSearch(searchText: searchText)
-            remoteSearch(searchText: searchText)
+            remoteSearch(searchText: searchText) // upon completion reload search results data
         }
         searchTableVC.reloadSearchResultsData()
     }
@@ -148,14 +161,11 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     // MARK: Private
     
     fileprivate func received(response: SearchResponse) {
-        /*
-        let res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul")
-        let res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful")
-        let res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia")
-        */
-        // convert response into SearchViewData
-        // append SearchViewData to All Cached Results
-        // if there is a collision, replace cached result with search view
+        if let conversations = response.conversations {
+            for convo in conversations {
+                allCachedConversations[convo.uuid] = convo
+            }
+        }
         containerView?.searchTextField.stopLoadingIndicator()
     }
     
@@ -170,20 +180,18 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         
         searchForResults("")
         
-        // test
-        var res1 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "Rahul", isCollapsed: false)
-        var res2 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "Praful", isCollapsed: false)
-        var res3 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "Reia", isCollapsed: false)
-        let res4 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "#A", isTopLevel: false)
-        let res5 = SearchViewData(photo: UIImage(named: "praful_test_pic"), text: "#B", isTopLevel: false)
-        let res6 = SearchViewData(photo: UIImage(named: "reia_test_pic"), text: "#Scrub", isTopLevel: false)
-        let res7 = SearchViewData(photo: UIImage(named: "rahul_test_pic"), text: "#C", isTopLevel: false)
-        res1.children.append(res4)
-        res1.children.append(res7)
-        res2.children.append(res5)
-        res3.children.append(res6)
-        allCachedResults = [res1, res2, res3]
-        filteredResults = allCachedResults
+        allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", title: "Rahul", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", title: "Praful", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["3"] = Conversation(uuid: "3", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", title: "Reia", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["4"] = Conversation(uuid: "4", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", title: "#A", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["5"] = Conversation(uuid: "5", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", title: "#B", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["6"] = Conversation(uuid: "6", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", title: "#C", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["7"] = Conversation(uuid: "7", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", title: "#Scrub", isDefault: false, groupPhotoURL: nil)
+        
+        filteredConversations.removeAll()
+        for c in allCachedConversations.values {
+            filteredConversations.append(c)
+        }
         searchTableVC.reloadSearchResultsData()
         
         containerView?.searchTextField.userStoppedTypingHandler = {
@@ -197,31 +205,28 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     }
     
     fileprivate func localSearch(searchText: String) {
-        filteredResults = []
+        filteredConversations.removeAll()
         
-        for p in allCachedResults {
-            var parentResult = p // NOTE: When we separate view model from search response make this is a copy()
-            
-            var foundMatchInParent = false
-            
-            let parentFilterRange = (parentResult.title as NSString).range(of: searchText, options: [.caseInsensitive])
+        var groupFoundMap: [String: Bool] = [:]
+        
+        for convo in allCachedConversations.values {
+            let parentFilterRange = (convo.title as NSString).range(of: searchText, options: [.caseInsensitive])
             if parentFilterRange.location != NSNotFound {
-                foundMatchInParent = true
-            }
-            var matchedChildren: [SearchViewData] = []
-            for c in parentResult.children {
-                guard let childResult = c as? SearchViewData else {
-                    continue
+                if !filteredConversations.contains(convo) {
+                    filteredConversations.append(convo)
                 }
-                let childFilterRange = (childResult.text as NSString).range(of: searchText, options: [.caseInsensitive])
+                groupFoundMap[convo.groupUUID] = true
+            }
+        }
+        
+        for convo in allCachedConversations.values {
+            if let _ = groupFoundMap[convo.groupUUID] {
+                let childFilterRange = (convo.title as NSString).range(of: searchText, options: [.caseInsensitive])
                 if childFilterRange.location != NSNotFound {
-                    matchedChildren.append(childResult)
+                    if !filteredConversations.contains(convo) {
+                        filteredConversations.append(convo)
+                    }
                 }
-            }
-            parentResult.children = matchedChildren
-            
-            if foundMatchInParent == true || parentResult.children.count > 0 {
-                filteredResults.append(parentResult)
             }
         }
     }

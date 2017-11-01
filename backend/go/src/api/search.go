@@ -19,20 +19,13 @@ type SearchResponse struct {
 }
 
 type ConversationResponse struct {
-	conversationUUID         string
-	photo_url                string
-	created_timestamp_server int
-	title                    string
-	groupUUID                string
-	isDefault                bool
-}
-
-type Conversation struct {
-	ID                       int
-	UUID                     string
-	Photo_url                *string
-	Created_timestamp_server int
-	Topic_tag_uuid           int
+	ConversationUUID       string
+	PhotoURL               string
+	UpdatedTimestampServer int
+	Title                  string
+	IsDefault              bool
+	GroupUUID              string
+	GroupPhotoURL          string
 }
 
 func Search(req SearchRequest) (SearchResponse, error) {

@@ -14,13 +14,8 @@ struct SearchViewData: CollapsibleTableViewData, Equatable {
     var isTopLevel: Bool
     var isCollapsed: Bool
     var children: [CollapsibleTableViewData]
-    
-    init(conversation: Conversation) {
-        self.photo = nil
-        self.text = conversation.title
-    }
-    
-    init(photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = true) {
+        
+    init(photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = false) {
         self.photo = photo
         self.text = text
         self.isTopLevel = isTopLevel

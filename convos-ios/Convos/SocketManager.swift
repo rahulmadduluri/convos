@@ -52,7 +52,7 @@ final class SocketManager: NSObject, SocketManaging {
             ws.event.close = { code, reason, clean in
                 print("Web Socket Closed!")
                 print(reason)
-                print("Trying to reopn")
+                print("Trying to reopen")
                 //ws.open()
                 print("Web Socket Reopened!")
             }
