@@ -11,7 +11,7 @@ type PullMessagesRequest struct {
 }
 
 type PullMessagesResponse struct {
-	Messages []models.Message
+	Messages []MessageObj
 	ErrorMsg *string
 }
 
@@ -21,7 +21,7 @@ type PushMessageRequest struct {
 }
 
 type PushMessageResponse struct {
-	Message  *models.Message
+	Message  *MessageObj
 	ErrorMsg *string
 }
 
