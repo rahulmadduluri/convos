@@ -3,7 +3,6 @@ package api
 import (
 	"db"
 	"log"
-	"models"
 )
 
 var dbh = db.GetDbHandler()
@@ -18,14 +17,15 @@ type SearchResponse struct {
 	ErrorMsg      *string
 }
 
-type ConversationResponse struct {
-	ConversationUUID       string
+type ConversationObj struct {
+	UUID                   string
 	PhotoURL               string
 	UpdatedTimestampServer int
 	Title                  string
 	IsDefault              bool
 	GroupUUID              string
 	GroupPhotoURL          string
+	TopicTagUUID           string
 }
 
 func Search(req SearchRequest) (SearchResponse, error) {
@@ -34,6 +34,6 @@ func Search(req SearchRequest) (SearchResponse, error) {
 	name := req.SearchText
 	// dbh.GetConversationsByName(name), not yet implemented
 	return SearchResponse{
-		Conversations: []ConversationResponse{},
+		Conversations: []ConversationObj{},
 	}, nil
 }

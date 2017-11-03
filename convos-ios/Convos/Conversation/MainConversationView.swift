@@ -11,6 +11,7 @@ import UIKit
 class MainConversationView: UIView {
     
     var topBarView: ConversationTopBarView = ConversationTopBarView()
+    var bottomBarView: ConversationBottomBarView = ConversationBottomBarView()
     var messagesTableContainerView: UIView? = nil
     
     // MARK: Init
@@ -18,7 +19,7 @@ class MainConversationView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = UIColor.white
+        self.backgroundColor = UIColor.white        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -31,14 +32,25 @@ class MainConversationView: UIView {
         super.layoutSubviews()
         
         // Conversation Top Bar View
-        topBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.origin.y, width: self.bounds.width, height: 50)
+        topBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.origin.y, width: self.bounds.width, height: Constants.topBarHeight)
         self.addSubview(topBarView)
+        
+        // Bottom Message Entry Bar
+        bottomBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.maxY-Constants.bottomBarHeight, width: self.bounds.width, height: Constants.bottomBarHeight)
+        self.addSubview(bottomBarView)
         
         // Messages Table
         if let mTCV = messagesTableContainerView {
-            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + 100, width: self.bounds.width, height: self.bounds.maxY - 150)
+            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.messagesTableTopBuffer, width: self.bounds.width, height: self.bounds.maxY - Constants.messagesTableBottomBuffer)
             
             self.addSubview(mTCV)
         }
     }    
+}
+
+private struct Constants {
+    static let topBarHeight: CGFloat = 50
+    static let bottomBarHeight: CGFloat = 50
+    static let messagesTableTopBuffer: CGFloat = 100
+    static let messagesTableBottomBuffer: CGFloat = 150
 }

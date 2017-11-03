@@ -1,5 +1,6 @@
 import UIKit
 import SwiftyJSON
+import SwiftWebSocket
 
 class SearchRequest: NSObject, APIModel {
     
@@ -70,5 +71,15 @@ class SearchResponse: NSObject, APIModel {
             dict["errorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
+    }
+}
+
+// Search API
+
+class SearchAPI: NSObject {
+    static let socketManager: SocketManager = SocketManager.sharedInstance
+    
+    static func search(searchRequest: SearchRequest) {
+        socketManager.send(json: searchRequest.toJSON())
     }
 }

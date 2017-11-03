@@ -61,51 +61,35 @@ class Message: NSObject, APIModel {
     // vars
     let uuid: String
     let senderUUID: String
-    let fullText: String?
+    let fullText: String
     let createdTimestampServer: Int
     let isTopLevel: Bool
-    let children: [Message]
+    let parentUUID: String?
 
     // init
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["uuid"],
             let senderUUIDJSON = dictionary["senderUUID"],
+            let fullTextJSON = dictionary["fullText"],
             let createdTimestampServerJSON = dictionary["createdTimestampServer"],
             let isTopLevelJSON = dictionary["isTopLevel"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         senderUUID = senderUUIDJSON.stringValue
+        fullText = fullTextJSON.stringValue
         createdTimestampServer = createdTimestampServerJSON.intValue
         isTopLevel = isTopLevelJSON.boolValue
-        fullText = dictionary["fullText"]?.string
-        
-        var tempChildren: [Message] = []
-        
-        if let receivedChildrenJSON = dictionary["children"]?.arrayValue {
-            for child in receivedChildrenJSON {
-                guard let newMessage = Message.init(json: child) else {
-                    continue
-                }
-                tempChildren.append(newMessage)
-            }
-        }
-        children = tempChildren
+        parentUUID = dictionary["parentUUID"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["uuid": JSON(uuid), "senderUUID": JSON(senderUUID), "createdTimestampServer": JSON(createdTimestampServer), "isTopLevel": JSON(isTopLevel)]
-        if let text = fullText {
-            dict["fullText"] = JSON(text)
+        var dict: [String: JSON] = ["uuid": JSON(uuid), "senderUUID": JSON(senderUUID), "fullText": JSON(fullText), "createdTimestampServer": JSON(createdTimestampServer), "isTopLevel": JSON(isTopLevel)]
+        if let parentUUID = parentUUID {
+            dict["parentUUID"] = JSON(parentUUID)
         }
-        
-        var jsonChildren: [JSON] = []
-        for child in children {
-            jsonChildren.append(child.toJSON())
-        }
-        dict["children"] = JSON(jsonChildren)
         return JSON(dict)
     }
 }

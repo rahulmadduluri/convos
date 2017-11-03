@@ -45,7 +45,7 @@ class HomeViewController: UIViewController, SearchVCDelegate {
         if self.conversationVC == nil {
             self.conversationVC = ConversationViewController()
         }
-        conversationVC?.setConversationTitle(newTitle: result.text)
+        conversationVC?.setConversationInfo(uuid: "", newTitle: result.text)
         
         if let newVC = self.conversationVC {
             self.present(newVC, animated: false, completion: nil)

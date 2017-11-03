@@ -232,6 +232,8 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     }
     
     fileprivate func remoteSearch(searchText: String) {
-        
+        let myUUID = ""
+        let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
+        SearchAPI.search(searchRequest: request)
     }
 }

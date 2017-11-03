@@ -79,7 +79,6 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
 // MARK: - Custom Cell & Header
 //
 extension SearchTableViewController {
-    
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? SearchTableViewCell ??

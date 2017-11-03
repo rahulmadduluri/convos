@@ -78,6 +78,11 @@ class PushMessageRequest: NSObject, APIModel {
     let fullText: String
     
     // init
+    init(conversationUUID: String, fullText: String) {
+        self.conversationUUID = conversationUUID
+        self.fullText = fullText
+    }
+    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let conversationUUIDJSON = dictionary["conversationUUID"],
@@ -126,5 +131,15 @@ class PushMessageResponse: NSObject, APIModel {
             dict["errorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
+    }
+}
+
+// Conversation API
+
+class ConversationAPI: NSObject {
+    static let socketManager: SocketManager = SocketManager.sharedInstance
+    
+    static func pushMessage(pushMessageRequest: PushMessageRequest) {
+        socketManager.send(json: pushMessageRequest.toJSON())
     }
 }

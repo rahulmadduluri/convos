@@ -13,13 +13,12 @@ struct MessageViewData: CollapsibleTableViewData, Equatable {
     var isTopLevel: Bool
     var isCollapsed: Bool
     var children: [CollapsibleTableViewData]
-    
-    var dateUpdatedText: String?
+    var dateCreatedText: String?
     
     init(photo: UIImage?, text: String, dateUpdatedText: String?, isTopLevel: Bool = true, isCollapsed: Bool = true) {
         self.photo = photo
         self.text = text
-        self.dateUpdatedText = dateUpdatedText
+        self.dateCreatedText = dateUpdatedText
         self.isTopLevel = isTopLevel
         self.isCollapsed = isCollapsed
         self.children = []
@@ -27,16 +26,17 @@ struct MessageViewData: CollapsibleTableViewData, Equatable {
 }
 
 func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
-    return lhs.text == rhs.text && lhs.dateUpdatedText == rhs.dateUpdatedText
+    return lhs.text == rhs.text && lhs.dateCreatedText == rhs.dateCreatedText
 }
 
 protocol MessageTableVCDelegate {
+    func getViewData() -> [MessageViewData]
     func goBack()
 }
 
 protocol MessageTableVCProtocol {
-    func loadMessageData(messageData: [MessageViewData])
-    func addMessage(newMessage: MessageViewData, parentMessage: MessageViewData?)
+    func loadMessageData()
+    func addMessage(newMessage: Message, parentMessage: MessageViewData?)
 }
 
 class MessageTableViewController: CollapsibleTableViewController, MessageTableVCProtocol {
@@ -90,8 +90,10 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
     
     // MARK: MessageTableVCProtocol
     
-    func loadMessageData(messageData: [MessageViewData]) {
-        viewDataModels = messageData
+    func loadMessageData() {
+        if let vd = messageTableVCDelegate?.getViewData() {
+            viewDataModels = vd
+        }
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
