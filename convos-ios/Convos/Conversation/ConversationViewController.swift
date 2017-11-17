@@ -18,7 +18,10 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate var titleText: String = ""
     fileprivate var latestTimestampServer: Int = 0
     
-    fileprivate var allCachedMessages: [String: Message] = [:]
+    // map -> date:TopLevelMessage
+    fileprivate var topLevelCachedMessages: [String: Message] = [:]
+    // map -> topLevelUUID:[date:BottomLevelMessage]
+    fileprivate var bottomLevelCachedMessages: [String: [String: Message]] = [:]
     
     // MARK: UIViewController
 
@@ -86,26 +89,22 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     func getViewData() -> [MessageViewData] {
+        let sortedTopMessages: [Message] = topLevelCachedMessages.map({ $0.value }).sorted(by: { $0.createdTimestampServer < $1.createdTimestampServer })
+        var finalMVD: [MessageViewData] = []
         
-        var orderedMessageMap: [String: MessageViewData]
-        
-        for m in allCachedMessages.values {
-            if m.isTopLevel {
-                orderedMessageMap[m.uuid] = 
+        for m in sortedTopMessages {
+            var topMVD: MessageViewData = topLevelMessageViewData(m: m)
+            guard let bottomLevelMap: [String: Message] = bottomLevelCachedMessages[m.uuid] else {
+                finalMVD.append(topMVD)
+                continue
             }
-        }
-        for m in allCachedMessages.values {
-            if !m.isTopLevel {
-                for om in orderedMessageData {
-                    if m.parentUUID == om.
-                }
-            }
+            let sortedBottomMessages: [Message] = bottomLevelMap.keys.sorted(by: { $0 < $1 }).flatMap({ bottomLevelMap[$0] })
+            topMVD.children = sortedBottomMessages.map({ bottomLevelMessageViewData(m: $0) })
+            
+            finalMVD.append(topMVD)
         }
         
-        for d in groupViewDataMap.values {
-            filteredViewData.append(d)
-        }
-        return filteredViewData
+        return finalMVD
     }
     
     // MARK: Handle keyboard events
@@ -141,6 +140,9 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     // UITextFieldDelegate
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text {
             let pushMessageRequest = PushMessageRequest(conversationUUID: uuid, fullText: text)
@@ -166,16 +168,42 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     fileprivate func received(response: PullMessagesResponse) {
-        
-        // create array of MessageViewData from messages and send
-        // find latest server timestamp in messages and store that in memory as latest timestamp
+        for m in response.messages {
+            addMessageToCache(message: m)
+            messageTableVC.resetMessageData()
+        }
     }
     
     fileprivate func received(response: PushMessageResponse) {
-        // create MessageViewData from Message and addMessage
         if let message = response.message {
-            allCachedMessages[message.uuid] = message
-            messageTableVC.addMessage(newMessage: <#T##MessageViewData#>, parentMessage: <#T##MessageViewData?#>)
+            addMessageToCache(message: message)
+            var pmvd: MessageViewData? = nil
+            if let pUUID = message.parentUUID {
+                if let pm = topLevelCachedMessages[pUUID] {
+                    pmvd = topLevelMessageViewData(m: pm)
+                }
+            }
+            let mvd = pmvd != nil ? bottomLevelMessageViewData(m: message) : topLevelMessageViewData(m: message)
+            messageTableVC.addMessage(newMVD: mvd, parentMVD: pmvd)
         }
+        
+    }
+    
+    fileprivate func addMessageToCache(message: Message) {
+        if let pUUID = message.parentUUID {
+            if var map = bottomLevelCachedMessages[pUUID] {
+                map[message.uuid] = message
+                return
+            }
+        }
+        topLevelCachedMessages[message.uuid] = message
+    }
+    
+    fileprivate func topLevelMessageViewData(m: Message) -> MessageViewData {
+        return MessageViewData(photo: nil , text: m.fullText, dateCreatedText: String(m.createdTimestampServer))
+    }
+    
+    fileprivate func bottomLevelMessageViewData(m: Message) -> MessageViewData {
+        return MessageViewData(photo: nil, text: m.fullText, dateCreatedText: String(m.createdTimestampServer), isTopLevel: false, isCollapsed: true)
     }
 }

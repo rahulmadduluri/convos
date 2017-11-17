@@ -13,12 +13,12 @@ struct MessageViewData: CollapsibleTableViewData, Equatable {
     var isTopLevel: Bool
     var isCollapsed: Bool
     var children: [CollapsibleTableViewData]
-    var dateCreatedText: String?
+    var dateCreatedText: String
     
-    init(photo: UIImage?, text: String, dateUpdatedText: String?, isTopLevel: Bool = true, isCollapsed: Bool = true) {
+    init(photo: UIImage?, text: String, dateCreatedText: String, isTopLevel: Bool = true, isCollapsed: Bool = true) {
         self.photo = photo
         self.text = text
-        self.dateCreatedText = dateUpdatedText
+        self.dateCreatedText = dateCreatedText
         self.isTopLevel = isTopLevel
         self.isCollapsed = isCollapsed
         self.children = []
@@ -35,8 +35,8 @@ protocol MessageTableVCDelegate {
 }
 
 protocol MessageTableVCProtocol {
-    func loadMessageData()
-    func addMessage(newMessage: Message, parentMessage: MessageViewData?)
+    func resetMessageData()
+    func addMessage(newMVD: MessageViewData, parentMVD: MessageViewData?)
 }
 
 class MessageTableViewController: CollapsibleTableViewController, MessageTableVCProtocol {
@@ -49,16 +49,16 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         super.viewDidAppear(animated)
         
         // Add test messages
-        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "yoyoyoyoyoyoyoyoyo", dateUpdatedText: "9/8/17")
-        let testMessage2 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "My Name is Jo", dateUpdatedText: "9/8/18")
-        let testMessage3 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "I have a big fro", dateUpdatedText: "9/8/19")
-        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "testtest", dateUpdatedText: "9/8/20")
-        let testMessage5 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "teststststststststststets", dateUpdatedText: "9/9/20")
-        addMessage(newMessage: testMessage, parentMessage: nil)
-        addMessage(newMessage: testMessage2, parentMessage: nil)
-        addMessage(newMessage: testMessage3, parentMessage: testMessage2)
-        addMessage(newMessage: testMessage4, parentMessage: testMessage2)
-        addMessage(newMessage: testMessage5, parentMessage: testMessage2)
+        let testMessage = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "yoyoyoyoyoyoyoyoyo", dateCreatedText: "9/8/17")
+        let testMessage2 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "My Name is Jo", dateCreatedText: "9/8/18")
+        let testMessage3 = MessageViewData(photo: UIImage(named: "rahul_test_pic"), text: "I have a big fro", dateCreatedText: "9/8/19")
+        let testMessage4 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "testtest", dateCreatedText: "9/8/20")
+        let testMessage5 = MessageViewData(photo: UIImage(named: "praful_test_pic"), text: "teststststststststststets", dateCreatedText: "9/9/20")
+        addMessage(newMVD: testMessage, parentMVD: nil)
+        addMessage(newMVD: testMessage2, parentMVD: nil)
+        addMessage(newMVD: testMessage3, parentMVD: testMessage2)
+        addMessage(newMVD: testMessage4, parentMVD: testMessage2)
+        addMessage(newMVD: testMessage5, parentMVD: testMessage2)
     }
     
     override func viewDidLoad() {
@@ -90,7 +90,7 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
     
     // MARK: MessageTableVCProtocol
     
-    func loadMessageData() {
+    func resetMessageData() {
         if let vd = messageTableVCDelegate?.getViewData() {
             viewDataModels = vd
         }
@@ -98,22 +98,22 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         tableView.reloadData()
     }
     
-    func addMessage(newMessage: MessageViewData, parentMessage: MessageViewData?) {
+    func addMessage(newMVD: MessageViewData, parentMVD: MessageViewData?) {
         var foundParent = false
-        if let parent = parentMessage {
+        if let parentMVD = parentMVD {
             for index in 0...viewDataModels.count-1 {
                 guard let dm = viewDataModels[index] as? MessageViewData else {
                     continue
                 }
-                if dm == parent {
-                    viewDataModels[index].children.append(newMessage)
+                if dm == parentMVD {
+                    viewDataModels[index].children.append(newMVD)
                     foundParent = true
                 }
             }
         }
         
         if !foundParent {
-            viewDataModels.append(newMessage)
+            viewDataModels.append(newMVD)
         }
         tableView.reloadData()
     }
