@@ -28,7 +28,7 @@ class ConversationBottomBarView: UIView {
         
         // Setup Divider
         let divider: UIView = UIView(frame: CGRect(x: self.bounds.minX, y: self.bounds.minY, width: self.bounds.size.width, height: Constants.dividerHeight))
-        divider.dotLine()
+        //divider.dotLine()
         self.addSubview(divider)
         
         // Setup New Message text field

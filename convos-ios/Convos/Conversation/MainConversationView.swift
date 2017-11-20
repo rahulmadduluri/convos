@@ -41,7 +41,7 @@ class MainConversationView: UIView {
         
         // Messages Table
         if let mTCV = messagesTableContainerView {
-            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.messagesTableTopBuffer, width: self.bounds.width, height: self.bounds.maxY - Constants.messagesTableBottomBuffer)
+            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.topBarHeight, width: self.bounds.width, height: self.bounds.maxY - Constants.bottomBarHeight - Constants.topBarHeight)
             
             self.addSubview(mTCV)
         }
@@ -49,8 +49,6 @@ class MainConversationView: UIView {
 }
 
 private struct Constants {
-    static let topBarHeight: CGFloat = 50
-    static let bottomBarHeight: CGFloat = 50
-    static let messagesTableTopBuffer: CGFloat = 100
-    static let messagesTableBottomBuffer: CGFloat = 150
+    static let topBarHeight: CGFloat = 75
+    static let bottomBarHeight: CGFloat = 75
 }

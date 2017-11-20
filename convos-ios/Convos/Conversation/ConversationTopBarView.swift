@@ -30,7 +30,7 @@ class ConversationTopBarView: UIView {
     
     func setTitle(newTitle: String) {
         titleLabel.text = newTitle
-        titleLabel.center = CGPoint(x: bounds.width/2, y: 50)
+        titleLabel.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
         titleLabel.bounds.size = titleLabel.intrinsicContentSize
     }
 }
