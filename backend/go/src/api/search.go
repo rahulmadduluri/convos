@@ -1,11 +1,12 @@
 package api
 
 import (
-	"db"
 	"log"
+
+	"db"
 )
 
-var dbh = db.GetDbHandler()
+var dbh = db.GetHandler()
 
 type SearchRequest struct {
 	SenderUUID string
@@ -29,9 +30,9 @@ type ConversationObj struct {
 }
 
 func Search(req SearchRequest) (SearchResponse, error) {
-	// run SQL query with request to get correct response data
-	log.Println(req)
-	// dbh.GetConversationsByName(name), not yet implemented
+	// TODO: user conversations query
+	conversations := dbh.GetUsers(req.SearchText)[0]
+	log.Println(conversations)
 	return SearchResponse{
 		Conversations: []ConversationObj{},
 	}, nil

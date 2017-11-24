@@ -11,20 +11,26 @@ import (
 
 var _dbh = newDbHandler()
 
+const (
+	_dbPath                  = "root:webster93@tcp(127.0.0.1:3306)/convos"
+	_userQueriesPath         = "db/userQueries.sql"
+	_conversationQueriesPath = "db/conversationQueries.sql"
+)
+
 type DbHandler interface {
-	GetConversations(user_id int) []models.Conversation
-	GetUsersByName(name string) []models.User
+	GetConversations(userUUID string, searchText string) []models.Conversation
+	GetUsers(name string) []models.User
 	Close()
 }
 
 type dbhandler struct {
-	db      *sqlx.DB
-	queries goyesql.Queries
+	db                  *sqlx.DB
+	userQueries         goyesql.Queries
+	conversationQueries goyesql.Queries
 }
 
 func newDbHandler() *dbhandler {
-	db, err := sqlx.Open("mysql",
-		"root:webster93@tcp(127.0.0.1:3306)/convos")
+	db, err := sqlx.Open("mysql", _dbPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,61 +38,19 @@ func newDbHandler() *dbhandler {
 	if err != nil {
 		log.Printf("No ping %v", err)
 	}
-	queries := goyesql.MustParseFile("db/queries.sql")
+	userQueries := goyesql.MustParseFile(_userQueriesPath)
+	conversationQueries := goyesql.MustParseFile(_conversationQueriesPath)
 	return &dbhandler{
-		db:      db,
-		queries: queries,
+		db:                  db,
+		userQueries:         userQueries,
+		conversationQueries: conversationQueries,
 	}
 }
 
-func GetDbHandler() DbHandler {
+func GetHandler() DbHandler {
 	return _dbh
 }
 
 func (dbh *dbhandler) Close() {
 	dbh.db.Close()
-}
-
-func (dbh *dbhandler) GetConversations(user_id int) []models.Conversation {
-	rows, err := dbh.db.Queryx(dbh.queries["findConversationsByUserId"], user_id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	var objs []models.Conversation
-	for rows.Next() {
-		var obj models.Conversation
-		err := rows.StructScan(&obj)
-		if err != nil {
-			log.Fatal(err)
-		}
-		objs = append(objs, obj)
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return objs
-}
-
-func (dbh *dbhandler) GetUsersByName(name string) []models.User {
-	rows, err := dbh.db.Queryx(dbh.queries["findUsersByName"], name+"%")
-	if err != nil {
-		log.Fatal("query error", err)
-	}
-	defer rows.Close()
-	var objs []models.User
-	for rows.Next() {
-		var obj models.User
-		err := rows.StructScan(&obj)
-		if err != nil {
-			log.Fatal("scan error", err)
-		}
-		objs = append(objs, obj)
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return objs
 }

@@ -27,7 +27,7 @@ func main() {
 	go hub.Run()
 
 	http.HandleFunc("/ws", createWebsocket)
-	log.Println("user results: ", db.GetDbHandler().GetUsersByName("R")[0])
+	log.Println("user results: ", db.GetHandler().GetUsers("R")[0])
 
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
