@@ -13,7 +13,7 @@ type SearchRequest struct {
 }
 
 type SearchResponse struct {
-	Conversations []ConversationResponse
+	Conversations []ConversationObj
 	ErrorMsg      *string
 }
 
@@ -31,7 +31,6 @@ type ConversationObj struct {
 func Search(req SearchRequest) (SearchResponse, error) {
 	// run SQL query with request to get correct response data
 	log.Println(req)
-	name := req.SearchText
 	// dbh.GetConversationsByName(name), not yet implemented
 	return SearchResponse{
 		Conversations: []ConversationObj{},

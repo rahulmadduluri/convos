@@ -10,9 +10,12 @@ join (    select conversation_id
     where user_id = ?
 ) as convos_ids
     on conversations.id = convo_ids.conversation_id
+;
 
 
 -- name: findUsersByName
 select *
 from users
-where username like ?
+where 
+	username like ?
+;

@@ -3,3 +3,4 @@ github.com/gorilla/websocket
 github.com/jmoiron/sqlx
 github.com/nleof/goyesql
 github.com/satori/go.uuid
+github.com/golang/dep/cmd/dep
