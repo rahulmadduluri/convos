@@ -181,13 +181,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         
         searchForResults("")
         
-        allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", title: "Rahul", isDefault: true, groupPhotoURL: nil)
-        allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", title: "Praful", isDefault: true, groupPhotoURL: nil)
-        allCachedConversations["3"] = Conversation(uuid: "3", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", title: "Reia", isDefault: true, groupPhotoURL: nil)
-        allCachedConversations["4"] = Conversation(uuid: "4", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", title: "#A", isDefault: false, groupPhotoURL: nil)
-        allCachedConversations["5"] = Conversation(uuid: "5", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", title: "#B", isDefault: false, groupPhotoURL: nil)
-        allCachedConversations["6"] = Conversation(uuid: "6", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", title: "#C", isDefault: false, groupPhotoURL: nil)
-        allCachedConversations["7"] = Conversation(uuid: "7", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", title: "#Scrub", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "Rahul", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "Praful", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["3"] = Conversation(uuid: "3", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", topic: "Reia", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["4"] = Conversation(uuid: "4", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "#A", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["5"] = Conversation(uuid: "5", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "#B", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["6"] = Conversation(uuid: "6", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "#C", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["7"] = Conversation(uuid: "7", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", topic: "#Scrub", isDefault: false, groupPhotoURL: nil)
         
         filteredConversations.removeAll()
         for c in allCachedConversations.values {

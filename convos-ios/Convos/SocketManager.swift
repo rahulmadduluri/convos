@@ -45,6 +45,7 @@ final class SocketManager: NSObject, SocketManaging {
     
     fileprivate func configureWebSocket() {
         webSocket = WebSocket("wss://localhost:8000/ws")
+        webSocket?.allowSelfSignedSSL = true
         if let ws = webSocket {
             ws.event.open = {
                 print("Web Socket Opened!")
