@@ -11,25 +11,26 @@ const (
 	_findConversations = "findConversationsForUserWithTitle"
 )
 
-func (dbh *dbhandler) GetConversations(userUUID string, searchText string) []models.Conversation {
-	titleSearch := "%" + searchText + "%"
-	rows, err := dbh.db.Queryx(dbh.conversationQueries["findConversationsForUserWithTitle"], userUUID, titleSearch)
+func (dbh *dbhandler) GetConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error) {
+	var objs []models.ConversationObj
+
+	topicSearch := "%" + searchText + "%"
+	rows, err := dbh.db.Queryx(dbh.conversationQueries["findConversationsForUserWithTopic"], userUUID, topicSearch)
+
 	if err != nil {
-		log.Fatal(err)
+		return objs, err
 	}
 	defer rows.Close()
-	var objs []models.Conversation
+
 	for rows.Next() {
-		var obj models.Conversation
+		var obj models.ConversationObj
 		err := rows.StructScan(&obj)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("scan error: ", err)
+			continue
 		}
 		objs = append(objs, obj)
 	}
 	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return objs
+	return objs, err
 }

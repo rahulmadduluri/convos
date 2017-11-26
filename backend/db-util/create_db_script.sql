@@ -38,9 +38,12 @@ CREATE TABLE IF NOT EXISTS conversations (
 	created_timestamp_server	int				NOT NULL,
 	updated_timestamp_server	int 			NOT NULL,
 	topic_tag_id				int 			NOT NULL,
+	is_default					boolean			NOT NULL,
+	group_id					int             NOT NULL,
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id),
-	FOREIGN KEY (topic_tag_id) REFERENCES tags (id)
+	FOREIGN KEY (topic_tag_id) REFERENCES tags (id),
+	FOREIGN KEY (group_id) REFERENCES groups (id)
 );
 
 CREATE TABLE IF NOT EXISTS groups (
@@ -59,15 +62,6 @@ CREATE TABLE IF NOT EXISTS group_users (
 	group_id		int			NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users (id),
 	FOREIGN KEY (group_id) REFERENCES groups (id)
-);
-
--- relationship specifying which conversations a group has had
-CREATE TABLE IF NOT EXISTS group_conversations (
-	group_id 		int			NOT NULL,
-	conversation_id	int			NOT NULL,
-	is_default		boolean		DEFAULT 1,
-	FOREIGN KEY (group_id) REFERENCES groups (id),
-	FOREIGN KEY (conversation_id) REFERENCES conversations (id)
 );
 
 -- relationship mapping conversations to tags

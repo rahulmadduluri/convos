@@ -106,17 +106,17 @@ class Conversation: NSObject, APIModel {
     let groupUUID: String
     let updatedTimestampServer: Int
     let topicTagUUID: String
-    let title: String
+    let topic: String
     let isDefault: Bool
     let groupPhotoURL: String?
     
     // init
-    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topicTagUUID: String, title: String, isDefault: Bool, groupPhotoURL: String? = nil) {
+    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topicTagUUID: String, topic: String, isDefault: Bool, groupPhotoURL: String? = nil) {
         self.uuid = uuid
         self.groupUUID = groupUUID
         self.updatedTimestampServer = updatedTimestampServer
         self.topicTagUUID = topicTagUUID
-        self.title = title
+        self.topic = topic
         self.isDefault = isDefault
         self.groupPhotoURL = groupPhotoURL
     }
@@ -128,7 +128,7 @@ class Conversation: NSObject, APIModel {
             let groupUUIDJSON = dictionary["groupUUID"],
             let updatedTimestampServerJSON = dictionary["updatedTimestampServer"],
             let topicTagUUIDJSON = dictionary["topicTagUUID"],
-            let titleJSON = dictionary["title"],
+            let topicJSON = dictionary["topic"],
             let isDefaultJSON = dictionary["isDefault"] else {
                 return nil
         }
@@ -136,14 +136,14 @@ class Conversation: NSObject, APIModel {
         groupUUID = groupUUIDJSON.stringValue
         updatedTimestampServer = updatedTimestampServerJSON.intValue
         topicTagUUID = topicTagUUIDJSON.stringValue
-        title = titleJSON.stringValue
+        topic = topicJSON.stringValue
         isDefault = isDefaultJSON.boolValue
         groupPhotoURL = dictionary["groupPhotoURL"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["uuid": JSON(uuid), "groupUUID": JSON(groupUUID), "updatedTimestampServer": JSON(updatedTimestampServer), "topicTagUUID": JSON(topicTagUUID), "title": JSON(title), "isDefault": JSON(isDefault)]
+        var dict: [String: JSON] = ["uuid": JSON(uuid), "groupUUID": JSON(groupUUID), "updatedTimestampServer": JSON(updatedTimestampServer), "topicTagUUID": JSON(topicTagUUID), "topic": JSON(topic), "isDefault": JSON(isDefault)]
         if let url = groupPhotoURL {
             dict["groupPhotoURL"] = JSON(url)
         }

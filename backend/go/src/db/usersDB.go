@@ -11,24 +11,26 @@ const (
 	_findUsersByUsername = "findUsersByUsername"
 )
 
-func (dbh *dbhandler) GetUsers(name string) []models.User {
-	rows, err := dbh.db.Queryx(dbh.userQueries[_findUsersByUsername], "%"+name+"%")
+func (dbh *dbhandler) GetUsers(name string) ([]models.User, error) {
+	var objs []models.User
+
+	usernameSearch := "%" + name + "%"
+	rows, err := dbh.db.Queryx(dbh.userQueries[_findUsersByUsername], usernameSearch)
+
 	if err != nil {
-		log.Fatal("query error", err)
+		return objs, err
 	}
 	defer rows.Close()
-	var objs []models.User
+
 	for rows.Next() {
 		var obj models.User
 		err := rows.StructScan(&obj)
 		if err != nil {
-			log.Fatal("scan error", err)
+			log.Fatal("scan error: ", err)
+			continue
 		}
 		objs = append(objs, obj)
 	}
 	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return objs
+	return objs, err
 }

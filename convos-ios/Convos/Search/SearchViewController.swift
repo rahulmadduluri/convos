@@ -104,7 +104,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         // Add default conversations
         for convo in filteredConversations {
             if convo.isDefault {
-                let viewData = SearchViewData(photo: nil, text: convo.title)
+                let viewData = SearchViewData(photo: nil, text: convo.topic)
                 groupViewDataMap[convo.groupUUID] = viewData
             }
         }
@@ -113,7 +113,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         for convo in filteredConversations {
             if !convo.isDefault {
                 if let _ = groupViewDataMap[convo.groupUUID] {
-                    let viewData = SearchViewData(photo: nil, text: convo.title, isTopLevel: false)
+                    let viewData = SearchViewData(photo: nil, text: convo.topic, isTopLevel: false)
                     groupViewDataMap[convo.groupUUID]?.children.append(viewData)
                 }
             }
@@ -211,7 +211,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         var groupFoundMap: [String: Bool] = [:]
         
         for convo in allCachedConversations.values {
-            let parentFilterRange = (convo.title as NSString).range(of: searchText, options: [.caseInsensitive])
+            let parentFilterRange = (convo.topic as NSString).range(of: searchText, options: [.caseInsensitive])
             if parentFilterRange.location != NSNotFound {
                 if !filteredConversations.contains(convo) {
                     filteredConversations.append(convo)
@@ -222,7 +222,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         
         for convo in allCachedConversations.values {
             if let _ = groupFoundMap[convo.groupUUID] {
-                let childFilterRange = (convo.title as NSString).range(of: searchText, options: [.caseInsensitive])
+                let childFilterRange = (convo.topic as NSString).range(of: searchText, options: [.caseInsensitive])
                 if childFilterRange.location != NSNotFound {
                     if !filteredConversations.contains(convo) {
                         filteredConversations.append(convo)

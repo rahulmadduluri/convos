@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"db"
+	"api"
 	"networking"
 
 	"net/http"
@@ -27,7 +27,12 @@ func main() {
 	go hub.Run()
 
 	http.HandleFunc("/ws", createWebsocket)
-	log.Println("user results: ", db.GetHandler().GetUsers("R")[0])
+
+	objs, _ := api.Search(api.SearchRequest{
+		SenderUUID: "uuid-1",
+		SearchText: "a",
+	})
+	log.Println(objs)
 
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {

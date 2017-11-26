@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"db"
+	"models"
 )
 
 var dbh = db.GetHandler()
@@ -14,26 +15,17 @@ type SearchRequest struct {
 }
 
 type SearchResponse struct {
-	Conversations []ConversationObj
+	Conversations []models.ConversationObj
 	ErrorMsg      *string
 }
 
-type ConversationObj struct {
-	UUID                   string
-	PhotoURL               string
-	UpdatedTimestampServer int
-	Title                  string
-	IsDefault              bool
-	GroupUUID              string
-	GroupPhotoURL          string
-	TopicTagUUID           string
-}
-
 func Search(req SearchRequest) (SearchResponse, error) {
-	// TODO: user conversations query
-	conversations := dbh.GetUsers(req.SearchText)[0]
-	log.Println(conversations)
+	conversations, err := dbh.GetConversationObjs(req.SenderUUID, req.SearchText)
+	if err != nil {
+		log.Println("failed to get conversation for user: ", req.SenderUUID)
+		log.Fatal(err)
+	}
 	return SearchResponse{
-		Conversations: []ConversationObj{},
-	}, nil
+		Conversations: conversations,
+	}, err
 }

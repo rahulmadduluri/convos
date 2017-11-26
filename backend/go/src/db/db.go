@@ -18,8 +18,8 @@ const (
 )
 
 type DbHandler interface {
-	GetConversations(userUUID string, searchText string) []models.Conversation
-	GetUsers(name string) []models.User
+	GetConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error)
+	GetUsers(name string) ([]models.User, error)
 	Close()
 }
 

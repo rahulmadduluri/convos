@@ -2,6 +2,8 @@ package api
 
 import (
 	"log"
+
+	"models"
 )
 
 type PullMessagesRequest struct {
@@ -11,7 +13,7 @@ type PullMessagesRequest struct {
 }
 
 type PullMessagesResponse struct {
-	Messages []MessageObj
+	Messages []models.MessageObj
 	ErrorMsg *string
 }
 
@@ -21,25 +23,15 @@ type PushMessageRequest struct {
 }
 
 type PushMessageResponse struct {
-	Message  *MessageObj
+	Message  *models.MessageObj
 	ErrorMsg *string
-}
-
-type MessageObj struct {
-	UUID                   string
-	SenderUUID             string
-	PhotoURL               string
-	CreatedTimestampServer int
-	FullText               string
-	IsTopLevel             bool
-	ParentUUID             *string
 }
 
 func PullMessages(req PullMessagesRequest) (PullMessagesResponse, error) {
 	// run SQL query with request to get correct response data
 	log.Println(req)
 	return PullMessagesResponse{
-		Messages: []MessageObj{},
+		Messages: []models.MessageObj{},
 	}, nil
 }
 
