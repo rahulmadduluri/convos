@@ -77,9 +77,11 @@ class SearchResponse: NSObject, APIModel {
 // Search API
 
 class SearchAPI: NSObject {
+    static let _searchRequest = "SearchRequest"
+    static let _searchResponse = "SearchResponse"
     static let socketManager: SocketManager = SocketManager.sharedInstance
     
     static func search(searchRequest: SearchRequest) {
-        socketManager.send(json: searchRequest.toJSON())
+        socketManager.send(packetType: _searchRequest, json: searchRequest.toJSON())
     }
 }

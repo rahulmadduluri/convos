@@ -137,9 +137,15 @@ class PushMessageResponse: NSObject, APIModel {
 // Conversation API
 
 class ConversationAPI: NSObject {
+    static let _PushMessageRequest = "PushMessageRequest"
+    static let _PushMessageResponse = "PushMessageResponse"
+    static let _PullMessageRequest = "PullMessageRequest"
+    static let _PullMessageResponse = "PullMessagesResponse"
+    static let _PullMessagesRequest = "PullMessagesRequest"
+    static let _PullMessagesResponse = "PullMessagesResponse"
     static let socketManager: SocketManager = SocketManager.sharedInstance
     
     static func pushMessage(pushMessageRequest: PushMessageRequest) {
-        socketManager.send(json: pushMessageRequest.toJSON())
+        socketManager.send(packetType: _PushMessageRequest, json: pushMessageRequest.toJSON())
     }
 }

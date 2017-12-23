@@ -120,6 +120,7 @@ func (c *client) Close() {
 func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
 	var err error
 	var res models.Model
+	var resAPI string
 
 	switch apiType {
 	case _searchRequest:
@@ -129,6 +130,7 @@ func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
 			return nil, err
 		}
 		res, err = api.Search(searchRequest)
+		resAPI = _searchResponse
 		if err != nil {
 			return nil, err
 		}
@@ -139,6 +141,7 @@ func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
 			return nil, err
 		}
 		res, err = api.PullMessages(pullMessagesRequest)
+		resAPI = _pullMessagesResponse
 		if err != nil {
 			return nil, err
 		}
@@ -149,6 +152,7 @@ func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
 			return nil, err
 		}
 		res, err = api.PushMessage(pushMessageRequest)
+		resAPI = _pushMessageResponse
 		if err != nil {
 			return nil, err
 		}
@@ -161,7 +165,7 @@ func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
 	}
 
 	return &Packet{
-		Type:            apiType,
+		Type:            resAPI,
 		ServerTimestamp: &serverTimestamp,
 		Data:            responseData,
 	}, nil

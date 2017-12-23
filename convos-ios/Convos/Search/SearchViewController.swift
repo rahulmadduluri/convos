@@ -132,7 +132,6 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
             filteredConversations = Array(allCachedConversations.values.prefix(7))
         } else {
             localSearch(searchText: searchText)
-            remoteSearch(searchText: searchText) // upon completion reload search results data
         }
         searchTableVC.reloadSearchResultsData()
     }
@@ -147,11 +146,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     // MARK: SocketManagerDelegate
     
-    func received(json: JSON) {
-        switch json["type"].stringValue {
-        case "SearchResponse":
-            let dataJson: JSON = json["data"]
-            if let searchResponse = SearchResponse(json: dataJson) {
+    func received(packet: Packet) {
+        switch packet.type {
+        case SearchAPI._searchResponse:
+            if let searchResponse = SearchResponse(json: packet.data) {
                 received(response: searchResponse)
             }
         default:
@@ -170,17 +168,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         containerView?.searchTextField.stopLoadingIndicator()
     }
     
-    fileprivate func searchForResults(_ searchText: String) {
-        let searchRequest = SearchRequest(senderUuid: "", searchText: searchText)
-        let packet = SearchAPI.toPacket
-        socketManager.send(json: searchRequest.toJSON())
-    }
-    
     fileprivate func configureSearch() {
         searchTableVC.searchTableVCDelegate = self
         containerView?.searchTextField.searchTextFieldDelegate = self
-        
-        searchForResults("")
         
         allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "Rahul", isDefault: true, groupPhotoURL: nil)
         allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "Praful", isDefault: true, groupPhotoURL: nil)
@@ -200,7 +190,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
             if let searchText = self.containerView?.searchTextField.text {
                 if searchText.characters.count > 0 {
                     self.containerView?.searchTextField.showLoadingIndicator()
-                    self.searchForResults(searchText)
+                    self.remoteSearch(searchText: searchText) // upon completion reload search results data
                 }
             }
         }
@@ -238,9 +228,4 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
         SearchAPI.search(searchRequest: request)
     }
-}
-
-private struct RequestTypes {
-    static let searchRequest = "SearchRequest"
-    static let searchResponse = "SearchResponse"
 }

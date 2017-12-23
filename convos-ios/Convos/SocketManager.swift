@@ -11,11 +11,45 @@ import SwiftyJSON
 import SwiftWebSocket
 
 protocol SocketManaging {
-    func send(json: JSON)
+    func send(packetType: String, json: JSON)
 }
 
 protocol SocketManagerDelegate {
-    func received(json: JSON)
+    func received(packet: Packet)
+}
+
+class Packet: NSObject, APIModel {
+    // vars
+    let type: String
+    let serverTimestamp: Int?
+    let data: JSON
+    
+    // init
+    required init?(json: JSON) {
+        guard let dictionary = json.dictionary,
+            let typeJSON = dictionary["Type"],
+            let dataJSON = dictionary["Data"] else {
+                return nil
+        }
+        type = typeJSON.stringValue
+        data = dataJSON
+        serverTimestamp = dictionary["ServerTimestamp"]?.int
+    }
+    
+    init(type: String, data: JSON) {
+        self.type = type
+        self.data = data
+        self.serverTimestamp = nil
+    }
+    
+    // APIModel
+    func toJSON() -> JSON {
+        var dict: [String: JSON] = ["Type": JSON(type), "Data": data]
+        if let serverTimestamp = serverTimestamp {
+            dict["ServerTimestamp"] = JSON(serverTimestamp)
+        }
+        return JSON(dict)
+    }
 }
 
 final class SocketManager: NSObject, SocketManaging {    
@@ -23,6 +57,8 @@ final class SocketManager: NSObject, SocketManaging {
     
     var webSocket: WebSocket?
     var delegate: SocketManagerDelegate?
+    
+    private var retryConnectionCount = 0
     
     // MARK: Init
     
@@ -33,11 +69,12 @@ final class SocketManager: NSObject, SocketManaging {
     
     // MARK: SocketManaging
     
-    func send(json: JSON) {
-        if let data = try? json.rawData() {
-            webSocket?.send(data)
+    func send(packetType: String, json: JSON) {
+        let packet = Packet(type: packetType, data: json)
+        if let rawPacket = try? packet.toJSON().rawData() {
+            webSocket?.send(rawPacket)
         } else {
-            print("Failed to send. JSON object could not be converted to type Data")
+            print("Failed to send packet. could not be conveted to JSON")
         }
     }
     
@@ -52,9 +89,13 @@ final class SocketManager: NSObject, SocketManaging {
             ws.event.close = { code, reason, clean in
                 print("Web Socket Closed!")
                 print(reason)
-                print("Trying to reopen")
-                //ws.open()
-                print("Web Socket Reopened!")
+                if (self.retryConnectionCount < 10) {
+                    print("Trying to reopen")
+                    ws.open()
+                    print("Web Socket Reopened!")
+                } else {
+                    print("error: tried to connect Web Socket too many times")
+                }
             }
             ws.event.error = { error in
                 print("error \(error)")
@@ -62,7 +103,11 @@ final class SocketManager: NSObject, SocketManaging {
             ws.event.message = { message in
                 if let message = message as? String {
                     let jsonMessage = JSON(parseJSON: message)
-                    self.delegate?.received(json: jsonMessage)
+                    if let p = Packet(json: jsonMessage) {
+                        self.delegate?.received(packet: p)
+                    } else {
+                        print("failed to turn json message into a packet")
+                    }
                 }
             }
             ws.open()

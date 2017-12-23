@@ -65,16 +65,14 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     // MARK: SocketManagerDelegate
     
-    func received(json: JSON) {
-        switch json["type"].stringValue {
-        case "pullMessagesResponse":
-            let dataJson: JSON = json["data"]
-            if let pullMessagesResponse = PullMessagesResponse(json: dataJson) {
+    func received(packet: Packet) {
+        switch packet.type {
+        case ConversationAPI._PullMessagesResponse:
+            if let pullMessagesResponse = PullMessagesResponse(json: packet.data) {
                 received(response: pullMessagesResponse)
             }
-        case "pushMessageResponse":
-            let dataJson: JSON = json["data"]
-            if let pushMessageResponse = PushMessageResponse(json: dataJson) {
+        case ConversationAPI._PushMessageResponse:
+            if let pushMessageResponse = PushMessageResponse(json: packet.data) {
                 received(response: pushMessageResponse)
             }
         default:
