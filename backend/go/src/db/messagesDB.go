@@ -14,7 +14,7 @@ const (
 
 func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID string, conversationUUID string) error {
 	// Could directly pass an object here and use NamedExec instead
-	result, err := dbh.db.Exec(dbh.messageQueries[_insertMessage],
+	_, err := dbh.db.Exec(dbh.messageQueries[_insertMessage],
 		map[string]interface{}{
 			"messageuuid":      messageUUID,
 			"messagetext":      messageText,
@@ -22,7 +22,7 @@ func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, mess
 			"senderuuid":       senderUUID,
 			"parentuuid":       parentUUID,
 			"conversationuuid": conversationUUID})
-	return result, err
+	return err
 }
 
 func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestServerTimestamp int) ([]models.MessageObj, error) {

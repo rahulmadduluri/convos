@@ -2,12 +2,8 @@ package api
 
 import (
 	"log"
-
-	"db"
 	"models"
 )
-
-var dbh = db.GetHandler()
 
 type SearchRequest struct {
 	SenderUUID string
