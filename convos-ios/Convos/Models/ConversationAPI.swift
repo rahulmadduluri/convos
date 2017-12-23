@@ -13,20 +13,20 @@ class PullMessagesRequest: NSObject, APIModel {
     // init
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
-            let conversationUUIDJSON = dictionary["conversationUUID"],
-            let lastXMessagesJSON = dictionary["searchText"] else {
+            let conversationUUIDJSON = dictionary["ConversationUUID"],
+            let lastXMessagesJSON = dictionary["SearchText"] else {
             return nil
         }
         conversationUUID = conversationUUIDJSON.stringValue
         lastXMessages = lastXMessagesJSON.intValue
-        earliestServerTimestamp = dictionary["earliestServerTimestamp"]?.int
+        earliestServerTimestamp = dictionary["EarliestServerTimestamp"]?.int
     }
     
     // Model
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["conversationUUID": JSON(conversationUUID), "lastXMessages": JSON(lastXMessages)]
+        var dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "LastXMessages": JSON(lastXMessages)]
         if let earliestServerTimestamp = earliestServerTimestamp {
-            dict["earliestServerTimestamp"] = JSON(earliestServerTimestamp)
+            dict["EarliestServerTimestamp"] = JSON(earliestServerTimestamp)
         }
         return JSON(dict)
     }
@@ -44,14 +44,14 @@ class PullMessagesResponse: NSObject, APIModel {
             errorMsg = nil
             return
         }
-        if let messagesJSON = dict["messages"]?.array {
+        if let messagesJSON = dict["Messages"]?.array {
             for messageJSON in messagesJSON {
                 if let message = Message(json: messageJSON) {
                     messages.append(message)
                 }
             }
         }
-        errorMsg = dict["errorMsg"]?.string
+        errorMsg = dict["ErrorMsg"]?.string
     }
     
     // Model
@@ -61,9 +61,9 @@ class PullMessagesResponse: NSObject, APIModel {
         for message in messages {
             jsonMessages.append(message.toJSON())
         }
-        dict["messages"] = JSON(jsonMessages)
+        dict["Messages"] = JSON(jsonMessages)
         if let errorMsg = errorMsg {
-            dict["errorMsg"] = JSON(errorMsg)
+            dict["ErrorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
     }
@@ -85,8 +85,8 @@ class PushMessageRequest: NSObject, APIModel {
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
-            let conversationUUIDJSON = dictionary["conversationUUID"],
-            let fullTextJSON = dictionary["fullText"] else {
+            let conversationUUIDJSON = dictionary["ConversationUUID"],
+            let fullTextJSON = dictionary["FullText"] else {
             return nil
         }
         conversationUUID = conversationUUIDJSON.stringValue
@@ -95,7 +95,7 @@ class PushMessageRequest: NSObject, APIModel {
     
     // Model
     func toJSON() -> JSON {
-        let dict: [String: JSON] = ["conversationUUID": JSON(conversationUUID), "fullText": JSON(fullText)]
+        let dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "FullText": JSON(fullText)]
         return JSON(dict)
     }
 }
@@ -139,13 +139,15 @@ class PushMessageResponse: NSObject, APIModel {
 class ConversationAPI: NSObject {
     static let _PushMessageRequest = "PushMessageRequest"
     static let _PushMessageResponse = "PushMessageResponse"
-    static let _PullMessageRequest = "PullMessageRequest"
-    static let _PullMessageResponse = "PullMessagesResponse"
     static let _PullMessagesRequest = "PullMessagesRequest"
     static let _PullMessagesResponse = "PullMessagesResponse"
     static let socketManager: SocketManager = SocketManager.sharedInstance
     
     static func pushMessage(pushMessageRequest: PushMessageRequest) {
         socketManager.send(packetType: _PushMessageRequest, json: pushMessageRequest.toJSON())
+    }
+    
+    static func pullMessages(pullMessagesRequest: PullMessagesRequest) {
+        socketManager.send(packetType: _PullMessagesRequest, json: pullMessagesRequest.toJSON())
     }
 }
