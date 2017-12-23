@@ -32,6 +32,16 @@ CREATE TABLE IF NOT EXISTS messages (
 	FOREIGN KEY (parent_id) REFERENCES messages (id)
 );
 
+CREATE TABLE IF NOT EXISTS groups (
+	id  						int 			NOT NULL AUTO_INCREMENT,
+	uuid						varchar(36)		NOT NULL,
+	name						varchar(200)	NOT NULL,
+	created_timestamp_server	int				NOT NULL,
+	photo_url 					varchar(200),
+	UNIQUE KEY (uuid),
+	PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS conversations (
 	id  						int 			NOT NULL AUTO_INCREMENT,
 	uuid						varchar(36)		NOT NULL,
@@ -44,16 +54,6 @@ CREATE TABLE IF NOT EXISTS conversations (
 	PRIMARY KEY (id),
 	FOREIGN KEY (topic_tag_id) REFERENCES tags (id),
 	FOREIGN KEY (group_id) REFERENCES groups (id)
-);
-
-CREATE TABLE IF NOT EXISTS groups (
-	id  						int 			NOT NULL AUTO_INCREMENT,
-	uuid						varchar(36)		NOT NULL,
-	name						varchar(200)	NOT NULL,
-	created_timestamp_server	int				NOT NULL,
-	photo_url 					varchar(200),
-	UNIQUE KEY (uuid),
-	PRIMARY KEY (id)
 );
 
 -- relationship specifying users in a group
