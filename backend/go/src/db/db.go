@@ -15,6 +15,7 @@ const (
 	_dbPath                  = "root:webster93@tcp(127.0.0.1:3306)/convos"
 	_userQueriesPath         = "db/userQueries.sql"
 	_conversationQueriesPath = "db/conversationQueries.sql"
+	_messageQueriesPath      = "db/messageQueries.sql"
 )
 
 type DbHandler interface {
@@ -27,6 +28,7 @@ type dbhandler struct {
 	db                  *sqlx.DB
 	userQueries         goyesql.Queries
 	conversationQueries goyesql.Queries
+	messageQueries      goyesql.Queries
 }
 
 func newDbHandler() *dbhandler {
@@ -40,10 +42,12 @@ func newDbHandler() *dbhandler {
 	}
 	userQueries := goyesql.MustParseFile(_userQueriesPath)
 	conversationQueries := goyesql.MustParseFile(_conversationQueriesPath)
+	messageQueries := goyesql.MustParseFile(_messageQueriesPath)
 	return &dbhandler{
 		db:                  db,
 		userQueries:         userQueries,
 		conversationQueries: conversationQueries,
+		messageQueries:      messageQueries,
 	}
 }
 

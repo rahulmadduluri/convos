@@ -6,12 +6,11 @@ import (
 
 type MessageObj struct {
 	UUID                   string
-	SenderUUID             string
-	PhotoURL               string
-	CreatedTimestampServer int
 	FullText               string
-	IsTopLevel             bool
+	CreatedTimestampServer int
+	SenderUUID             string
 	ParentUUID             null.String
+	SenderPhotoURL         string
 }
 
 type ConversationObj struct {

@@ -26,7 +26,8 @@ type Message struct {
 	UUID                     string
 	Full_text                null.String
 	Created_timestamp_server int
-	Parent_uuid              int
+	Sender_id                int
+	Parent_id                int
 }
 
 type Conversation struct {
