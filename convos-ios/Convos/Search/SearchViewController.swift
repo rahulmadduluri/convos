@@ -29,8 +29,8 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     let socketManager: SocketManager = SocketManager.sharedInstance
     
-    var filteredConversations: [Conversation] = []
-    fileprivate var allCachedConversations: [String: Conversation] = [:]
+    var filteredConversations: [Conversation] = [] // filtered conversations used for view data
+    fileprivate var allCachedConversations: [String: Conversation] = [:] // UUID: convo
     
     // MARK: UIViewController
     
@@ -104,7 +104,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         // Add default conversations
         for convo in filteredConversations {
             if convo.isDefault {
-                let viewData = SearchViewData(photo: nil, text: convo.topic)
+                let viewData = SearchViewData(photo: nil, text: convo.groupName)
                 groupViewDataMap[convo.groupUUID] = viewData
             }
         }
@@ -175,13 +175,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         containerView?.searchTextField.searchTextFieldDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "Rahul", isDefault: true, groupPhotoURL: nil)
-        allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "Praful", isDefault: true, groupPhotoURL: nil)
-        allCachedConversations["3"] = Conversation(uuid: "3", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", topic: "Reia", isDefault: true, groupPhotoURL: nil)
-        allCachedConversations["4"] = Conversation(uuid: "4", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "#A", isDefault: false, groupPhotoURL: nil)
-        allCachedConversations["5"] = Conversation(uuid: "5", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "#B", isDefault: false, groupPhotoURL: nil)
-        allCachedConversations["6"] = Conversation(uuid: "6", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "#C", isDefault: false, groupPhotoURL: nil)
-        allCachedConversations["7"] = Conversation(uuid: "7", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", topic: "#Scrub", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", groupName: "Rahul",  updatedTimestampServer: 0, topicTagUUID: "", topic: "", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", groupName: "Praful", updatedTimestampServer: 0, topicTagUUID: "", topic: "", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["3"] = Conversation(uuid: "3", groupUUID: "3", groupName: "Reia", updatedTimestampServer: 0, topicTagUUID: "", topic: "", isDefault: true, groupPhotoURL: nil)
+        allCachedConversations["4"] = Conversation(uuid: "4", groupUUID: "1", groupName: "Rahul", updatedTimestampServer: 0, topicTagUUID: "", topic: "#A", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["5"] = Conversation(uuid: "5", groupUUID: "2", groupName: "Praful", updatedTimestampServer: 0, topicTagUUID: "", topic: "#B", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["6"] = Conversation(uuid: "6", groupUUID: "1", groupName: "Rahul", updatedTimestampServer: 0, topicTagUUID: "", topic: "#C", isDefault: false, groupPhotoURL: nil)
+        allCachedConversations["7"] = Conversation(uuid: "7", groupUUID: "3", groupName: "Reia", updatedTimestampServer: 0, topicTagUUID: "", topic: "#Scrub", isDefault: false, groupPhotoURL: nil)
         
         filteredConversations.removeAll()
         for c in allCachedConversations.values {
@@ -204,29 +204,30 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         
         var groupFoundMap: [String: Bool] = [:]
         
-        for convo in allCachedConversations.values {
-            let parentFilterRange = (convo.topic as NSString).range(of: searchText, options: [.caseInsensitive])
-            if parentFilterRange.location != NSNotFound {
-                if !filteredConversations.contains(convo) {
-                    filteredConversations.append(convo)
+        // get conversations with matching group name
+        for c in allCachedConversations.values {
+            groupFoundMap[c.groupUUID] = true
+            let groupFilterRange = (c.groupName as NSString).range(of: searchText, options: [.caseInsensitive])
+            if (c.isDefault && groupFilterRange.location != NSNotFound) {
+                if !filteredConversations.contains(c) {
+                    filteredConversations.append(c)
                 }
-                groupFoundMap[convo.groupUUID] = true
             }
         }
         
-        for convo in allCachedConversations.values {
-            if let _ = groupFoundMap[convo.groupUUID] {
-                let childFilterRange = (convo.topic as NSString).range(of: searchText, options: [.caseInsensitive])
-                if childFilterRange.location != NSNotFound {
-                    if !filteredConversations.contains(convo) {
-                        filteredConversations.append(convo)
-                    }
+        // get conversations with matching searchText (as long as their default group convo can be found)
+        for c in allCachedConversations.values {
+            let topicFilterRange = (c.topic as NSString).range(of: searchText, options: [.caseInsensitive])
+            if (topicFilterRange.location != NSNotFound && groupFoundMap[c.groupUUID] == true) {
+                if !filteredConversations.contains(c) {
+                    filteredConversations.append(c)
                 }
             }
         }
     }
     
     fileprivate func remoteSearch(searchText: String) {
+        // replace with actual UUID
         let myUUID = "uuid-1"
         let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
         SearchAPI.search(searchRequest: request)

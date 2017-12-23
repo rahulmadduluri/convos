@@ -15,7 +15,13 @@ func (dbh *dbhandler) GetConversationObjs(userUUID string, searchText string) ([
 	var objs []models.ConversationObj
 
 	topicSearch := "%" + searchText + "%"
-	rows, err := dbh.db.Queryx(dbh.conversationQueries[_findConversations], userUUID, topicSearch)
+	rows, err := dbh.db.NamedQuery(
+		dbh.conversationQueries[_findConversations],
+		map[string]interface{}{
+			"user_uuid":   userUUID,
+			"search_text": searchText,
+		},
+	)
 
 	if err != nil {
 		return objs, err

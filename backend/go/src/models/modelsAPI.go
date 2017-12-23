@@ -19,6 +19,7 @@ type ConversationObj struct {
 	Topic                  string
 	IsDefault              bool
 	GroupUUID              string
+	GroupName              string
 	GroupPhotoURL          null.String
 	TopicTagUUID           string
 }
