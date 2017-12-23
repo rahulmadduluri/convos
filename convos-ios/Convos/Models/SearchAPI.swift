@@ -16,8 +16,8 @@ class SearchRequest: NSObject, APIModel {
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
-            let senderUuidObject = dictionary["senderUuid"],
-            let searchTextObject = dictionary["searchText"] else {
+            let senderUuidObject = dictionary["SenderUuid"],
+            let searchTextObject = dictionary["SearchText"] else {
                 return nil
         }
         senderUuid = senderUuidObject.stringValue
@@ -26,7 +26,7 @@ class SearchRequest: NSObject, APIModel {
     
     // Model
     func toJSON() -> JSON {
-        let dict = ["senderUuid": senderUuid, "searchText": searchText]
+        let dict = ["SenderUuid": senderUuid, "SearchText": searchText]
         return JSON(dict)
     }
 }
@@ -43,10 +43,10 @@ class SearchResponse: NSObject, APIModel {
             errorMsg = nil
             return
         }
-        if let conversationsJSON = dict["conversations"]?.array {
+        if let conversationsJSON = dict["Conversations"]?.array {
             var tempConversations: [Conversation] = []
-            for conversationJSON in conversationsJSON {
-                if let conversation = Conversation(json: conversationJSON) {
+            for c in conversationsJSON {
+                if let conversation = Conversation(json: c) {
                     tempConversations.append(conversation)
                 }
             }
@@ -54,7 +54,7 @@ class SearchResponse: NSObject, APIModel {
         } else {
             conversations = nil
         }
-        errorMsg = dict["errorMsg"]?.string
+        errorMsg = dict["ErrorMsg"]?.string
     }
     
     // Model
@@ -65,10 +65,10 @@ class SearchResponse: NSObject, APIModel {
             for conversation in conversations {
                 conversationsJSON.append(conversation.toJSON())
             }
-            dict["conversations"] = JSON(conversationsJSON)
+            dict["Conversations"] = JSON(conversationsJSON)
         }
         if let errorMsg = errorMsg {
-            dict["errorMsg"] = JSON(errorMsg)
+            dict["ErrorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
     }

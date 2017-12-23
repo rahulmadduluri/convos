@@ -56,7 +56,7 @@ final class SocketManager: NSObject, SocketManaging {
     static let sharedInstance = SocketManager()
     
     var webSocket: WebSocket?
-    var delegate: SocketManagerDelegate?
+    var delegates = MulticastDelegate<SocketManagerDelegate>()
     
     private var retryConnectionCount = 0
     
@@ -104,7 +104,12 @@ final class SocketManager: NSObject, SocketManaging {
                 if let message = message as? String {
                     let jsonMessage = JSON(parseJSON: message)
                     if let p = Packet(json: jsonMessage) {
-                        self.delegate?.received(packet: p)
+                        print("did receive packet")
+                        print(p.type)
+                        print(p.data)
+                        self.delegates.invoke{
+                            $0.received(packet: p)
+                        }
                     } else {
                         print("failed to turn json message into a packet")
                     }

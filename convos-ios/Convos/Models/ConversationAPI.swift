@@ -113,22 +113,22 @@ class PushMessageResponse: NSObject, APIModel {
             errorMsg = nil
             return nil
         }
-        if let messageJSON = dictionary["message"] {
+        if let messageJSON = dictionary["Message"] {
             message = Message(json: messageJSON)
         } else {
             message = nil
         }
-        errorMsg = dictionary["errorMsg"]?.string
+        errorMsg = dictionary["ErrorMsg"]?.string
     }
     
     // Model
     func toJSON() -> JSON {
         var dict: [String: JSON] = [:]
         if let message = message {
-            dict["message"] = message.toJSON()
+            dict["Message"] = message.toJSON()
         }
         if let errorMsg = errorMsg {
-            dict["errorMsg"] = JSON(errorMsg)
+            dict["ErrorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
     }

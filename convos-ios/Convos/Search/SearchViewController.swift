@@ -165,12 +165,15 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
                 allCachedConversations[convo.uuid] = convo
             }
         }
+        let localSearchText = containerView?.searchTextField.text ?? ""
+        searchTextUpdated(searchText: localSearchText)
         containerView?.searchTextField.stopLoadingIndicator()
     }
     
     fileprivate func configureSearch() {
         searchTableVC.searchTableVCDelegate = self
         containerView?.searchTextField.searchTextFieldDelegate = self
+        socketManager.delegates.add(delegate: self)
         
         allCachedConversations["1"] = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "Rahul", isDefault: true, groupPhotoURL: nil)
         allCachedConversations["2"] = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "Praful", isDefault: true, groupPhotoURL: nil)
@@ -224,7 +227,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     }
     
     fileprivate func remoteSearch(searchText: String) {
-        let myUUID = ""
+        let myUUID = "uuid-1"
         let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
         SearchAPI.search(searchRequest: request)
     }

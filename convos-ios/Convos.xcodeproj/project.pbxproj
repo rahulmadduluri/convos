@@ -26,6 +26,7 @@
 		B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8F1F7D03B300735F5D /* MainHomeView.swift */; };
 		B75C00B21F8AFF4C00021AB5 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C00B11F8AFF4C00021AB5 /* SearchAPI.swift */; };
 		B75C00B41F8AFF7200021AB5 /* ConversationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C00B31F8AFF7200021AB5 /* ConversationAPI.swift */; };
+		B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -57,6 +58,7 @@
 		B748CF8F1F7D03B300735F5D /* MainHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		B75C00B11F8AFF4C00021AB5 /* SearchAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		B75C00B31F8AFF7200021AB5 /* ConversationAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationAPI.swift; sourceTree = "<group>"; };
+		B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticastDelegate.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			children = (
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
 				B78720FB1F5E98DD004F74E7 /* SocketManager.swift */,
+				B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */,
 				B748CF8E1F7D037F00735F5D /* Home */,
 				B748CF7D1F7B492800735F5D /* CustomUI */,
 				B748CF681F728F7D00735F5D /* Models */,
@@ -338,6 +341,7 @@
 				B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */,
 				B75C00B21F8AFF4C00021AB5 /* SearchAPI.swift in Sources */,
 				B748CF781F7B2B1700735F5D /* Models.swift in Sources */,
+				B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */,
 				B748CF8B1F7CFB6D00735F5D /* SearchTableViewHeader.swift in Sources */,
 				B75C00B41F8AFF7200021AB5 /* ConversationAPI.swift in Sources */,
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
