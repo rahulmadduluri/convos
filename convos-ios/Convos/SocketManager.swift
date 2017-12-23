@@ -18,7 +18,7 @@ protocol SocketManagerDelegate {
     func received(json: JSON)
 }
 
-final class SocketManager: NSObject, SocketManaging {
+final class SocketManager: NSObject, SocketManaging {    
     static let sharedInstance = SocketManager()
     
     var webSocket: WebSocket?
@@ -44,8 +44,7 @@ final class SocketManager: NSObject, SocketManaging {
     // MARK: Private
     
     fileprivate func configureWebSocket() {
-        webSocket = WebSocket("wss://localhost:8000/ws")
-        webSocket?.allowSelfSignedSSL = true
+        webSocket = WebSocket("ws://localhost:8000/ws")
         if let ws = webSocket {
             ws.event.open = {
                 print("Web Socket Opened!")
@@ -61,8 +60,10 @@ final class SocketManager: NSObject, SocketManaging {
                 print("error \(error)")
             }
             ws.event.message = { message in
-                let jsonMessage = JSON(message)
-                self.delegate?.received(json: jsonMessage)
+                if let message = message as? String {
+                    let jsonMessage = JSON(parseJSON: message)
+                    self.delegate?.received(json: jsonMessage)
+                }
             }
             ws.open()
         }

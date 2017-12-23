@@ -149,7 +149,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     func received(json: JSON) {
         switch json["type"].stringValue {
-        case "searchResponse":
+        case "SearchResponse":
             let dataJson: JSON = json["data"]
             if let searchResponse = SearchResponse(json: dataJson) {
                 received(response: searchResponse)
@@ -172,6 +172,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     
     fileprivate func searchForResults(_ searchText: String) {
         let searchRequest = SearchRequest(senderUuid: "", searchText: searchText)
+        let packet = SearchAPI.toPacket
         socketManager.send(json: searchRequest.toJSON())
     }
     
@@ -237,4 +238,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
         SearchAPI.search(searchRequest: request)
     }
+}
+
+private struct RequestTypes {
+    static let searchRequest = "SearchRequest"
+    static let searchResponse = "SearchResponse"
 }

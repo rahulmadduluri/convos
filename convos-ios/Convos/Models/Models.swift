@@ -13,7 +13,7 @@ import SwiftyJSON
 
 protocol Model {}
 
-protocol APIModel {
+protocol APIModel: Model {
     func toJSON() -> JSON
     init?(json: JSON)
 }
