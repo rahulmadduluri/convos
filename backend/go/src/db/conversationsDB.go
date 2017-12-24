@@ -8,18 +8,18 @@ import (
 
 // list of queries
 const (
-	_findConversations = "findConversationsForUserWithTitle"
+	_findConversations = "findConversationsForUserWithSearch"
 )
 
 func (dbh *dbhandler) GetConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error) {
 	var objs []models.ConversationObj
 
-	topicSearch := "%" + searchText + "%"
+	wildcardSearch := "%" + searchText + "%"
 	rows, err := dbh.db.NamedQuery(
 		dbh.conversationQueries[_findConversations],
 		map[string]interface{}{
 			"user_uuid":   userUUID,
-			"search_text": searchText,
+			"search_text": wildcardSearch,
 		},
 	)
 

@@ -19,7 +19,8 @@ func Search(req SearchRequest) (SearchResponse, error) {
 	conversations, err := dbh.GetConversationObjs(req.SenderUUID, req.SearchText)
 	if err != nil {
 		log.Println("failed to get conversation for user: ", req.SenderUUID)
-		log.Fatal(err)
+		log.Println(req.SearchText)
+		log.Println(err)
 	}
 	return SearchResponse{
 		Conversations: conversations,

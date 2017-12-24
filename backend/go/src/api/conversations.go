@@ -43,7 +43,7 @@ func PullMessages(req PullMessagesRequest) (PullMessagesResponse, error) {
 	messages, err := dbh.GetLastXMessages(req.ConversationUUID, req.LastXMessages, latestServerTimestamp)
 	if err != nil {
 		log.Println("failed to get messages for req", req)
-		log.Fatal(err)
+		log.Println(err)
 	}
 	return PullMessagesResponse{
 		Messages: messages,
@@ -57,7 +57,7 @@ func PushMessage(req PushMessageRequest) (PushMessageResponse, error) {
 	err := dbh.InsertMessage(messageUUID, req.FullText, int(time.Now().Unix()), req.SenderUUID, req.ParentUUID, req.ConversationUUID)
 	if err != nil {
 		log.Println("failed to add message to tables", req)
-		log.Fatal(err)
+		log.Println(err)
 	}
 	return PushMessageResponse{}, err
 }

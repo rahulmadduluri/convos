@@ -1,4 +1,4 @@
--- name: findConversationsForUserWithTopic
+-- name: findConversationsForUserWithSearch
 select 
 	conversations.uuid as uuid,
 	conversations.updated_timestamp_server as updatedtimestampserver,
