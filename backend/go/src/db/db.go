@@ -4,6 +4,7 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/guregu/null"
 	"github.com/jmoiron/sqlx"
 	"github.com/nleof/goyesql"
 	"models"
@@ -22,7 +23,7 @@ type DbHandler interface {
 	GetConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error)
 	GetUsers(name string) ([]models.User, error)
 	GetLastXMessages(conversationUUID string, X int, latestServerTimestamp int) ([]models.MessageObj, error)
-	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID string, conversationUUID string) error
+	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
 	Close()
 }
 

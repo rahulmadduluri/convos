@@ -73,13 +73,11 @@ func (c *client) RunRead(h Hub) {
 			continue
 		}
 
-		res, err := performAPI(packet.Data, packet.Type)
+		err = c.performAPI(packet.Data, packet.Type, h)
 		if err != nil {
 			log.Println(err)
 			continue
 		}
-
-		c.Send(res)
 	}
 }
 
@@ -117,56 +115,75 @@ func (c *client) Close() {
 	c.socket.Close()
 }
 
-func performAPI(data json.RawMessage, apiType string) (*Packet, error) {
+//
+
+func (c *client) performAPI(data json.RawMessage, apiType string, h Hub) error {
 	var err error
 	var res models.Model
 	var resAPI string
+	var receiveruuids []string
 
+	// handle request
 	switch apiType {
 	case _searchRequest:
 		var searchRequest api.SearchRequest
 		err = json.Unmarshal(data, &searchRequest)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		res, err = api.Search(searchRequest)
 		resAPI = _searchResponse
 		if err != nil {
-			return nil, err
+			return err
 		}
 	case _pullMessagesRequest:
 		var pullMessagesRequest api.PullMessagesRequest
 		err = json.Unmarshal(data, &pullMessagesRequest)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		res, err = api.PullMessages(pullMessagesRequest)
 		resAPI = _pullMessagesResponse
 		if err != nil {
-			return nil, err
+			return err
 		}
 	case _pushMessageRequest:
 		var pushMessageRequest api.PushMessageRequest
 		err = json.Unmarshal(data, &pushMessageRequest)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		res, err = api.PushMessage(pushMessageRequest)
+		res, receiveruuids, err = api.PushMessage(pushMessageRequest)
 		resAPI = _pushMessageResponse
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
 	serverTimestamp := time.Now()
 	responseData, err := json.Marshal(res)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &Packet{
+	result := &Packet{
 		Type:            resAPI,
 		ServerTimestamp: &serverTimestamp,
 		Data:            responseData,
-	}, nil
+	}
+
+	// just need to handle the case of PushMessagesRequest.
+	// The response contains the user uuid's to send to, so just calling h.send(res, uuid) on each on them should be enough.
+	if apiType == _pushMessageRequest {
+		for _, receiveruuid := range receiveruuids {
+			ruuid, err := uuid.FromString(receiveruuid)
+			err = h.Send(*result, ruuid)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	} else {
+		c.Send(result)
+	}
+	return nil
 }
