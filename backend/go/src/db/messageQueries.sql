@@ -12,6 +12,14 @@ insert into conversations_messages
 		(select id from conversations where conversations.uuid = :conversationuuid),
 		(select id from messages where messages.uuid = :messageuuid)
 ;
+select 
+	users.uuid as uuid
+from users
+join group_users
+	on group_users.user_id = users.id
+join conversations
+	on conversations.group_id = group_users.group_id
+;
 
 -- name: lastXMessages
 select 	

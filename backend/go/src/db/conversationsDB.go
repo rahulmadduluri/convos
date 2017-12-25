@@ -19,7 +19,7 @@ func (dbh *dbhandler) GetConversationObjs(userUUID string, searchText string) ([
 		dbh.conversationQueries[_findConversations],
 		map[string]interface{}{
 			"user_uuid":   userUUID,
-			"search_text": searchText,
+			"search_text": topicSearch,
 		},
 	)
 

@@ -23,3 +23,7 @@ type ConversationObj struct {
 	GroupPhotoURL          null.String
 	TopicTagUUID           string
 }
+
+type UserObj struct {
+	UUID string
+}
