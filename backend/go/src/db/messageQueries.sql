@@ -7,7 +7,7 @@ insert into messages (uuid, full_text, created_timestamp_server, sender_id, pare
 		(select id from users where users.uuid = :senderuuid), 
 		(select id from messages where messages.uuid = :parentuuid)
 ;
-insert into conversations_messages (conversation_id, tag_id)
+insert into conversations_messages (conversation_id, message_id)
 	select 
 		(select id from conversations where conversations.uuid = :conversationuuid),
 		(select id from messages where messages.uuid = :messageuuid)
