@@ -2,5 +2,5 @@
 select *
 from users
 where 
-	username like ?
+	name like ?
 ;

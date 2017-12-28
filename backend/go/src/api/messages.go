@@ -2,6 +2,7 @@ package api
 
 import (
 	"db"
+	"fmt"
 	"github.com/guregu/null"
 	"github.com/satori/go.uuid"
 	"log"
@@ -24,7 +25,7 @@ type PullMessagesResponse struct {
 
 type PushMessageRequest struct {
 	ConversationUUID string
-	FullText         string
+	AllText          string
 	SenderUUID       string
 	ParentUUID       null.String // TODO: Handle case of this being null in the insert
 }
@@ -41,6 +42,7 @@ func PullMessages(req PullMessagesRequest) (PullMessagesResponse, error) {
 	if req.LatestServerTimestamp != nil {
 		latestServerTimestamp = *req.LatestServerTimestamp
 	}
+	log.Println(req.ConversationUUID, req.LastXMessages, latestServerTimestamp)
 	messages, err := dbh.GetLastXMessages(req.ConversationUUID, req.LastXMessages, latestServerTimestamp)
 	if err != nil {
 		log.Println("failed to get messages for req", req)
@@ -56,21 +58,21 @@ func PushMessage(req PushMessageRequest) (PushMessageResponse, []string, error) 
 	log.Println(req)
 	messageUUID := uuid.NewV4().String()
 	serverTimestamp := int(time.Now().Unix())
-	users, err := dbh.InsertMessage(messageUUID, req.FullText, serverTimestamp, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
+	users, err := dbh.InsertMessage(messageUUID, req.AllText, serverTimestamp, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
 	if err != nil {
 		log.Println("failed to add message to tables", req)
-		log.Println(err)
+		fmt.Println(err)
 	}
 
 	var receiveruuids []string
 	for _, user := range users {
 		receiveruuids = append(receiveruuids, user.UUID)
 	}
-
+	log.Println(receiveruuids)
 	return PushMessageResponse{
 		Message: models.MessageObj{
 			UUID:                   messageUUID,
-			FullText:               req.FullText,
+			AllText:                req.AllText,
 			CreatedTimestampServer: serverTimestamp,
 			SenderUUID:             req.SenderUUID,
 			ParentUUID:             req.ParentUUID,

@@ -24,7 +24,7 @@ type Tag struct {
 type Message struct {
 	ID                       int
 	UUID                     string
-	Full_text                null.String
+	All_text                 null.String
 	Created_timestamp_server int
 	Sender_id                int
 	Parent_id                int

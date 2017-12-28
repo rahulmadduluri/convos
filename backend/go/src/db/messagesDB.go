@@ -8,22 +8,42 @@ import (
 
 // list of queries
 const (
-	_insertMessage = "insertMessage"
-	_lastXMessages = "lastXMessages"
+	_insertMessage           = "insertMessage"
+	_getUsersForConversation = "getUsersForConversation"
+	_lastXMessages           = "lastXMessages"
 )
 
 func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error) {
 	// Returns users who need to be informed about message
 	var objs []models.UserObj
 
-	rows, err := dbh.db.NamedQuery(dbh.messageQueries[_insertMessage],
-		map[string]interface{}{
-			"messageuuid":      messageUUID,
-			"messagetext":      messageText,
-			"messagetimestamp": messageTimestamp,
-			"senderuuid":       senderUUID,
-			"parentuuid":       parentUUID,
-			"conversationuuid": conversationUUID})
+	m := map[string]interface{}{
+		"messageuuid":      messageUUID,
+		"messagetext":      messageText,
+		"messagetimestamp": messageTimestamp,
+		"senderuuid":       senderUUID,
+		"parentuuid":       parentUUID,
+		"conversationuuid": conversationUUID}
+	// tx, err := dbh.db.Beginx()
+	// _, err = tx.NamedExec(dbh.messageQueries[_insertMessageInMessages], m)
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return objs, err
+	// }
+	// _, err = tx.NamedExec(dbh.messageQueries[_insertMessageInConversation], m)
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return objs, err
+	// }
+	// err = tx.Commit()
+	// if err != nil {
+	// 	return objs, err
+	// }
+	_, err := dbh.db.NamedExec(dbh.messageQueries[_insertMessage], m)
+	if err != nil {
+		return objs, err
+	}
+	rows, err := dbh.db.NamedQuery(dbh.messageQueries[_getUsersForConversation], m)
 	if err != nil {
 		return objs, err
 	}
@@ -53,6 +73,7 @@ func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestSer
 			"latestservertimestamp": latestServerTimestamp})
 
 	if err != nil {
+		log.Fatal("query error: ", err)
 		return objs, err
 	}
 	defer rows.Close()
@@ -67,5 +88,6 @@ func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestSer
 		objs = append(objs, obj)
 	}
 	err = rows.Err()
+
 	return objs, err
 }

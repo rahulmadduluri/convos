@@ -46,12 +46,20 @@ func newDbHandler() *dbhandler {
 	userQueries := goyesql.MustParseFile(_userQueriesPath)
 	conversationQueries := goyesql.MustParseFile(_conversationQueriesPath)
 	messageQueries := goyesql.MustParseFile(_messageQueriesPath)
-	return &dbhandler{
+	dbh := &dbhandler{
 		db:                  db,
 		userQueries:         userQueries,
 		conversationQueries: conversationQueries,
 		messageQueries:      messageQueries,
 	}
+	users, err := dbh.InsertMessage("uuid-2", "Welcome!", 1500, "uuid-1", null.StringFromPtr(nil), "uuid-1")
+	if err != nil {
+		log.Println("failed to add message to tables")
+		log.Println(err)
+	} else {
+		log.Println("Added messages to table. Users", users)
+	}
+	return dbh
 }
 
 func GetHandler() DbHandler {

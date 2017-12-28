@@ -6,7 +6,7 @@ import (
 
 type MessageObj struct {
 	UUID                   string
-	FullText               string
+	AllText                string
 	CreatedTimestampServer int
 	SenderUUID             string
 	ParentUUID             null.String

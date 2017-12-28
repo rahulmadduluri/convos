@@ -30,7 +30,7 @@ type Packet struct {
 
 // Client is an interface that allows interaction w/ client socket
 type Client interface {
-	GetUUID() uuid.UUID
+	GetUUID() string
 	GetSocket() *websocket.Conn
 	RunRead(h Hub)
 	RunWrite(h Hub)
@@ -39,7 +39,7 @@ type Client interface {
 }
 
 type client struct {
-	uuid      uuid.UUID
+	uuid      string
 	socket    *websocket.Conn
 	sendQueue chan Packet
 }
@@ -47,7 +47,7 @@ type client struct {
 // init
 func NewClient(ws *websocket.Conn) Client {
 	return &client{
-		uuid:      uuid.NewV4(),
+		uuid:      uuid.NewV4().String(),
 		socket:    ws,
 		sendQueue: make(chan Packet),
 	}
@@ -98,7 +98,7 @@ func (c *client) RunWrite(h Hub) {
 	}
 }
 
-func (c *client) GetUUID() uuid.UUID {
+func (c *client) GetUUID() string {
 	return c.uuid
 }
 
@@ -176,8 +176,7 @@ func (c *client) performAPI(data json.RawMessage, apiType string, h Hub) error {
 	// The response contains the user uuid's to send to, so just calling h.send(res, uuid) on each on them should be enough.
 	if apiType == _pushMessageRequest {
 		for _, receiveruuid := range receiveruuids {
-			ruuid, err := uuid.FromString(receiveruuid)
-			err = h.Send(*result, ruuid)
+			err = h.SendToUser(*result, receiveruuid)
 			if err != nil {
 				log.Println(err)
 			}
