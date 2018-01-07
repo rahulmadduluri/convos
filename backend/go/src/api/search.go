@@ -11,8 +11,8 @@ type SearchRequest struct {
 }
 
 type SearchResponse struct {
-	Conversations []models.ConversationObj
-	ErrorMsg      *string
+	Groups   []models.GroupObj
+	ErrorMsg *string
 }
 
 func Search(req SearchRequest) (SearchResponse, error) {
@@ -23,6 +23,6 @@ func Search(req SearchRequest) (SearchResponse, error) {
 		log.Println(err)
 	}
 	return SearchResponse{
-		Conversations: conversations,
+		Groups: groups,
 	}, err
 }

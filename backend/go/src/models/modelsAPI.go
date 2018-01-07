@@ -18,10 +18,14 @@ type ConversationObj struct {
 	UpdatedTimestampServer int
 	Topic                  string
 	IsDefault              bool
-	GroupUUID              string
-	GroupName              string
-	GroupPhotoURL          null.String
 	TopicTagUUID           string
+}
+
+type GroupObj struct {
+	UUID          string
+	Name          string
+	PhotoURL      string
+	Conversations []ConversationObj
 }
 
 type UserObj struct {
