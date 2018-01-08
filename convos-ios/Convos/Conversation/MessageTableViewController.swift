@@ -7,41 +7,13 @@
 
 import UIKit
 
-struct MessageViewData: CollapsibleTableViewData, Equatable {
-    var photo: UIImage?
-    var text: String
-    var isTopLevel: Bool
-    var isCollapsed: Bool
-    var children: [CollapsibleTableViewData]
-    var dateCreatedText: String
-    
-    init(photo: UIImage?, text: String, dateCreatedText: String, isTopLevel: Bool = true, isCollapsed: Bool = true) {
-        self.photo = photo
-        self.text = text
-        self.dateCreatedText = dateCreatedText
-        self.isTopLevel = isTopLevel
-        self.isCollapsed = isCollapsed
-        self.children = []
-    }
-}
 
-func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
-    return lhs.text == rhs.text && lhs.dateCreatedText == rhs.dateCreatedText
-}
-
-protocol MessageTableVCDelegate {
-    func getViewData() -> [MessageViewData]
-    func goBack()
-}
-
-protocol MessageTableVCProtocol {
-    func resetMessageData()
-    func addMessage(newMVD: MessageViewData, parentMVD: MessageViewData?)
-}
-
-class MessageTableViewController: CollapsibleTableViewController, MessageTableVCProtocol {
+class MessageTableViewController: UITableViewController, MessageTableVCProtocol, MessageTableCellDelegate {
     
     var messageTableVCDelegate: MessageTableVCDelegate? = nil
+    
+    var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
+    var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
     // MARK: - View Controller
     
@@ -65,12 +37,6 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.white
-        // Auto resizing the height of the cell
-//        tableView.estimatedSectionHeaderHeight = 60.0
-//        tableView.sectionHeaderHeight = 60.0
-//        tableView.estimatedRowHeight = 44.0
-//        tableView.rowHeight = 44.0
-        // Other table view config
         tableView.separatorStyle = .none
         
         // Setup Gesture recognizer
@@ -117,6 +83,60 @@ class MessageTableViewController: CollapsibleTableViewController, MessageTableVC
         }
         tableView.reloadData()
     }
+    
+    // UITableViewController
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return delegate?.viewDataModels.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let vdm = viewDataModels[section] as? CollapsibleTableViewData {
+            return vdm.isCollapsed ? 0 : vdm.children.count
+        }
+        return 0
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellHeightAtIndexPath[indexPath] ?? 40.0
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return headerHeightAtSection[section] ?? 40.0
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let cell: CollapsibleTableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? CollapsibleTableViewCell ??
+            CollapsibleTableViewCell(style: .default, reuseIdentifier: "cell")
+        
+        let height = max(cell.frame.size.height, 40.0)
+        cellHeightAtIndexPath[indexPath] = height
+        return height
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "messageHeader") as? CollapsibleTableViewHeader ?? CollapsibleTableViewHeader(reuseIdentifier: "messageHeader")
+        
+        let height = max(header.frame.size.height, 40.0)
+        headerHeightAtSection[section] = height
+        return height
+    }
+    
+    // MARK: MessageCellDelegate
+
+    func messageTapped(section: Int, row: Int?, mvd: MessageViewData) {
+        guard let delegate = messageTableVCDelegate else {
+            return
+        }
+        if row == nil {
+            if (delegate.getViewData())
+        }
+        if let d = messageTableVCDelegate,
+            let hasMessage:
+        self.tableView.reloadSections(NSIndexSet(index: section) as IndexSet, with: .none)
+    }
+    
 }
 
 //
@@ -126,8 +146,8 @@ extension MessageTableViewController {
     
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: ConversationTableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? ConversationTableViewCell ??
-            ConversationTableViewCell(style: .default, reuseIdentifier: "cell")
+        let cell: MessageTableViewCell = tableView.dequeueReusableCell(withIdentifier: "messageCell") as? MessageTableViewCell ??
+            MessageTableViewCell(style: .default, reuseIdentifier: "messageCell")
         
         if let messageViewData = viewDataModels[indexPath.section].children[indexPath.row] as? MessageViewData {
             cell.customTextLabel.text = messageViewData.text

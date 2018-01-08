@@ -41,15 +41,18 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     
     // MARK: SearchVCDelegate
     
-    func resultSelected(result: SearchViewData) {
+    func convoSelected(conversation: Conversation) {
         if self.conversationVC == nil {
             self.conversationVC = ConversationViewController()
         }
-        conversationVC?.setConversationInfo(uuid: "", newTitle: result.text)
+        conversationVC?.setConversationInfo(uuid: "", newTitle: conversation.topic)
         
         if let newVC = self.conversationVC {
             self.present(newVC, animated: false, completion: nil)
         }
+    }
+    
+    func groupSelected(group: Group) {
     }
     
     func keyboardWillShow() {

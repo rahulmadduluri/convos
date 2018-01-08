@@ -8,36 +8,9 @@
 
 import UIKit
 
-struct SearchViewData: CollapsibleTableViewData, Equatable {
-    var photo: UIImage?
-    var text: String
-    var isTopLevel: Bool
-    var isCollapsed: Bool
-    var children: [CollapsibleTableViewData]
-        
-    init(photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = false) {
-        self.photo = photo
-        self.text = text
-        self.isTopLevel = isTopLevel
-        self.isCollapsed = isCollapsed
-        self.children = []
-    }
-}
-
-func ==(lhs: SearchViewData, rhs: SearchViewData) -> Bool {
-    return lhs.text == rhs.text
-}
-
-protocol SearchTableVCProtocol {
-    func reloadSearchResultsData()
-}
-
-protocol SearchTableVCDelegate: CollapsibleTableVCDelegate, SearchUIDelegate {
-}
-
-class SearchTableViewController: CollapsibleTableViewController, SearchTableVCProtocol {
+class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     
-    var searchTableVCDelegate: SearchTableVCDelegate? = nil
+    var searchVC: SearchUIDelegate? = nil
     
     // MARK: - View Controller
     
@@ -57,21 +30,18 @@ class SearchTableViewController: CollapsibleTableViewController, SearchTableVCPr
     // MARK: SearchTableVCProtocol
     
     func reloadSearchResultsData() {
-        viewDataModels = searchTableVCDelegate?.filteredViewData() ?? []
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
     
-    // MARK: UIGestureRecognizer Functions
+    // MARK: Cell/Header Delegate Functions
     
-    override func cellTapped(row: Int, section: Int) {
-        let viewData = viewDataModels[section].children[row]
-        searchTableVCDelegate?.itemSelected(viewData: viewData)
+    func cellTapped(uuid: String) {
+        searchVC?.convoSelected(uuid: uuid)
     }
     
-    override func headerTapped(section: Int) {
-        let viewData = viewDataModels[section]
-        searchTableVCDelegate?.itemSelected(viewData: viewData)
+    func headerTapped(uuid: String) {
+        searchVC?.groupSelected(uuid: uuid)
     }
 }
     
@@ -99,7 +69,8 @@ extension SearchTableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: "header")
         
-        if let searchViewData = viewDataModels[section] as? SearchViewData {
+        if let svc = searchVC,
+            let searchViewData = svc.searchViewData.keys as? SearchViewData {
             header.customTextLabel.text = searchViewData.text
             header.photoImageView.image = searchViewData.photo
         }

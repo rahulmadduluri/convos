@@ -1,5 +1,5 @@
 //
-//  ConversationTableViewCell.swift
+//  MessageTableViewCell.swift
 //
 //  Created by Rahul Madduluri on 7/21/17.
 //  Copyright © 2017 rahulm. All rights reserved.
@@ -7,13 +7,23 @@
 
 import UIKit
 
-class ConversationTableViewCell: CollapsibleTableViewCell {
+class MessageTableViewCell: UITableViewCell, MessageUIComponent {
+    
+    var delegate: MessageTableCellDelegate?
+    var messageViewData: MessageViewData
+
+    let customTextLabel = UILabel()
+    let photoImageView = UIImageView()
+    
+    var section = 0
+    var row = 0
     
     let separator = UIView()
     
     // MARK: Initalizers
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    init(style: UITableViewCellStyle, reuseIdentifier: String?, mvd: MessageViewData) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.messageViewData = mvd
         
         let marginGuide = contentView.layoutMarginsGuide
                 
@@ -49,10 +59,24 @@ class ConversationTableViewCell: CollapsibleTableViewCell {
         // cell config
         self.selectionStyle = .none
         
+        // Gesture Recognizer
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MessageTableViewCell.tapCell(_:))))
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+
+    // Gesture Recognizer
+    
+    func tapCell(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard let cell = gestureRecognizer.view as? MessageTableViewCell else {
+            return
+        }
+        
+        delegate?.messageTapped(row: cell.row, section: cell.section, mvd: cell.mvd)
     }
     
 }

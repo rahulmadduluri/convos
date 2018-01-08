@@ -1,4 +1,4 @@
-public struct OrderedDictionary<K: Hashable, V> {
+public struct OrderedDictionary<K, V> where K: Hashable, K: Comparable {
     var keys = [K]()
     var dict = [K:V]()
     
@@ -10,6 +10,7 @@ public struct OrderedDictionary<K: Hashable, V> {
         get {
             return self.dict[key]
         }
+        // NOTE: Inserts will be O(n) and sort all keys
         set(newValue) {
             if newValue == nil {
                 self.dict.removeValue(forKey:key)
@@ -17,7 +18,7 @@ public struct OrderedDictionary<K: Hashable, V> {
             } else {
                 let oldValue = self.dict.updateValue(newValue!, forKey: key)
                 if oldValue == nil {
-                    self.keys.append(key)
+                    self.keys = self.keys.sorted { $0 > $1 }
                 }
             }
         }

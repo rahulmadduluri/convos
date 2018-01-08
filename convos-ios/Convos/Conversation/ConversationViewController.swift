@@ -13,6 +13,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     var messageTableVC = MessageTableViewController()
     var containerView: MainConversationView?
+    var messageViewData = OrderedDictionary<MessageViewData, [MessageViewData]>()
     
     fileprivate var uuid: String = ""
     fileprivate var titleText: String = ""

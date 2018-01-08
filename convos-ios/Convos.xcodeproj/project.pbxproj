@@ -11,22 +11,24 @@
 		B708F99F1FAC75CD00757721 /* ConversationBottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B708F99E1FAC75CD00757721 /* ConversationBottomBarView.swift */; };
 		B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF641F728D1600735F5D /* MainConversationView.swift */; };
 		B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */; };
-		B748CF701F73D8F000735F5D /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6F1F73D8F000735F5D /* ConversationTableViewCell.swift */; };
-		B748CF721F73D91A00735F5D /* ConversationTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF711F73D91A00735F5D /* ConversationTableViewHeader.swift */; };
+		B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF6F1F73D8F000735F5D /* MessageTableViewCell.swift */; };
+		B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF711F73D91A00735F5D /* MessageTableViewHeader.swift */; };
 		B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */; };
 		B748CF781F7B2B1700735F5D /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF771F7B2B1700735F5D /* Models.swift */; };
 		B748CF7C1F7B48D000735F5D /* CollapsibleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */; };
-		B748CF7F1F7B497600735F5D /* CollasibleTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF7E1F7B497600735F5D /* CollasibleTableViewHeader.swift */; };
 		B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF801F7C789400735F5D /* MainSearchView.swift */; };
 		B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF821F7CA98500735F5D /* SearchTableViewController.swift */; };
 		B748CF871F7CAC0300735F5D /* CollapsibleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */; };
-		B748CF891F7CD2B400735F5D /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF881F7CD2B400735F5D /* SearchTableViewCell.swift */; };
-		B748CF8B1F7CFB6D00735F5D /* SearchTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8A1F7CFB6D00735F5D /* SearchTableViewHeader.swift */; };
 		B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8C1F7D036000735F5D /* HomeViewController.swift */; };
 		B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8F1F7D03B300735F5D /* MainHomeView.swift */; };
 		B75C00B21F8AFF4C00021AB5 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C00B11F8AFF4C00021AB5 /* SearchAPI.swift */; };
 		B75C00B41F8AFF7200021AB5 /* ConversationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C00B31F8AFF7200021AB5 /* ConversationAPI.swift */; };
 		B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */; };
+		B77BB14A1FFCED88005FB88C /* CustomCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB1491FFCED88005FB88C /* CustomCollectionViewController.swift */; };
+		B77BB14F1FFF84FE005FB88C /* SharedUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB14E1FFF84FE005FB88C /* SharedUI.swift */; };
+		B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB150200268EF005FB88C /* OrderedDictionary.swift */; };
+		B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15220038EED005FB88C /* ConversationProtocols.swift */; };
+		B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15420039434005FB88C /* SearchProtocols.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -43,22 +45,24 @@
 		B708F99E1FAC75CD00757721 /* ConversationBottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationBottomBarView.swift; sourceTree = "<group>"; };
 		B748CF641F728D1600735F5D /* MainConversationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConversationView.swift; sourceTree = "<group>"; };
 		B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewController.swift; sourceTree = "<group>"; };
-		B748CF6F1F73D8F000735F5D /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
-		B748CF711F73D91A00735F5D /* ConversationTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTableViewHeader.swift; sourceTree = "<group>"; };
+		B748CF6F1F73D8F000735F5D /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
+		B748CF711F73D91A00735F5D /* MessageTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewHeader.swift; sourceTree = "<group>"; };
 		B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationTopBarView.swift; sourceTree = "<group>"; };
 		B748CF771F7B2B1700735F5D /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewCell.swift; sourceTree = "<group>"; };
-		B748CF7E1F7B497600735F5D /* CollasibleTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollasibleTableViewHeader.swift; sourceTree = "<group>"; };
 		B748CF801F7C789400735F5D /* MainSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSearchView.swift; sourceTree = "<group>"; };
 		B748CF821F7CA98500735F5D /* SearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewController.swift; sourceTree = "<group>"; };
 		B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewController.swift; sourceTree = "<group>"; };
-		B748CF881F7CD2B400735F5D /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
-		B748CF8A1F7CFB6D00735F5D /* SearchTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewHeader.swift; sourceTree = "<group>"; };
 		B748CF8C1F7D036000735F5D /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B748CF8F1F7D03B300735F5D /* MainHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		B75C00B11F8AFF4C00021AB5 /* SearchAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		B75C00B31F8AFF7200021AB5 /* ConversationAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationAPI.swift; sourceTree = "<group>"; };
 		B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticastDelegate.swift; sourceTree = "<group>"; };
+		B77BB1491FFCED88005FB88C /* CustomCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewController.swift; sourceTree = "<group>"; };
+		B77BB14E1FFF84FE005FB88C /* SharedUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedUI.swift; sourceTree = "<group>"; };
+		B77BB150200268EF005FB88C /* OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
+		B77BB15220038EED005FB88C /* ConversationProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationProtocols.swift; sourceTree = "<group>"; };
+		B77BB15420039434005FB88C /* SearchProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchProtocols.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -105,9 +109,9 @@
 		B748CF7D1F7B492800735F5D /* CustomUI */ = {
 			isa = PBXGroup;
 			children = (
-				B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */,
-				B748CF7E1F7B497600735F5D /* CollasibleTableViewHeader.swift */,
-				B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */,
+				B77BB14E1FFF84FE005FB88C /* SharedUI.swift */,
+				B77BB1481FFCECCE005FB88C /* CollapsibleTableVC */,
+				B77BB14B1FFCED9B005FB88C /* CustomCollectionVC */,
 			);
 			path = CustomUI;
 			sourceTree = "<group>";
@@ -121,14 +125,30 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		B77BB1481FFCECCE005FB88C /* CollapsibleTableVC */ = {
+			isa = PBXGroup;
+			children = (
+				B748CF7B1F7B48D000735F5D /* CollapsibleTableViewCell.swift */,
+				B748CF861F7CAC0300735F5D /* CollapsibleTableViewController.swift */,
+			);
+			path = CollapsibleTableVC;
+			sourceTree = "<group>";
+		};
+		B77BB14B1FFCED9B005FB88C /* CustomCollectionVC */ = {
+			isa = PBXGroup;
+			children = (
+				B77BB1491FFCED88005FB88C /* CustomCollectionViewController.swift */,
+			);
+			name = CustomCollectionVC;
+			sourceTree = "<group>";
+		};
 		B781CDA61F53BE0A0088FB3B /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				B77BB15420039434005FB88C /* SearchProtocols.swift */,
 				B788107E1F539D23009AC9FE /* SearchViewController.swift */,
 				B748CF821F7CA98500735F5D /* SearchTableViewController.swift */,
 				B748CF801F7C789400735F5D /* MainSearchView.swift */,
-				B748CF881F7CD2B400735F5D /* SearchTableViewCell.swift */,
-				B748CF8A1F7CFB6D00735F5D /* SearchTableViewHeader.swift */,
 				B781CDA71F53BE920088FB3B /* SearchTextField.swift */,
 			);
 			path = Search;
@@ -137,13 +157,14 @@
 		B78720FA1F5E85B4004F74E7 /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
+				B77BB15220038EED005FB88C /* ConversationProtocols.swift */,
 				B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */,
 				B748CF6D1F73D89D00735F5D /* MessageTableViewController.swift */,
 				B748CF641F728D1600735F5D /* MainConversationView.swift */,
 				B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */,
 				B708F99E1FAC75CD00757721 /* ConversationBottomBarView.swift */,
-				B748CF6F1F73D8F000735F5D /* ConversationTableViewCell.swift */,
-				B748CF711F73D91A00735F5D /* ConversationTableViewHeader.swift */,
+				B748CF6F1F73D8F000735F5D /* MessageTableViewCell.swift */,
+				B748CF711F73D91A00735F5D /* MessageTableViewHeader.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -172,6 +193,7 @@
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
 				B78720FB1F5E98DD004F74E7 /* SocketManager.swift */,
 				B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */,
+				B77BB150200268EF005FB88C /* OrderedDictionary.swift */,
 				B748CF8E1F7D037F00735F5D /* Home */,
 				B748CF7D1F7B492800735F5D /* CustomUI */,
 				B748CF681F728F7D00735F5D /* Models */,
@@ -333,26 +355,28 @@
 				B748CF871F7CAC0300735F5D /* CollapsibleTableViewController.swift in Sources */,
 				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
-				B748CF721F73D91A00735F5D /* ConversationTableViewHeader.swift in Sources */,
+				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
-				B748CF701F73D8F000735F5D /* ConversationTableViewCell.swift in Sources */,
+				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
+				B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
+				B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */,
 				B708F99F1FAC75CD00757721 /* ConversationBottomBarView.swift in Sources */,
 				B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */,
 				B75C00B21F8AFF4C00021AB5 /* SearchAPI.swift in Sources */,
 				B748CF781F7B2B1700735F5D /* Models.swift in Sources */,
 				B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */,
-				B748CF8B1F7CFB6D00735F5D /* SearchTableViewHeader.swift in Sources */,
+				B77BB14A1FFCED88005FB88C /* CustomCollectionViewController.swift in Sources */,
+				B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */,
 				B75C00B41F8AFF7200021AB5 /* ConversationAPI.swift in Sources */,
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
 				B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
-				B748CF891F7CD2B400735F5D /* SearchTableViewCell.swift in Sources */,
 				B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
 				B748CF7C1F7B48D000735F5D /* CollapsibleTableViewCell.swift in Sources */,
-				B748CF7F1F7B497600735F5D /* CollasibleTableViewHeader.swift in Sources */,
+				B77BB14F1FFF84FE005FB88C /* SharedUI.swift in Sources */,
 				B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,9 +7,6 @@
 
 import UIKit
 
-protocol CollapsibleTableViewCellDelegate {
-    func cellTapped(row: Int, section: Int)
-}
 
 class CollapsibleTableViewCell: UITableViewCell {
     

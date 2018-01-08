@@ -7,7 +7,14 @@
 
 import UIKit
 
-class ConversationTableViewHeader: CollapsibleTableViewHeader {
+class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
+    
+    var delegate: MessageTableCellDelegate?
+    let customTextLabel = UILabel()
+    let rightSideLabel = UILabel()
+    let photoImageView = UIImageView()
+    
+    var section: Int = 0
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -44,10 +51,24 @@ class ConversationTableViewHeader: CollapsibleTableViewHeader {
         rightSideLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
         rightSideLabel.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
         
+        // UIGestureRecognizer
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MessageTableViewHeader.tapHeader(_:))))
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    //
+    // Trigger toggle section when tapping on the header
+    //
+    func tapHeader(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard let cell = gestureRecognizer.view as? MessageTableViewHeader else {
+            return
+        }
+        
+        delegate?.headerTapped(section: cell.section)
     }
 
 }

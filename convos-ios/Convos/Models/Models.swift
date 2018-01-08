@@ -11,7 +11,7 @@ import SwiftyJSON
 
 // MARK: Model Protocols
 
-protocol Model {}
+protocol Model: Hashable {}
 
 protocol APIModel: Model {
     func toJSON() -> JSON
@@ -65,6 +65,10 @@ class Message: NSObject, APIModel {
     let createdTimestampServer: Int
     let isTopLevel: Bool
     let parentUUID: String?
+    
+    override var hashValue: Int {
+        return uuid.hashValue
+    }
 
     // init
     required init?(json: JSON) {
@@ -110,6 +114,10 @@ class Conversation: NSObject, APIModel {
     let topic: String
     let isDefault: Bool
     let groupPhotoURL: String?
+    
+    override var hashValue: Int {
+        return uuid.hashValue
+    }
     
     // init
     init(uuid: String, groupUUID: String, groupName: String, updatedTimestampServer: Int, topicTagUUID: String, topic: String, isDefault: Bool, groupPhotoURL: String? = nil) {
@@ -159,6 +167,10 @@ func ==(lhs: Conversation, rhs: Conversation) -> Bool {
     return lhs.uuid == rhs.uuid
 }
 
+func <(lhs: Conversation, rhs: Conversation) -> Bool {
+    return lhs.updatedTimestampServer < rhs.updatedTimestampServer
+}
+
 // MARK: Tag Model
 
 class Tag: NSObject, APIModel {
@@ -192,3 +204,68 @@ class Tag: NSObject, APIModel {
 func ==(lhs: Tag, rhs: Tag) -> Bool {
     return lhs.uuid == rhs.uuid
 }
+
+// MARK: Group Model
+
+class Group: NSObject, APIModel {
+    
+    // vars
+    let uuid: String
+    let name: String
+    let photoURL: String?
+    let conversations: [Conversation]
+    
+    override var hashValue: Int {
+        return uuid.hashValue
+    }
+    
+    // init
+    init(uuid: String, name: String, photoURL: String?, conversations: [Conversation]) {
+        self.uuid = uuid
+        self.name = name
+        self.photoURL = photoURL
+        self.conversations = conversations
+    }
+    
+    required init?(json: JSON) {
+        guard let dictionary = json.dictionary,
+            let uuidJSON = dictionary["UUID"],
+            let nameJSON = dictionary["Name"],
+            let conversationsJSON = dictionary["Conversations"] else {
+                return nil
+        }
+        uuid = uuidJSON.stringValue
+        name = nameJSON.stringValue
+        conversations = []
+        photoURL = dictionary["photoURL"]?.stringValue
+        
+        for cj in conversationsJSON.arrayValue {
+            if let c = Conversation(json: cj) {
+                conversations.append(c)
+            }
+        }
+    }
+    
+    // Model
+    func toJSON() -> JSON {
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name), "Conversations": JSON(conversations)]
+        if let url = photoURL {
+            dict["PhotoURL"] = JSON(url)
+        }
+        return JSON(dict)
+    }
+    
+}
+
+func ==(lhs: Group, rhs: Group) -> Bool {
+    return lhs.uuid == rhs.uuid
+}
+
+func <(lhs: Group, rhs: Group) -> Bool {
+    guard let a = lhs.conversations.sorted(by: <).first,
+        let b = rhs.conversations.sorted(by: <).first else {
+        return false
+    }
+    return a < b
+}
+

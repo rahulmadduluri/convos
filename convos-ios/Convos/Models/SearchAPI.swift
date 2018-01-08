@@ -33,26 +33,26 @@ class SearchRequest: NSObject, APIModel {
 
 class SearchResponse: NSObject, APIModel {
     // vars
-    let conversations: [Conversation]?
+    let groups: [Group]?
     let errorMsg: String?
     
     // init
     required init?(json: JSON) {
         guard let dict = json.dictionary else {
-            conversations = nil
+            groups = nil
             errorMsg = nil
             return
         }
-        if let conversationsJSON = dict["Conversations"]?.array {
-            var tempConversations: [Conversation] = []
-            for c in conversationsJSON {
-                if let conversation = Conversation(json: c) {
-                    tempConversations.append(conversation)
+        if let groupsJSON = dict["Groups"]?.array {
+            var tempGroups: [Group] = []
+            for g in groupsJSON {
+                if let group = Group(json: g) {
+                    tempGroups.append(group)
                 }
             }
-            conversations = tempConversations
+            groups = tempGroups
         } else {
-            conversations = nil
+            groups = nil
         }
         errorMsg = dict["ErrorMsg"]?.string
     }
@@ -60,12 +60,12 @@ class SearchResponse: NSObject, APIModel {
     // Model
     func toJSON() -> JSON {
         var dict: [String: JSON] = [:]
-        if let conversations = conversations {
-            var conversationsJSON: [JSON] = []
-            for conversation in conversations {
-                conversationsJSON.append(conversation.toJSON())
+        if let groups = groups {
+            var groupsJSON: [JSON] = []
+            for g in groups {
+                groupsJSON.append(g.toJSON())
             }
-            dict["Conversations"] = JSON(conversationsJSON)
+            dict["Groups"] = JSON(groupsJSON)
         }
         if let errorMsg = errorMsg {
             dict["ErrorMsg"] = JSON(errorMsg)
