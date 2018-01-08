@@ -16,6 +16,17 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
     
     var section: Int = 0
     
+    var messageViewData: MessageViewData? {
+        get {
+            return self.messageViewData
+        }
+        set {
+            self.messageViewData = newValue
+            customTextLabel.text = messageViewData?.text
+            photoImageView.image = messageViewData?.photo
+        }
+    }
+    
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
@@ -68,7 +79,7 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
             return
         }
         
-        delegate?.headerTapped(section: cell.section)
+        delegate?.messageTapped(section: cell.section, row: nil, mvd: messageViewData)
     }
 
 }

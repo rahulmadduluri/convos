@@ -15,9 +15,7 @@ protocol CustomCollectionViewData: CustomViewData {
 private let reuseIdentifier = "CustomCollectionViewCell"
 
 // Customizable Collection VC
-class CustomCollectionViewController: UICollectionViewController, CustomViewDataDelegate {
-
-    var viewDataModels: [CustomViewData] = []
+class CustomCollectionViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

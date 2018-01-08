@@ -8,21 +8,28 @@
 
 import UIKit
 
-struct MessageViewData: Equatable, Comparable {
+struct MessageViewData: Hashable, Comparable {
     var uuid: String?
     var photo: UIImage?
     var text: String
     var isTopLevel: Bool
     var isCollapsed: Bool
+    var createdTimestamp: Int
+    var createdTimeText: String
     var children: [MessageViewData]
-    var dateCreatedText: String
     
-    init(photo: UIImage?, text: String, dateCreatedText: String, isTopLevel: Bool = true, isCollapsed: Bool = true) {
+    var hashValue: Int {
+        return uuid?.hashValue ?? 0
+    }
+    
+    init(uuid: String? = nil, photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = true, createdTimestamp: Int, createdTimeText: String) {
+        self.uuid = uuid
         self.photo = photo
         self.text = text
-        self.dateCreatedText = dateCreatedText
         self.isTopLevel = isTopLevel
         self.isCollapsed = isCollapsed
+        self.createdTimestamp = createdTimestamp
+        self.createdTimeText = createdTimeText
         self.children = []
     }
 }
@@ -32,7 +39,7 @@ func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
 }
 
 func <(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
-    return lh.dateCreated
+    return lhs.createdTimestamp < rhs.createdTimestamp
 }
 
 
@@ -47,10 +54,10 @@ protocol MessageTableVCProtocol {
 }
 
 protocol MessageTableCellDelegate {
-    func messageTapped(section: Int, row: Int?, mvd: MessageViewData)
+    func messageTapped(section: Int, row: Int?, mvd: MessageViewData?)
 }
 
 protocol MessageUIComponent {
     var delegate: MessageTableCellDelegate? { get set }
-    var messageViewData: MessageViewData
+    var messageViewData: MessageViewData? { get set }
 }

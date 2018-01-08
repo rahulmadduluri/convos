@@ -34,20 +34,22 @@ protocol SearchTableVCProtocol {
 
 struct SearchViewData: CustomCollectionViewData, Comparable {
     var uuid: String?
-    var name: String
+    var text: String
     var photo: UIImage?
     var updatedTimestamp: Int
+    var updatedTimeText: String
     var type: Int
     
     var hashValue: Int {
         return uuid?.hashValue ?? 0
     }
     
-    init(uuid: String? = nil, name: String, photo: UIImage? = UIImage(named: "rahul_test_pic"), updatedTimestamp: Int, type: Int) {
+    init(uuid: String? = nil, text: String, photo: UIImage? = UIImage(named: "rahul_test_pic"), updatedTimestamp: Int, updatedTimeText: String, type: Int) {
         self.uuid = uuid
-        self.name = name
+        self.text = text
         self.photo = photo
         self.updatedTimestamp = updatedTimestamp
+        self.updatedTimeText = updatedTimeText
         self.type = type
     }
 }

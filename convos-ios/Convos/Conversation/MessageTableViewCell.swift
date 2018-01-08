@@ -7,23 +7,32 @@
 
 import UIKit
 
+
 class MessageTableViewCell: UITableViewCell, MessageUIComponent {
     
     var delegate: MessageTableCellDelegate?
-    var messageViewData: MessageViewData
 
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()
+    let separator = UIView()
     
     var section = 0
     var row = 0
     
-    let separator = UIView()
+    var messageViewData: MessageViewData? {
+        get {
+            return self.messageViewData
+        }
+        set {
+            self.messageViewData = newValue
+            customTextLabel.text = messageViewData?.text
+            photoImageView.image = messageViewData?.photo
+        }
+    }
     
     // MARK: Initalizers
-    init(style: UITableViewCellStyle, reuseIdentifier: String?, mvd: MessageViewData) {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.messageViewData = mvd
         
         let marginGuide = contentView.layoutMarginsGuide
                 
@@ -76,7 +85,7 @@ class MessageTableViewCell: UITableViewCell, MessageUIComponent {
             return
         }
         
-        delegate?.messageTapped(row: cell.row, section: cell.section, mvd: cell.mvd)
+        delegate?.messageTapped(section: cell.section, row: cell.row, mvd: cell.messageViewData)
     }
     
 }

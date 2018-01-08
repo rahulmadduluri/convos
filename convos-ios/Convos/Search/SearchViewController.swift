@@ -198,7 +198,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     fileprivate func localSearch(text: String) {
         filteredGroups.removeAll()
         
-        var groupMatched: [String: Bool] = [] // Did group name match?
+        var groupFoundMap: [String: Bool] = [:] // Did group name match?
         
         // get matching groups
         for g in allCachedGroups.keys {
