@@ -8,6 +8,8 @@
 
 import UIKit
 
+extension Group: Comparable {}
+
 enum SearchViewType: Int {
     case group
     case newConversation
@@ -15,8 +17,7 @@ enum SearchViewType: Int {
 }
 
 protocol SearchUIDelegate {
-    var searchViewData: OrderedDictionary<SearchViewData, [SearchViewData]> { get set } // groups: convo data map
-    
+    func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
     func convoSelected(uuid: String)
     func groupSelected(uuid: String)
 }
@@ -29,7 +30,16 @@ protocol SearchVCDelegate {
 }
 
 protocol SearchTableVCProtocol {
-    func reloadSearchResultsData()
+    func reloadSearchViewData()
+}
+
+protocol SearchTextFieldDelegate: SearchUIDelegate {
+    func searchTextUpdated(searchText: String)
+}
+
+protocol SearchTableCellDelegate {
+    func cellTapped(uuid: String)
+    func headerTapped(uuid: String)
 }
 
 struct SearchViewData: CustomCollectionViewData, Comparable {

@@ -8,7 +8,9 @@
 
 import UIKit
 
-class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
+private let cellReuseIdentifier = "SearchCell"
+
+class SearchTableViewController: UITableViewController, SearchTableVCProtocol, SearchTableCellDelegate {
     
     var searchVC: SearchUIDelegate? = nil
     
@@ -17,7 +19,7 @@ class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        reloadSearchResultsData()
+        reloadSearchViewData()
     }
     
     override func viewDidLoad() {
@@ -29,12 +31,12 @@ class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     
     // MARK: SearchTableVCProtocol
     
-    func reloadSearchResultsData() {
+    func reloadSearchViewData() {
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
     
-    // MARK: Cell/Header Delegate Functions
+    // MARK: SearchTableCellDelegate
     
     func cellTapped(uuid: String) {
         searchVC?.convoSelected(uuid: uuid)
@@ -51,11 +53,11 @@ class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
 extension SearchTableViewController {
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell") as? SearchTableViewCell ??
-            SearchTableViewCell(style: .default, reuseIdentifier: "cell")
+        let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? SearchTableViewCell ??
+            SearchTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
-        if let searchViewData = viewDataModels[indexPath.section].children[indexPath.row] as? SearchViewData {
-            cell.customTextLabel.text = searchViewData.text
+        if let svd = searchVC?.getSearchViewData() {
+            cell.searchViewData = svd[svd.keys[indexPath.section]]?[indexPath.row]
         }
         
         cell.row = indexPath.row
@@ -67,14 +69,12 @@ extension SearchTableViewController {
     
     // Header
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: "header")
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: cellReuseIdentifier) as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: cellReuseIdentifier)
         
-        if let svc = searchVC,
-            let searchViewData = svc.searchViewData.keys as? SearchViewData {
-            header.customTextLabel.text = searchViewData.text
-            header.photoImageView.image = searchViewData.photo
+        if let svd = searchVC?.getSearchViewData() {
+            header.searchViewData = svd[svd.keys[section]]
         }
-                
+        
         header.section = section
         header.delegate = self
                 

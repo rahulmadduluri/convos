@@ -27,6 +27,10 @@
 		B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB150200268EF005FB88C /* OrderedDictionary.swift */; };
 		B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15220038EED005FB88C /* ConversationProtocols.swift */; };
 		B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15420039434005FB88C /* SearchProtocols.swift */; };
+		B77BB157200638DE005FB88C /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB156200638DE005FB88C /* SearchTableViewCell.swift */; };
+		B77BB159200638F2005FB88C /* SearchTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */; };
+		B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */; };
+		B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15C20079974005FB88C /* GeneralUtilities.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -59,6 +63,10 @@
 		B77BB150200268EF005FB88C /* OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
 		B77BB15220038EED005FB88C /* ConversationProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationProtocols.swift; sourceTree = "<group>"; };
 		B77BB15420039434005FB88C /* SearchProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchProtocols.swift; sourceTree = "<group>"; };
+		B77BB156200638DE005FB88C /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
+		B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewHeader.swift; sourceTree = "<group>"; };
+		B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTimeUtilities.swift; sourceTree = "<group>"; };
+		B77BB15C20079974005FB88C /* GeneralUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralUtilities.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -135,6 +143,8 @@
 				B77BB15420039434005FB88C /* SearchProtocols.swift */,
 				B788107E1F539D23009AC9FE /* SearchViewController.swift */,
 				B748CF821F7CA98500735F5D /* SearchTableViewController.swift */,
+				B77BB156200638DE005FB88C /* SearchTableViewCell.swift */,
+				B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */,
 				B748CF801F7C789400735F5D /* MainSearchView.swift */,
 				B781CDA71F53BE920088FB3B /* SearchTextField.swift */,
 			);
@@ -181,6 +191,8 @@
 				B78720FB1F5E98DD004F74E7 /* SocketManager.swift */,
 				B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */,
 				B77BB150200268EF005FB88C /* OrderedDictionary.swift */,
+				B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */,
+				B77BB15C20079974005FB88C /* GeneralUtilities.swift */,
 				B748CF8E1F7D037F00735F5D /* Home */,
 				B748CF7D1F7B492800735F5D /* CustomUI */,
 				B748CF681F728F7D00735F5D /* Models */,
@@ -342,7 +354,10 @@
 				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
+				B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
+				B77BB159200638F2005FB88C /* SearchTableViewHeader.swift in Sources */,
+				B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */,
 				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
 				B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
@@ -358,6 +373,7 @@
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
 				B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
+				B77BB157200638DE005FB88C /* SearchTableViewCell.swift in Sources */,
 				B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,

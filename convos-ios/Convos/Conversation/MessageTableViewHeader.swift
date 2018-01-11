@@ -79,7 +79,7 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
             return
         }
         
-        delegate?.messageTapped(section: cell.section, row: nil, mvd: messageViewData)
+        delegate?.messageTapped(section: cell.section, mvd: messageViewData)
     }
 
 }

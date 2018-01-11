@@ -10,10 +10,6 @@
 
 import UIKit
 
-protocol SearchTextFieldDelegate: SearchUIDelegate {
-    func searchTextUpdated(searchText: String)
-}
-
 class SearchTextField: UITextField {
     
     var searchTextFieldDelegate: SearchTextFieldDelegate?
@@ -147,8 +143,8 @@ class SearchTextField: UITextField {
     func textFieldDidEndEditingOnExit() {
         self.placeholderLabel?.text = nil
 
-        if let firstElement = searchTextFieldDelegate?.filteredViewData().first {
-            self.text = firstElement.text
+        if let svd = searchTextFieldDelegate?.getSearchViewData() {
+            self.text = svd.keys[0].text
         }
     }
     

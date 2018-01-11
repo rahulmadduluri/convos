@@ -11,30 +11,18 @@ import SwiftyJSON
 import SwiftWebSocket
 
 class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDelegate, SearchTextFieldDelegate {
-
-    var containerView: MainSearchView? = nil
-    var searchTableVC = SearchTableViewController() // search results table
+    
     var searchVCDelegate: SearchVCDelegate? = nil
-    var filteredGroups = OrderedDictionary<Group, [Conversation]>() // filtered conversations used for view data
-    
-    let socketManager: SocketManager = SocketManager.sharedInstance
-    
-    
-    var searchViewData: OrderedDictionary<SearchViewData, [SearchViewData]> {
-        var res = OrderedDictionary<SearchViewData, [SearchViewData]>()
-        for g in filteredGroups.keys {
-            res[SearchViewData(uuid: g.uuid, text: g.name, photo: nil, type: SearchViewType.group.rawValue)] =
-                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, type: SearchViewType.conversation.rawValue) }
-        }
-        return res
-    }
-    
+
+    fileprivate var containerView: MainSearchView? = nil
+    fileprivate var searchTableVC = SearchTableViewController() // search results table
+    fileprivate var filteredGroups = Set<Group>() // filtered groups used for view data
+    fileprivate var allCachedGroups = Set<Group>() // all group/conversations stored
+    fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
+        
     var searchText: String? {
         return containerView?.searchTextField.text
     }
-
-    
-    fileprivate var allCachedGroups: [Group: [Conversation]] = [:] // all group/conversations stored
     
     // MARK: UIViewController
     
@@ -95,9 +83,19 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     
     // MARK: SearchUIDelegate
     
+    func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
+        var res = OrderedDictionary<SearchViewData, [SearchViewData]>()
+        for g in filteredGroups {
+            let cs = g.conversations.sorted(by: >)
+            res[SearchViewData(uuid: g.uuid, text: g.name, photo: nil, updatedTimestamp: cs[0].updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: cs[0].updatedTimestampServer), type: SearchViewType.group.rawValue)] =
+                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgo(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
+        }
+        return res
+    }
+    
     func convoSelected(uuid: String) {
-        for (_, cs) in filteredGroups {
-            for c in cs {
+        for g in filteredGroups {
+            for c in g.conversations {
                 if c.uuid == uuid {
                     searchVCDelegate?.convoSelected(conversation: c)
                 }
@@ -106,7 +104,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     }
     
     func groupSelected(uuid: String) {
-        for g in filteredGroups.keys {
+        for g in filteredGroups {
             if (g.uuid == uuid) {
                 searchVCDelegate?.groupSelected(group: g)
             }
@@ -115,16 +113,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     
     // MARK: SearchTextFieldDelegate
     
-    func searchTextUpdated(text: String) {
-        if text.isEmpty {
-            let mra = mostRecentlyActiveGroups(allGroups: allCachedGroups, lastX: 7)
-            
-            filteredGroups =
-                mostRecentlyActiveGroups(allGroups: allCachedGroups, lastX: 7)
-        } else {
-            localSearch(text: text)
-        }
-        searchTableVC.reloadSearchResultsData()
+    func searchTextUpdated(searchText text: String) {
+        localSearch(text: searchText)
+        searchTableVC.reloadSearchViewData()
     }
     
     func keyboardWillShow() {
@@ -153,12 +144,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     fileprivate func received(response: SearchResponse) {
         if let groups = response.groups {
             for g in groups {
-                if allCachedGroups[g] == nil {
-                    allCachedGroups[g] = []
-                }
-                for c in g.conversations {
-                    allCachedGroups[g]?.append(c)
-                }
+                allCachedGroups.insert(g)
             }
         }
         let localSearchText = searchText ?? ""
@@ -171,19 +157,8 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
         containerView?.searchTextField.searchTextFieldDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        allCachedGroups["1"] = Conversation(uuid: "1", groupUUID: "1", groupName: "Rahul",  updatedTimestampServer: 0, topicTagUUID: "", topic: "", isDefault: true, groupPhotoURL: nil)
-        allCachedGroups["2"] = Conversation(uuid: "2", groupUUID: "2", groupName: "Praful", updatedTimestampServer: 0, topicTagUUID: "", topic: "", isDefault: true, groupPhotoURL: nil)
-        allCachedGroups["3"] = Conversation(uuid: "3", groupUUID: "3", groupName: "Reia", updatedTimestampServer: 0, topicTagUUID: "", topic: "", isDefault: true, groupPhotoURL: nil)
-        allCachedGroups["1"] = Conversation(uuid: "4", groupUUID: "1", groupName: "Rahul", updatedTimestampServer: 0, topicTagUUID: "", topic: "#A", isDefault: false, groupPhotoURL: nil)
-        allCachedGroups["2"] = Conversation(uuid: "5", groupUUID: "2", groupName: "Praful", updatedTimestampServer: 0, topicTagUUID: "", topic: "#B", isDefault: false, groupPhotoURL: nil)
-        allCachedGroups["1"] = Conversation(uuid: "6", groupUUID: "1", groupName: "Rahul", updatedTimestampServer: 0, topicTagUUID: "", topic: "#C", isDefault: false, groupPhotoURL: nil)
-        allCachedGroups["3"] = Conversation(uuid: "7", groupUUID: "3", groupName: "Reia", updatedTimestampServer: 0, topicTagUUID: "", topic: "#Scrub", isDefault: false, groupPhotoURL: nil)
-        
-        filteredGroups.removeAll()
-        for c in allCachedGroups.values {
-            filteredGroups.append(c)
-        }
-        searchTableVC.reloadSearchResultsData()
+        testingSetup()
+        searchTableVC.reloadSearchViewData()
         
         containerView?.searchTextField.userStoppedTypingHandler = {
             if let searchText = self.containerView?.searchTextField.text {
@@ -198,22 +173,25 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     fileprivate func localSearch(text: String) {
         filteredGroups.removeAll()
         
-        var groupFoundMap: [String: Bool] = [:] // Did group name match?
-        
+        if text.isEmpty {
+            filteredGroups = allCachedGroups
+        }
+                
         // get matching groups
-        for g in allCachedGroups.keys {
+        for g in allCachedGroups {
             let groupFilterRange = (g.name as NSString).range(of: text, options: [.caseInsensitive])
             if (groupFilterRange.location != NSNotFound) {
-                filteredGroups[g] = []
+                filteredGroups.insert(g)
             }
         }
         
         // get conversations with matching searchText (as long as their default group convo can be found)
-        for c in allCachedGroups.values {
-            let topicFilterRange = (c.topic as NSString).range(of: text, options: [.caseInsensitive])
-            if (topicFilterRange.location != NSNotFound && groupFoundMap[c.groupUUID] == true) {
-                if !filteredConversations.contains(c) {
-                    filteredConversations.append(c)
+        for g in allCachedGroups {
+            for c in g.conversations {
+                let topicFilterRange = (c.topic as NSString).range(of: text, options: [.caseInsensitive])
+                if (topicFilterRange.location != NSNotFound) {
+                    g.conversations.append(c)
+                    filteredGroups.insert(g)
                 }
             }
         }
@@ -226,21 +204,18 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
         SearchAPI.search(searchRequest: request)
     }
     
-    fileprivate func mostRecentlyActiveGroups(groupConvoMap: [Group: [Conversation]], lastX: Int) -> [Group] {
-        var activeGroups: [Group] = []
-        let sortedConvos = groupConvoMap.values.flatMap{$0}.sorted{$0.updatedTimestampServer > $1.updatedTimestampServer}
-        for c in sortedConvos {
-            if (activeGroups.first{ $0.uuid == c.groupUUID } == nil) {
-                if let g = groupConvoMap.keys.first(where: { $0.uuid == c.groupUUID }) {
-                    activeGroups.append(g)
-                }
-            }
-            if (activeGroups.count > lastX) {
-                break
-            }
-        }
-        return activeGroups
+    fileprivate func testingSetup() {
+        let conversation1 = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "#A", isDefault: false, photoURL: nil)
+        let conversation2 = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "", topic: "#B", isDefault: false, photoURL: nil)
+        let conversation3 = Conversation(uuid: "3", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "", topic: "#C", isDefault: false, photoURL: nil)
+        let conversation4 = Conversation(uuid: "4", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "", topic: "#Scrub", isDefault: false, photoURL: nil)
+        
+        let group1 = Group(uuid: "1", name: "Rahul", photoURL: nil, conversations: [conversation1, conversation3])
+        let group2 = Group(uuid: "2", name: "Praful", photoURL: nil, conversations: [conversation2])
+        let group3 = Group(uuid: "3", name: "Reia", photoURL: nil, conversations: [conversation4])
+        
+        filteredGroups.removeAll()
+        allCachedGroups = [group1, group2, group3]
+        searchTextUpdated(searchText: "")
     }
 }
-
-private extension Group: Comparable {}

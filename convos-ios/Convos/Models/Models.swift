@@ -102,33 +102,35 @@ func ==(lhs: Message, rhs: Message) -> Bool {
     return lhs.uuid == rhs.uuid
 }
 
+func <(lhs: Message, rhs: Message) -> Bool {
+    return lhs.createdTimestampServer < rhs.createdTimestampServer
+}
+
 // MARK: Conversation Models
 
 class Conversation: NSObject, APIModel {
     // vars
     let uuid: String
     let groupUUID: String
-    let groupName: String
     let updatedTimestampServer: Int
     let topicTagUUID: String
     let topic: String
     let isDefault: Bool
-    let groupPhotoURL: String?
+    let photoURL: String?
     
     override var hashValue: Int {
         return uuid.hashValue
     }
     
     // init
-    init(uuid: String, groupUUID: String, groupName: String, updatedTimestampServer: Int, topicTagUUID: String, topic: String, isDefault: Bool, groupPhotoURL: String? = nil) {
+    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topicTagUUID: String, topic: String, isDefault: Bool, photoURL: String? = nil) {
         self.uuid = uuid
         self.groupUUID = groupUUID
-        self.groupName = groupName
         self.updatedTimestampServer = updatedTimestampServer
         self.topicTagUUID = topicTagUUID
         self.topic = topic
         self.isDefault = isDefault
-        self.groupPhotoURL = groupPhotoURL
+        self.photoURL = photoURL
     }
     
     
@@ -136,7 +138,6 @@ class Conversation: NSObject, APIModel {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
             let groupUUIDJSON = dictionary["GroupUUID"],
-            let groupNameJSON = dictionary["GroupName"],
             let updatedTimestampServerJSON = dictionary["UpdatedTimestampServer"],
             let topicTagUUIDJSON = dictionary["TopicTagUUID"],
             let topicJSON = dictionary["Topic"],
@@ -145,19 +146,18 @@ class Conversation: NSObject, APIModel {
         }
         uuid = uuidJSON.stringValue
         groupUUID = groupUUIDJSON.stringValue
-        groupName = groupNameJSON.stringValue
         updatedTimestampServer = updatedTimestampServerJSON.intValue
         topicTagUUID = topicTagUUIDJSON.stringValue
         topic = topicJSON.stringValue
         isDefault = isDefaultJSON.boolValue
-        groupPhotoURL = dictionary["GroupPhotoURL"]?.string
+        photoURL = dictionary["PhotoURL"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["UUID": JSON(uuid), "GroupUUID": JSON(groupUUID), "GroupName": JSON(groupName), "UpdatedTimestampServer": JSON(updatedTimestampServer), "TopicTagUUID": JSON(topicTagUUID), "Topic": JSON(topic), "IsDefault": JSON(isDefault)]
-        if let url = groupPhotoURL {
-            dict["GroupPhotoURL"] = JSON(url)
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "GroupUUID": JSON(groupUUID), "UpdatedTimestampServer": JSON(updatedTimestampServer), "TopicTagUUID": JSON(topicTagUUID), "Topic": JSON(topic), "IsDefault": JSON(isDefault)]
+        if let url = photoURL {
+            dict["PhotoURL"] = JSON(url)
         }
         return JSON(dict)
     }
@@ -169,6 +169,10 @@ func ==(lhs: Conversation, rhs: Conversation) -> Bool {
 
 func <(lhs: Conversation, rhs: Conversation) -> Bool {
     return lhs.updatedTimestampServer < rhs.updatedTimestampServer
+}
+
+func >(lhs: Conversation, rhs: Conversation) -> Bool {
+    return lhs.updatedTimestampServer > rhs.updatedTimestampServer
 }
 
 // MARK: Tag Model
@@ -213,7 +217,7 @@ class Group: NSObject, APIModel {
     let uuid: String
     let name: String
     let photoURL: String?
-    let conversations: [Conversation]
+    var conversations: [Conversation]
     
     override var hashValue: Int {
         return uuid.hashValue

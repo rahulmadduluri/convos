@@ -19,12 +19,14 @@ type ConversationObj struct {
 	Topic                  string
 	IsDefault              bool
 	TopicTagUUID           string
+	GroupUUID              string
+	PhotoURL               null.String
 }
 
 type GroupObj struct {
 	UUID          string
 	Name          string
-	PhotoURL      string
+	PhotoURL      null.String
 	Conversations []ConversationObj
 }
 

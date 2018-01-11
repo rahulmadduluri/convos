@@ -8,6 +8,8 @@
 
 import UIKit
 
+extension Message: Comparable {}
+
 struct MessageViewData: Hashable, Comparable {
     var uuid: String?
     var photo: UIImage?
@@ -42,19 +44,18 @@ func <(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
     return lhs.createdTimestamp < rhs.createdTimestamp
 }
 
-
 protocol MessageTableVCDelegate {
-    var messageViewData: OrderedDictionary<MessageViewData, [MessageViewData]> { get set }
+    func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]>
+    func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData?
     func goBack()
 }
 
 protocol MessageTableVCProtocol {
-    func resetMessageData()
-    func addMessage(newMVD: MessageViewData, parentMVD: MessageViewData?)
+    func reloadMessageViewData()
 }
 
 protocol MessageTableCellDelegate {
-    func messageTapped(section: Int, row: Int?, mvd: MessageViewData?)
+    func messageTapped(section: Int, mvd: MessageViewData?)
 }
 
 protocol MessageUIComponent {

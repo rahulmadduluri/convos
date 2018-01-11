@@ -31,6 +31,7 @@ class MessageTableViewCell: UITableViewCell, MessageUIComponent {
     }
     
     // MARK: Initalizers
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -85,7 +86,7 @@ class MessageTableViewCell: UITableViewCell, MessageUIComponent {
             return
         }
         
-        delegate?.messageTapped(section: cell.section, row: cell.row, mvd: cell.messageViewData)
+        delegate?.messageTapped(section: cell.section, mvd: cell.messageViewData)
     }
     
 }

@@ -23,6 +23,11 @@ public struct OrderedDictionary<K, V> where K: Hashable, K: Comparable {
             }
         }
     }
+    
+    public mutating func removeAll() {
+        dict.removeAll()
+        keys.removeAll()
+    }
 }
 
 extension OrderedDictionary: Sequence {
