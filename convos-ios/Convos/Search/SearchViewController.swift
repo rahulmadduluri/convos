@@ -88,7 +88,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
         for g in filteredGroups {
             let cs = g.conversations.sorted(by: >)
             res[SearchViewData(uuid: g.uuid, text: g.name, photo: nil, updatedTimestamp: cs[0].updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: cs[0].updatedTimestampServer), type: SearchViewType.group.rawValue)] =
-                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgo(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
+                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
         }
         return res
     }
@@ -114,7 +114,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     // MARK: SearchTextFieldDelegate
     
     func searchTextUpdated(searchText text: String) {
-        localSearch(text: searchText)
+        localSearch(text: text)
         searchTableVC.reloadSearchViewData()
     }
     

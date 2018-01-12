@@ -71,6 +71,16 @@ class Message: NSObject, APIModel {
     }
 
     // init
+    // init
+    init(uuid: String, senderUUID: String, fullText: String, createdTimestampServer: Int, isTopLevel: Bool, parentUUID: String?) {
+        self.uuid = uuid
+        self.senderUUID = senderUUID
+        self.fullText = fullText
+        self.createdTimestampServer = createdTimestampServer
+        self.isTopLevel = isTopLevel
+        self.parentUUID = parentUUID
+    }
+    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],

@@ -10,14 +10,13 @@ import UIKit
 
 class MessageTableViewCell: UITableViewCell, MessageUIComponent {
     
-    var delegate: MessageTableCellDelegate?
-
-    let customTextLabel = UILabel()
-    let photoImageView = UIImageView()
-    let separator = UIView()
+    private let customTextLabel = UILabel()
+    private let photoImageView = UIImageView()
+    private let separator = UIView()
     
     var section = 0
     var row = 0
+    var delegate: MessageTableCellDelegate?
     
     var messageViewData: MessageViewData? {
         get {

@@ -18,6 +18,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate var messageTableVC = MessageTableViewController()
     fileprivate var allCachedMessages: [Message: [Message]] = [:]
     fileprivate var filteredMessages = OrderedDictionary<Message, [Message]>()
+    // TODO: add image cache (will need separate class for this)
     
     // MARK: UIViewController
 
@@ -82,18 +83,19 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         self.dismiss(animated: true, completion: nil)
     }
     
-    func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) {
+    func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData? {
+        let messageViewData = getMessageViewData()
         if let j = secondaryIndex {
-            return messageViewData[messageViewData.keys[primaryIndex]][j]
+            return messageViewData[messageViewData.keys[primaryIndex]]?[j]
         }
         return messageViewData.keys[primaryIndex]
     }
     
     func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]> {
         var res = OrderedDictionary<MessageViewData, [MessageViewData]>()
-        for g in filteredGroups.keys {
-            res[SearchViewData(uuid: g.uuid, text: g.name, photo: nil, type: SearchViewType.group.rawValue)] =
-                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, type: SearchViewType.conversation.rawValue) }
+        for m1 in filteredMessages.keys {
+            res[MessageViewData(uuid: m1.uuid, text: m1.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
+                filteredMessages[m1]?.map { MessageViewData(uuid: $0.uuid, text: $0.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
         }
         return res
     }
@@ -158,32 +160,32 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         messageTableVC.messageTableVCDelegate = self
 
         testingSetup()
-        messageTableVC.resetMessageData()
+        messageTableVC.reloadMessageViewData()
     }
     
     fileprivate func received(response: PullMessagesResponse) {
         for m in response.messages {
-            addMessageToCache(message: m)
-            messageTableVC.resetMessageData()
+            addMessageToCache(m: m)
+            messageTableVC.reloadMessageViewData()
         }
     }
     
     fileprivate func received(response: PushMessageResponse) {
         if let m = response.message {
-            addMessageToCache(m)
-            messageTableVC.resetMessageData()
+            addMessageToCache(m: m)
+            messageTableVC.reloadMessageViewData()
         }
     }
     
     fileprivate func addMessageToCache(m: Message) {
         if allCachedMessages[m] == nil {
             if let pUUID = m.parentUUID {
-                let foundParent = false
+                var foundParent = false
                 // if parent exists in keys, append to parent
                 for p in allCachedMessages.keys {
                     if p.uuid == pUUID {
                         foundParent = true
-                        p.append(m)
+                        allCachedMessages[p]?.append(m)
                     }
                 }
                 if foundParent == false {
@@ -195,23 +197,16 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         }
     }
     
-    fileprivate func topLevelMessageViewData(m: Message) -> MessageViewData {
-        return MessageViewData(photo: nil , text: m.fullText, dateCreatedText: String(m.createdTimestampServer))
-    }
-    
-    fileprivate func bottomLevelMessageViewData(m: Message) -> MessageViewData {
-        return MessageViewData(photo: nil, text: m.fullText, dateCreatedText: String(m.createdTimestampServer), isTopLevel: false, isCollapsed: true)
-    }
-            
     fileprivate func testingSetup() {
         // Add test messages
-        let testMessage = Message(uuid: "1", photo: UIImage(named: "rahul_test_pic"), text: "yoyoyoyoyoyoyoyoyo", createdTimestamp: 0, createdTimeText: "9/8/17")
-        let testMessage2 = Message(uuid: "2", photo: UIImage(named: "rahul_test_pic"), text: "My Name is Jo", createdTimestamp: 1, createdTimeText: "9/8/18")
-        let testMessage3 = Message(photo: UIImage(named: "rahul_test_pic"), text: "I have a big fro", createdTimestamp: 2, createdTimeText: "9/8/19")
-        let testMessage4 = Message(photo: UIImage(named: "praful_test_pic"), text: "testtest", createdTimestamp: 3, createdTimeText: "9/8/20")
-        let testMessage5 = Message(photo: UIImage(named: "praful_test_pic"), text: "teststststststststststets", createdTimestamp: 4, createdTimeText: "9/9/20")
-        allCachedMessages[testMessage] = [testMessage3]
+        let testMessage = Message(uuid: "1", senderUUID: "1", fullText: "yoyoyoyoyoyoyoyoyo", createdTimestampServer: 0, isTopLevel: true, parentUUID: nil)
+        let testMessage2 = Message(uuid: "2", senderUUID: "2", fullText: "My Name is Jo!", createdTimestampServer: 1, isTopLevel: true, parentUUID: nil)
+        let testMessage3 = Message(uuid: "3", senderUUID: "1", fullText: "I have a big fro", createdTimestampServer: 2, isTopLevel: true, parentUUID: nil)
+        let testMessage4 = Message(uuid: "4", senderUUID: "2", fullText: "reply#1", createdTimestampServer: 2, isTopLevel: false, parentUUID: "2")
+        let testMessage5 = Message(uuid: "5", senderUUID: "2", fullText: "reply#2", createdTimestampServer: 7, isTopLevel: false, parentUUID: "2")
+        allCachedMessages[testMessage] = []
         allCachedMessages[testMessage2] = [testMessage4, testMessage5]
+        allCachedMessages[testMessage3] = []
         
         filteredMessages.removeAll()
         for (k, v) in allCachedMessages {

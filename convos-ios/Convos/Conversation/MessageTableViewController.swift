@@ -54,8 +54,10 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let mvd = messageTableVCDelegate?.getMessageViewData() {
-            return mvd.keys[section].isCollapsed ? 0 : mvd.keys[section].children.count
+        if let mvd = messageTableVCDelegate?.getMessageViewData(),
+            let children = mvd[mvd.keys[section]] {
+            let k = mvd.keys[section]
+            return k.isCollapsed ? 0 : children.count
         }
         return 0
     }

@@ -9,12 +9,12 @@ import UIKit
 
 class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
     
-    var delegate: MessageTableCellDelegate?
-    let customTextLabel = UILabel()
-    let rightSideLabel = UILabel()
-    let photoImageView = UIImageView()
+    private let customTextLabel = UILabel()
+    private let rightSideLabel = UILabel()
+    private let photoImageView = UIImageView()
     
     var section: Int = 0
+    var delegate: MessageTableCellDelegate?
     
     var messageViewData: MessageViewData? {
         get {
@@ -53,7 +53,7 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
         customTextLabel.numberOfLines = 0
         customTextLabel.font = UIFont.systemFont(ofSize: Constants.textFontSize)
         
-        // Arrow label
+        // Right label
         contentView.addSubview(rightSideLabel)
         rightSideLabel.textColor = UIColor.black
         rightSideLabel.translatesAutoresizingMaskIntoConstraints = false

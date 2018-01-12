@@ -12,19 +12,18 @@ extension Message: Comparable {}
 
 struct MessageViewData: Hashable, Comparable {
     var uuid: String?
-    var photo: UIImage?
     var text: String
+    var photo: UIImage?
     var isTopLevel: Bool
     var isCollapsed: Bool
     var createdTimestamp: Int
     var createdTimeText: String
-    var children: [MessageViewData]
     
     var hashValue: Int {
         return uuid?.hashValue ?? 0
     }
     
-    init(uuid: String? = nil, photo: UIImage?, text: String, isTopLevel: Bool = true, isCollapsed: Bool = true, createdTimestamp: Int, createdTimeText: String) {
+    init(uuid: String? = nil, text: String, photo: UIImage?, isTopLevel: Bool = true, isCollapsed: Bool = true, createdTimestamp: Int, createdTimeText: String) {
         self.uuid = uuid
         self.photo = photo
         self.text = text
@@ -32,7 +31,6 @@ struct MessageViewData: Hashable, Comparable {
         self.isCollapsed = isCollapsed
         self.createdTimestamp = createdTimestamp
         self.createdTimeText = createdTimeText
-        self.children = []
     }
 }
 

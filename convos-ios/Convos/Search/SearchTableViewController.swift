@@ -57,7 +57,7 @@ extension SearchTableViewController {
             SearchTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
         if let svd = searchVC?.getSearchViewData() {
-            cell.searchViewData = svd[svd.keys[indexPath.section]]?[indexPath.row]
+            cell.searchViewData = svd[svd.keys[indexPath.section]]
         }
         
         cell.row = indexPath.row
@@ -72,7 +72,7 @@ extension SearchTableViewController {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: cellReuseIdentifier) as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: cellReuseIdentifier)
         
         if let svd = searchVC?.getSearchViewData() {
-            header.searchViewData = svd[svd.keys[section]]
+            header.searchViewData = svd.keys[section]
         }
         
         header.section = section
