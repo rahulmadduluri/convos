@@ -18,6 +18,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate var messageTableVC = MessageTableViewController()
     fileprivate var allCachedMessages: [Message: [Message]] = [:]
     fileprivate var filteredMessages = OrderedDictionary<Message, [Message]>()
+    fileprivate var messageViewData = OrderedDictionary<MessageViewData, [MessageViewData]>()
     // TODO: add image cache (will need separate class for this)
     
     // MARK: UIViewController
@@ -92,12 +93,13 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]> {
-        var res = OrderedDictionary<MessageViewData, [MessageViewData]>()
-        for m1 in filteredMessages.keys {
-            res[MessageViewData(uuid: m1.uuid, text: m1.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
-                filteredMessages[m1]?.map { MessageViewData(uuid: $0.uuid, text: $0.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
+        return messageViewData
+    }
+    
+    func setMessageViewData(parent: MessageViewData?, mvd: MessageViewData) {
+        if let index = messageViewData.keys.index(of: mvd), parent == nil {
+            messageViewData.keys[index] = mvd
         }
-        return res
     }
     
     // MARK: Handle keyboard events
@@ -131,7 +133,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         }
     }
     
-    // UITextFieldDelegate
+    // MARK: UITextFieldDelegate
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
     }
@@ -166,15 +168,17 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate func received(response: PullMessagesResponse) {
         for m in response.messages {
             addMessageToCache(m: m)
-            messageTableVC.reloadMessageViewData()
         }
+        messageViewData = createMessageViewData()
+        messageTableVC.reloadMessageViewData()
     }
     
     fileprivate func received(response: PushMessageResponse) {
         if let m = response.message {
             addMessageToCache(m: m)
-            messageTableVC.reloadMessageViewData()
         }
+        messageViewData = createMessageViewData()
+        messageTableVC.reloadMessageViewData()
     }
     
     fileprivate func addMessageToCache(m: Message) {
@@ -197,6 +201,15 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         }
     }
     
+    fileprivate func createMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]> {
+        var res = OrderedDictionary<MessageViewData, [MessageViewData]>()
+        for m1 in filteredMessages.keys {
+            res[MessageViewData(uuid: m1.uuid, text: m1.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
+                filteredMessages[m1]?.map { MessageViewData(uuid: $0.uuid, text: $0.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
+        }
+        return res
+    }
+    
     fileprivate func testingSetup() {
         // Add test messages
         let testMessage = Message(uuid: "1", senderUUID: "1", fullText: "yoyoyoyoyoyoyoyoyo", createdTimestampServer: 0, isTopLevel: true, parentUUID: nil)
@@ -212,6 +225,8 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         for (k, v) in allCachedMessages {
             filteredMessages[k] = v
         }
+        
+        messageViewData = createMessageViewData()
     }
 
 }

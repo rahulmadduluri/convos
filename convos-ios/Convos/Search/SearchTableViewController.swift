@@ -13,7 +13,7 @@ private let headerReuseIdentifier = "SearchHeader"
 
 class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     
-    var searchVC: SearchUIDelegate? = nil
+    var searchVC: SearchComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
@@ -77,18 +77,6 @@ class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     
 }
 
-// MARK: SearchTableCellDelegate
-
-extension SearchTableViewController: SearchTableCellDelegate {
-    func cellTapped(uuid: String) {
-        searchVC?.convoSelected(uuid: uuid)
-    }
-    
-    func headerTapped(uuid: String) {
-        searchVC?.groupSelected(uuid: uuid)
-    }
-}
-
 // MARK: - UITableViewController
 
 extension SearchTableViewController {
@@ -97,13 +85,14 @@ extension SearchTableViewController {
         let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? SearchTableViewCell ??
             SearchTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
+        /*
         if let svd = searchVC?.getSearchViewData() {
-            cell.searchViewData = svd[svd.keys[indexPath.section]]
         }
+ */
         
         cell.row = indexPath.row
         cell.section = indexPath.section
-        cell.delegate = self
+        cell.delegate = self.searchVC as? SearchTableComponentDelegate
                 
         return cell
     }
@@ -112,12 +101,13 @@ extension SearchTableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: cellReuseIdentifier) as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: cellReuseIdentifier)
         
-        if let svd = searchVC?.getSearchViewData() {
-            header.searchViewData = svd.keys[section]
+        if let svd = searchVC?.getSearchViewData().keys[section] {
+            header.customTextLabel.text = svd.text
+            header.photoImageView.image = svd.photo
         }
         
         header.section = section
-        header.delegate = self
+        header.delegate = self.searchVC as? SearchTableComponentDelegate
                 
         return header
     }

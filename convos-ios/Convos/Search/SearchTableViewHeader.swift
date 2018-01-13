@@ -10,18 +10,11 @@ import UIKit
 
 class SearchTableViewHeader: UITableViewHeaderFooterView {
     
-    private let customTextLabel = UILabel()
-    private let photoImageView = UIImageView()
+    let customTextLabel = UILabel()
+    let photoImageView = UIImageView()
     
     var section = 0
-    var delegate: SearchTableCellDelegate?
-    
-    var searchViewData: SearchViewData? {
-        didSet {
-            customTextLabel.text = searchViewData?.text
-            photoImageView.image = searchViewData?.photo
-        }
-    }
+    var delegate: SearchTableComponentDelegate?
     
     // MARK: Initalizers
     
@@ -64,12 +57,12 @@ class SearchTableViewHeader: UITableViewHeaderFooterView {
     
     func tapHeader(_ gestureRecognizer: UITapGestureRecognizer) {
         guard let header = gestureRecognizer.view as? SearchTableViewHeader,
-            let svd = header.searchViewData,
+            let svd = header.delegate?.getSearchViewData().keys[header.section],
             let uuid = svd.uuid else {
             return
         }
         
-        delegate?.headerTapped(uuid: uuid)
+        delegate?.groupSelected(uuid: uuid)
     }
 
 }

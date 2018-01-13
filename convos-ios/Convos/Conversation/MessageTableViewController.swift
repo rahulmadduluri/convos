@@ -90,16 +90,15 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
     
     // MARK: MessageCellDelegate
 
-    func messageTapped(section: Int, mvd: MessageViewData?) {
-        guard var allMessageViewData = messageTableVCDelegate?.getMessageViewData(),
-            let selectedMvd = mvd else {
-                return
+    func messageTapped(section: Int, row: Int?) {
+        var selectedMvd: MessageViewData
+        guard var mvd = messageTableVCDelegate?.getMessageViewData() else {
+            return
         }
-        
-        if let i = allMessageViewData.keys.index(of: selectedMvd) {
-            var mCopy = allMessageViewData.keys[i]
-            mCopy.isCollapsed = !mCopy.isCollapsed
-            allMessageViewData.keys[i] = mCopy
+        if row == nil {
+            selectedMvd = mvd.keys[section]
+            selectedMvd.isCollapsed = !selectedMvd.isCollapsed
+            messageTableVCDelegate?.setMessageViewData(parent: nil, mvd: selectedMvd)
         }
     }
     
@@ -115,7 +114,8 @@ extension MessageTableViewController {
         let cell: MessageTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MessageTableViewCell ?? MessageTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
         if let messageViewData = messageTableVCDelegate?.findMessageViewData(primaryIndex: indexPath.section, secondaryIndex: indexPath.row) {
-            cell.messageViewData = messageViewData
+            cell.customTextLabel.text = messageViewData.text
+            cell.photoImageView.image = messageViewData.photo
         }
         
         cell.row = indexPath.row
@@ -130,7 +130,8 @@ extension MessageTableViewController {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerReuseIdentifier) as? MessageTableViewHeader ?? MessageTableViewHeader(reuseIdentifier: headerReuseIdentifier)
         
         if let messageViewData = messageTableVCDelegate?.findMessageViewData(primaryIndex: section, secondaryIndex: nil) {
-            header.messageViewData = messageViewData
+            header.customTextLabel.text = messageViewData.text
+            header.photoImageView.image = messageViewData.photo
         }
         
         header.section = section

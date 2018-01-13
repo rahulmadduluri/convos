@@ -16,11 +16,7 @@ enum SearchViewType: Int {
     case conversation
 }
 
-protocol SearchUIDelegate {
-    func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
-    func convoSelected(uuid: String)
-    func groupSelected(uuid: String)
-}
+// Search VC / Table VC
 
 protocol SearchVCDelegate {
     func convoSelected(conversation: Conversation)
@@ -33,13 +29,19 @@ protocol SearchTableVCProtocol {
     func reloadSearchViewData()
 }
 
-protocol SearchTextFieldDelegate: SearchUIDelegate {
+// Search UI Delegates
+
+protocol SearchComponentDelegate {
+    func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
+}
+
+protocol SearchTextFieldDelegate: SearchComponentDelegate {
     func searchTextUpdated(searchText: String)
 }
 
-protocol SearchTableCellDelegate {
-    func cellTapped(uuid: String)
-    func headerTapped(uuid: String)
+protocol SearchTableComponentDelegate: SearchComponentDelegate {
+    func convoSelected(uuid: String)
+    func groupSelected(uuid: String)
 }
 
 struct SearchViewData: CustomCollectionViewData, Comparable {
@@ -71,4 +73,3 @@ func ==(lhs: SearchViewData, rhs: SearchViewData) -> Bool {
 func <(lhs: SearchViewData, rhs: SearchViewData) -> Bool {
     return lhs.updatedTimestamp < rhs.updatedTimestamp
 }
-

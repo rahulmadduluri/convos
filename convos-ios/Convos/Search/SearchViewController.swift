@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
-class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDelegate, SearchTextFieldDelegate {
+class SearchViewController: UIViewController, SocketManagerDelegate, SearchTableComponentDelegate, SearchTextFieldDelegate {
     
     var searchVCDelegate: SearchVCDelegate? = nil
 
@@ -81,7 +81,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
         */
     }
     
-    // MARK: SearchUIDelegate
+    // MARK: SearchTableComponentDelegate
     
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         var res = OrderedDictionary<SearchViewData, [SearchViewData]>()

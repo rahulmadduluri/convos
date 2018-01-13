@@ -12,10 +12,9 @@ class SearchTableViewCell: UITableViewCell {
     
     var section = 0
     var row = 0
-    var delegate: SearchTableCellDelegate?
+    var uuid: String?
+    var delegate: SearchTableComponentDelegate?
     
-    var searchViewData: [SearchViewData]?
-
     // MARK: Initalizers
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

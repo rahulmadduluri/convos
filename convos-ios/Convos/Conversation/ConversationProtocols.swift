@@ -10,6 +10,28 @@ import UIKit
 
 extension Message: Comparable {}
 
+protocol MessageUIDelegate {
+    func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]>
+    func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData?
+}
+
+protocol MessageTableVCDelegate: MessageUIDelegate {
+    func setMessageViewData(parent: MessageViewData?, mvd: MessageViewData)
+    func goBack()
+}
+
+protocol MessageTableVCProtocol {
+    func reloadMessageViewData()
+}
+
+protocol MessageUIComponent {
+    var delegate: MessageTableCellDelegate? { get set }
+}
+
+protocol MessageTableCellDelegate {
+    func messageTapped(section: Int, row: Int?)
+}
+
 struct MessageViewData: Hashable, Comparable {
     var uuid: String?
     var text: String
@@ -40,23 +62,4 @@ func ==(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
 
 func <(lhs: MessageViewData, rhs: MessageViewData) -> Bool {
     return lhs.createdTimestamp < rhs.createdTimestamp
-}
-
-protocol MessageTableVCDelegate {
-    func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]>
-    func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData?
-    func goBack()
-}
-
-protocol MessageTableVCProtocol {
-    func reloadMessageViewData()
-}
-
-protocol MessageTableCellDelegate {
-    func messageTapped(section: Int, mvd: MessageViewData?)
-}
-
-protocol MessageUIComponent {
-    var delegate: MessageTableCellDelegate? { get set }
-    var messageViewData: MessageViewData? { get set }
 }

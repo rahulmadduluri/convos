@@ -9,23 +9,12 @@ import UIKit
 
 class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
     
-    private let customTextLabel = UILabel()
+    let customTextLabel = UILabel()
+    let photoImageView = UIImageView()
     private let rightSideLabel = UILabel()
-    private let photoImageView = UIImageView()
     
     var section: Int = 0
     var delegate: MessageTableCellDelegate?
-    
-    var messageViewData: MessageViewData? {
-        get {
-            return self.messageViewData
-        }
-        set {
-            self.messageViewData = newValue
-            customTextLabel.text = messageViewData?.text
-            photoImageView.image = messageViewData?.photo
-        }
-    }
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -79,7 +68,7 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
             return
         }
         
-        delegate?.messageTapped(section: cell.section, mvd: messageViewData)
+        delegate?.messageTapped(section: cell.section, row: nil)
     }
 
 }
