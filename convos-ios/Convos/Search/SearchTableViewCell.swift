@@ -14,19 +14,14 @@ class SearchTableViewCell: UITableViewCell {
     var row = 0
     var delegate: SearchTableCellDelegate?
     
-    var searchViewData: [SearchViewData]? {
-        get {
-            return self.searchViewData
-        }
-        set {
-            self.searchViewData = newValue
-        }
-    }
+    var searchViewData: [SearchViewData]?
 
     // MARK: Initalizers
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        contentView.backgroundColor = UIColor.blue
         
         //let marginGuide = contentView.layoutMarginsGuide
         

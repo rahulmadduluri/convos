@@ -17,11 +17,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView {
     var delegate: SearchTableCellDelegate?
     
     var searchViewData: SearchViewData? {
-        get {
-            return self.searchViewData
-        }
-        set {
-            self.searchViewData = newValue
+        didSet {
             customTextLabel.text = searchViewData?.text
             photoImageView.image = searchViewData?.photo
         }
@@ -33,7 +29,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView {
         super.init(reuseIdentifier: reuseIdentifier)
         
         // Content View
-        contentView.backgroundColor = UIColor.white
+        contentView.backgroundColor = UIColor.red
         
         let marginGuide = contentView.layoutMarginsGuide
         

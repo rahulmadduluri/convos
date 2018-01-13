@@ -18,6 +18,7 @@ public struct OrderedDictionary<K, V> where K: Hashable, K: Comparable {
             } else {
                 let oldValue = self.dict.updateValue(newValue!, forKey: key)
                 if oldValue == nil {
+                    self.keys.append(key)
                     self.keys = self.keys.sorted { $0 > $1 }
                 }
             }

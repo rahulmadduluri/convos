@@ -135,6 +135,8 @@ class SearchTextField: UITextField {
     func textFieldDidEndEditing() {
         if let currentText = text {
             searchTextFieldDelegate?.searchTextUpdated(searchText: currentText)
+        } else {
+            self.placeholderLabel?.text = "Enter the Convos"
         }
         placeholderLabel?.attributedText = nil
         placeholderLabel?.attributedText = nil
@@ -143,8 +145,8 @@ class SearchTextField: UITextField {
     func textFieldDidEndEditingOnExit() {
         self.placeholderLabel?.text = nil
 
-        if let svd = searchTextFieldDelegate?.getSearchViewData() {
-            self.text = svd.keys[0].text
+        if let svd = searchTextFieldDelegate?.getSearchViewData(),
+            svd.keys.count > 0, self.text?.isEmpty == false {
         }
     }
     

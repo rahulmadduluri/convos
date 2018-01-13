@@ -35,7 +35,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchUIDel
     override func loadView() {
         self.addChildViewController(searchTableVC)
         
-        containerView = MainSearchView(frame: CGRect(x: 0, y: 100, width: UIScreen.main.bounds.width, height: 400))
+        containerView = MainSearchView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         
         containerView?.searchTableContainerView = searchTableVC.view
         self.view = containerView
