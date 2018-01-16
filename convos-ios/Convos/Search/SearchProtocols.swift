@@ -14,11 +14,13 @@ enum SearchViewType: Int {
     case group
     case newConversation
     case conversation
+    case defaultConversation
 }
 
 // Search VC / Table VC
 
 protocol SearchVCDelegate {
+    func convoCreated(group: Group)
     func convoSelected(conversation: Conversation)
     func groupSelected(group: Group)
     func keyboardWillShow()
@@ -31,8 +33,13 @@ protocol SearchTableVCProtocol {
 
 // Search UI Delegates
 
+protocol SearchUIComponent {
+    var delegate: SearchTableComponentDelegate? { get set }
+}
+
 protocol SearchComponentDelegate {
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
+    func getSearchViewDataNonDefault -> OrderedDictionary<SearchViewData, [SearchViewData]>
 }
 
 protocol SearchTextFieldDelegate: SearchComponentDelegate {
@@ -40,11 +47,12 @@ protocol SearchTextFieldDelegate: SearchComponentDelegate {
 }
 
 protocol SearchTableComponentDelegate: SearchComponentDelegate {
+    func convoCreated(groupUUID: String)
     func convoSelected(uuid: String)
     func groupSelected(uuid: String)
 }
 
-struct SearchViewData: CustomCollectionViewData, Comparable {
+struct SearchViewData: Hashable, Comparable {
     var uuid: String?
     var text: String
     var photo: UIImage?

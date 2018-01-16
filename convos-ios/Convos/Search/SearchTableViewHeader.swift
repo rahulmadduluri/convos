@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchTableViewHeader: UITableViewHeaderFooterView {
+class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()
@@ -56,10 +56,22 @@ class SearchTableViewHeader: UITableViewHeaderFooterView {
     // Gesture Recognizer
     
     func tapHeader(_ gestureRecognizer: UITapGestureRecognizer) {
+        if let group = delegate?.getSearchViewData().keys[section],
+            let cs = delegate?.getSearchViewData()[group] {
+            for c in cs {
+                if let uuid = c.uuid,
+                    c.type == SearchViewType.defaultConversation.rawValue {
+                    delegate?.convoSelected(uuid: uuid)
+                }
+            }
+        }
+    }
+    
+    func tapInfo(_ gestureRecognizer: UITapGestureRecognizer) {
         guard let header = gestureRecognizer.view as? SearchTableViewHeader,
             let svd = header.delegate?.getSearchViewData().keys[header.section],
             let uuid = svd.uuid else {
-            return
+                return
         }
         
         delegate?.groupSelected(uuid: uuid)

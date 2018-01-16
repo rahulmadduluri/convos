@@ -22,8 +22,6 @@
 		B75C00B21F8AFF4C00021AB5 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C00B11F8AFF4C00021AB5 /* SearchAPI.swift */; };
 		B75C00B41F8AFF7200021AB5 /* ConversationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75C00B31F8AFF7200021AB5 /* ConversationAPI.swift */; };
 		B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */; };
-		B77BB14A1FFCED88005FB88C /* CustomCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB1491FFCED88005FB88C /* CustomCollectionViewController.swift */; };
-		B77BB14F1FFF84FE005FB88C /* SharedUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB14E1FFF84FE005FB88C /* SharedUI.swift */; };
 		B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB150200268EF005FB88C /* OrderedDictionary.swift */; };
 		B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15220038EED005FB88C /* ConversationProtocols.swift */; };
 		B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15420039434005FB88C /* SearchProtocols.swift */; };
@@ -31,6 +29,8 @@
 		B77BB159200638F2005FB88C /* SearchTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */; };
 		B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */; };
 		B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15C20079974005FB88C /* GeneralUtilities.swift */; };
+		B77BB15F200DF593005FB88C /* CustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15E200DF593005FB88C /* CustomCollectionViewCell.swift */; };
+		B77BB161200DF697005FB88C /* SearchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */; };
 		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720FB1F5E98DD004F74E7 /* SocketManager.swift */; };
@@ -58,8 +58,6 @@
 		B75C00B11F8AFF4C00021AB5 /* SearchAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		B75C00B31F8AFF7200021AB5 /* ConversationAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationAPI.swift; sourceTree = "<group>"; };
 		B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticastDelegate.swift; sourceTree = "<group>"; };
-		B77BB1491FFCED88005FB88C /* CustomCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewController.swift; sourceTree = "<group>"; };
-		B77BB14E1FFF84FE005FB88C /* SharedUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedUI.swift; sourceTree = "<group>"; };
 		B77BB150200268EF005FB88C /* OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
 		B77BB15220038EED005FB88C /* ConversationProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationProtocols.swift; sourceTree = "<group>"; };
 		B77BB15420039434005FB88C /* SearchProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchProtocols.swift; sourceTree = "<group>"; };
@@ -67,6 +65,8 @@
 		B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewHeader.swift; sourceTree = "<group>"; };
 		B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTimeUtilities.swift; sourceTree = "<group>"; };
 		B77BB15C20079974005FB88C /* GeneralUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralUtilities.swift; sourceTree = "<group>"; };
+		B77BB15E200DF593005FB88C /* CustomCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewCell.swift; sourceTree = "<group>"; };
+		B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchCollectionViewCell.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78720FB1F5E98DD004F74E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
@@ -113,8 +113,7 @@
 		B748CF7D1F7B492800735F5D /* CustomUI */ = {
 			isa = PBXGroup;
 			children = (
-				B77BB14E1FFF84FE005FB88C /* SharedUI.swift */,
-				B77BB14B1FFCED9B005FB88C /* CustomCollectionVC */,
+				B77BB14B1FFCED9B005FB88C /* CustomCollection */,
 			);
 			path = CustomUI;
 			sourceTree = "<group>";
@@ -128,12 +127,11 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
-		B77BB14B1FFCED9B005FB88C /* CustomCollectionVC */ = {
+		B77BB14B1FFCED9B005FB88C /* CustomCollection */ = {
 			isa = PBXGroup;
 			children = (
-				B77BB1491FFCED88005FB88C /* CustomCollectionViewController.swift */,
+				B77BB15E200DF593005FB88C /* CustomCollectionViewCell.swift */,
 			);
-			name = CustomCollectionVC;
 			path = CustomCollection;
 			sourceTree = "<group>";
 		};
@@ -144,6 +142,7 @@
 				B788107E1F539D23009AC9FE /* SearchViewController.swift */,
 				B748CF821F7CA98500735F5D /* SearchTableViewController.swift */,
 				B77BB156200638DE005FB88C /* SearchTableViewCell.swift */,
+				B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */,
 				B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */,
 				B748CF801F7C789400735F5D /* MainSearchView.swift */,
 				B781CDA71F53BE920088FB3B /* SearchTextField.swift */,
@@ -366,8 +365,8 @@
 				B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */,
 				B75C00B21F8AFF4C00021AB5 /* SearchAPI.swift in Sources */,
 				B748CF781F7B2B1700735F5D /* Models.swift in Sources */,
+				B77BB15F200DF593005FB88C /* CustomCollectionViewCell.swift in Sources */,
 				B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */,
-				B77BB14A1FFCED88005FB88C /* CustomCollectionViewController.swift in Sources */,
 				B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */,
 				B75C00B41F8AFF7200021AB5 /* ConversationAPI.swift in Sources */,
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
@@ -377,7 +376,7 @@
 				B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
-				B77BB14F1FFF84FE005FB88C /* SharedUI.swift in Sources */,
+				B77BB161200DF697005FB88C /* SearchCollectionViewCell.swift in Sources */,
 				B78720FC1F5E98DD004F74E7 /* SocketManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

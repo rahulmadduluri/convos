@@ -41,6 +41,9 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     
     // MARK: SearchVCDelegate
     
+    func convoCreated(group: Group) {
+    }
+    
     func convoSelected(conversation: Conversation) {
         if self.conversationVC == nil {
             self.conversationVC = ConversationViewController()

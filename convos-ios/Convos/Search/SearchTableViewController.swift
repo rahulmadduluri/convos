@@ -84,12 +84,7 @@ extension SearchTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? SearchTableViewCell ??
             SearchTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
-        
-        /*
-        if let svd = searchVC?.getSearchViewData() {
-        }
- */
-        
+                
         cell.row = indexPath.row
         cell.section = indexPath.section
         cell.delegate = self.searchVC as? SearchTableComponentDelegate
