@@ -39,7 +39,6 @@ protocol SearchUIComponent {
 
 protocol SearchComponentDelegate {
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
-    func getSearchViewDataNonDefault -> OrderedDictionary<SearchViewData, [SearchViewData]>
 }
 
 protocol SearchTextFieldDelegate: SearchComponentDelegate {

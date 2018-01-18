@@ -9,5 +9,8 @@
 import UIKit
 
 class CustomCollectionViewCell: UICollectionViewCell {
+    let customTextLabel = UILabel()
+    let photoImageView = UIImageView()
     
+    var row = 0    
 }

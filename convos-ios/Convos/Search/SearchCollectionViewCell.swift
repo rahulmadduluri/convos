@@ -9,9 +9,17 @@
 import UIKit
 
 class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
-    let customTextLabel = UILabel()
-    let photoImageView = UIImageView()
-
     var delegate: SearchTableComponentDelegate?
     var type: SearchViewType?
+    
+    // MARK: UIView
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        contentView.backgroundColor = UIColor.green
+        
+        self.photoImageView.frame = self.bounds
+        self.addSubview(photoImageView)
+    }
 }

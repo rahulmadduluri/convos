@@ -87,15 +87,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         return searchViewData
     }
-    
-    func getSearchViewDataNonDefault() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
-        var copySVD = getSearchViewData()
-        for (g, cs) in copySVD.dict {
-            copySVD[g] = cs.filter { $0.type == SearchViewType.conversation.rawValue }
-        }
-        return copySVD
-    }
-    
+        
     func convoCreated(groupUUID: String) {
         for g in allCachedGroups {
             if g.uuid == groupUUID {
@@ -166,9 +158,12 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
     fileprivate func createSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         var res = OrderedDictionary<SearchViewData, [SearchViewData]>()
         for g in filteredGroups {
-            let cs = g.conversations.sorted(by: >)
-            res[SearchViewData(uuid: g.uuid, text: g.name, photo: nil, updatedTimestamp: cs[0].updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: cs[0].updatedTimestampServer), type: SearchViewType.group.rawValue)] =
-                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
+            let defaultConvo = g.conversations.filter { $0.isDefault == true }.first
+            let cs = g.conversations.sorted(by: >).filter { $0.isDefault == false }
+            if let dCV = defaultConvo {
+                res[SearchViewData(uuid: dCV.uuid, text: dCV.topic, photo: nil, updatedTimestamp: dCV.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: dCV.updatedTimestampServer), type: SearchViewType.defaultConversation.rawValue)] =
+                    cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photo: nil, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
+            }
         }
         return res
     }

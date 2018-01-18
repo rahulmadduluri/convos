@@ -82,8 +82,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
 private struct Constants {
     static let textFontSize: CGFloat = 16
     static let leadingImageAnchorConstant: CGFloat = 20
-    static let leadingLabelAnchorConstant: CGFloat = 20
-    static let separatorWidth: CGFloat = 2
+    static let leadingLabelAnchorConstant: CGFloat = 60
     static let imageWidth: CGFloat = 24
     static let imageHeight: CGFloat = 24
 }

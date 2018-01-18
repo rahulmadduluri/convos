@@ -49,30 +49,18 @@ class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80.0
-    }
-    
-    override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return 40.0
-    }
-    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let cell: MessageTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MessageTableViewCell ??
-            MessageTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
+        let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? SearchTableViewCell ??
+            SearchTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
-        let height = max(cell.frame.size.height, 80.0)
-        cellHeightAtIndexPath[indexPath] = height
-        return height
+        return max(cell.frame.size.height, 80.0)
         
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerReuseIdentifier) as? MessageTableViewHeader ?? MessageTableViewHeader(reuseIdentifier: headerReuseIdentifier)
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerReuseIdentifier) as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: headerReuseIdentifier)
         
-        let height = max(header.frame.size.height, 40.0)
-        headerHeightAtSection[section] = height
-        return height
+        return max(header.frame.size.height, 40.0)
     }
     
 }
