@@ -15,14 +15,16 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     var section = 0
     var row = 0
     var uuid: String?
-    var delegate: SearchTableComponentDelegate?
+    var searchCollectionView: UICollectionView?
+    var searchVC: SearchTableComponentDelegate?
+    
     
     // MARK: Initalizers
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        contentView.backgroundColor = UIColor.blue
+        contentView.backgroundColor = UIColor.white
         self.selectionStyle = .none
     }
     
@@ -35,29 +37,31 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: Constants.cellWidth, height: contentView.bounds.size.height)
-        layout.minimumInteritemSpacing = Constants.betweenCellSpace
-        let collectionView = UICollectionView(frame: contentView.bounds, collectionViewLayout: layout)
-        configureCollectionView(collectionView: collectionView)
-        contentView.addSubview(collectionView)
-        
-        collectionView.backgroundColor = UIColor.purple
+        if (searchCollectionView == nil) {
+            let layout = UICollectionViewFlowLayout()
+            layout.itemSize = CGSize(width: Constants.cellWidth, height: contentView.bounds.size.height)
+            layout.minimumInteritemSpacing = Constants.betweenCellSpace
+            searchCollectionView = UICollectionView(frame: contentView.bounds, collectionViewLayout: layout)
+            searchCollectionView?.backgroundColor = UIColor.clear
+            configureCollectionView()
+            contentView.addSubview(searchCollectionView!)
+        }
+        refreshCollectionView(tag: section)
     }
     
     // MARK: UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let groupIndex = indexPath.section
+        let groupIndex = collectionView.tag
         let convoIndex = indexPath.row - 1
         
         if indexPath.row == 0 {
             
         } else {
-            if let defaultConvo = delegate?.getSearchViewData().keys[groupIndex],
-                let cs = delegate?.getSearchViewData()[defaultConvo],
+            if let defaultConvo = searchVC?.getSearchViewData().keys[groupIndex],
+                let cs = searchVC?.getSearchViewData()[defaultConvo],
                 let uuid = cs[convoIndex].uuid {
-                delegate?.convoSelected(uuid: uuid)
+                searchVC?.convoSelected(uuid: uuid)
             }
         }
     }
@@ -65,46 +69,56 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     // MARK: UICollectionViewDataSource
             
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let defaultConvo = delegate?.getSearchViewData().keys[collectionView.tag] {
-            return delegate?.getSearchViewData()[defaultConvo]?.count ?? 0
+        if let defaultConvo = searchVC?.getSearchViewData().keys[collectionView.tag],
+            let nonDefaultConvos = searchVC?.getSearchViewData()[defaultConvo] {
+            return nonDefaultConvos.count + 1
         }
         return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var cell: SearchCollectionViewCell
-        let groupIndex = indexPath.section
+        let groupIndex = collectionView.tag
         let convoIndex = indexPath.row - 1
         if indexPath.row == 0 {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: conversationReuseIdentifier, for: indexPath) as! SearchCollectionViewCell
             cell.photoImageView.image = UIImage(named: "new_conversation")
-            cell.delegate = self.delegate
+            cell.searchVC = self.searchVC
+            cell.customTextLabel.text = nil
             cell.type = SearchViewType.newConversation
         } else {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: conversationReuseIdentifier, for: indexPath) as! SearchCollectionViewCell
-            cell.delegate = self.delegate
+            cell.searchVC = self.searchVC
             cell.type = SearchViewType.conversation
-            if let svd = delegate?.getSearchViewData() {
+            if let svd = searchVC?.getSearchViewData() {
                 let defaultConvo = svd.keys[groupIndex]
                 //cell.photoImageView.image = svd[defaultConvo]?[convoIndex].photo
                 cell.photoImageView.image = UIImage(named: "rahul_test_pic")
                 cell.customTextLabel.text = svd[defaultConvo]?[convoIndex].text
             }
         }
+        cell.setNeedsLayout()
         return cell
+    }
+    
+    // MARK: Public
+    
+    func refreshCollectionView(tag: Int) {
+        searchCollectionView?.tag = tag
+        searchCollectionView?.reloadData()
     }
     
     // MARK: Private
     
-    func configureCollectionView(collectionView: UICollectionView) {
-        collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: conversationReuseIdentifier)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.tag = section
+    private func configureCollectionView() {
+        searchCollectionView?.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: conversationReuseIdentifier)
+        searchCollectionView?.delegate = self
+        searchCollectionView?.dataSource = self
     }
+    
 }
 
 private struct Constants {
-    static let cellWidth: CGFloat = 80.0
+    static let cellWidth: CGFloat = 60.0
     static let betweenCellSpace: CGFloat = 10.0
 }

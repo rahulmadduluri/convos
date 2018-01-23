@@ -36,6 +36,6 @@ join users sender
 left join messages parent 
 	on parent.id = messages.parent_id
 where conversations.uuid = :conversationuuid 
-and messages.created_timestamp_server < :latestservertimestamp
+and messages.created_timestamp_server < :latesttimestampserver
 order by messages.created_timestamp_server desc limit :x
 ;

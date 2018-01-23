@@ -14,7 +14,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     let photoImageView = UIImageView()
     
     var section = 0
-    var delegate: SearchTableComponentDelegate?
+    var searchVC: SearchTableComponentDelegate?
     
     // MARK: Initalizers
     
@@ -56,25 +56,22 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     // Gesture Recognizer
     
     func tapHeader(_ gestureRecognizer: UITapGestureRecognizer) {
-        if let group = delegate?.getSearchViewData().keys[section],
-            let cs = delegate?.getSearchViewData()[group] {
-            for c in cs {
-                if let uuid = c.uuid,
-                    c.type == SearchViewType.defaultConversation.rawValue {
-                    delegate?.convoSelected(uuid: uuid)
-                }
+        if let defaultConvo = searchVC?.getSearchViewData().keys[section] {
+            if let uuid = defaultConvo.uuid,
+                defaultConvo.type == SearchViewType.defaultConversation.rawValue {
+                searchVC?.convoSelected(uuid: uuid)
             }
         }
     }
     
     func tapInfo(_ gestureRecognizer: UITapGestureRecognizer) {
         guard let header = gestureRecognizer.view as? SearchTableViewHeader,
-            let svd = header.delegate?.getSearchViewData().keys[header.section],
+            let svd = header.searchVC?.getSearchViewData().keys[header.section],
             let uuid = svd.uuid else {
                 return
         }
         
-        delegate?.groupSelected(uuid: uuid)
+        searchVC?.convoSelected(uuid: uuid)
     }
 
 }

@@ -13,7 +13,7 @@ import SwiftyJSON
 
 protocol Model: Hashable {}
 
-protocol APIModel: Model {
+protocol APIModel: Model, NSCopying {
     func toJSON() -> JSON
     init?(json: JSON)
 }
@@ -27,7 +27,17 @@ class User: NSObject, APIModel {
     let username: String
     let photoURL: String?
     
+    override var hashValue: Int {
+        return uuid.hashValue
+    }
+    
     // init
+    init(uuid: String, username: String, photoURL: String?) {
+        self.uuid = uuid
+        self.username = username
+        self.photoURL = photoURL
+    }
+    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
@@ -46,6 +56,10 @@ class User: NSObject, APIModel {
             dict["PhotoURL"] = JSON(photoURL)
         }
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return User(uuid: uuid, username: username, photoURL: photoURL)
     }
     
 }
@@ -70,7 +84,6 @@ class Message: NSObject, APIModel {
         return uuid.hashValue
     }
 
-    // init
     // init
     init(uuid: String, senderUUID: String, fullText: String, createdTimestampServer: Int, isTopLevel: Bool, parentUUID: String?) {
         self.uuid = uuid
@@ -105,6 +118,10 @@ class Message: NSObject, APIModel {
             dict["ParentUUID"] = JSON(parentUUID)
         }
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Message(uuid: uuid, senderUUID: senderUUID, fullText: fullText, createdTimestampServer: createdTimestampServer, isTopLevel: isTopLevel, parentUUID: parentUUID)
     }
 }
 
@@ -171,6 +188,10 @@ class Conversation: NSObject, APIModel {
         }
         return JSON(dict)
     }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Conversation(uuid: uuid, groupUUID: groupUUID, updatedTimestampServer: updatedTimestampServer, topicTagUUID: topicTagUUID, topic: topic, isDefault: isDefault)
+    }
 }
 
 func ==(lhs: Conversation, rhs: Conversation) -> Bool {
@@ -195,6 +216,12 @@ class Tag: NSObject, APIModel {
     let isTopic: Bool
     
     // init
+    init(uuid: String, name: String, isTopic: Bool) {
+        self.uuid = uuid
+        self.name = name
+        self.isTopic = isTopic
+    }
+    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
@@ -207,10 +234,14 @@ class Tag: NSObject, APIModel {
         isTopic = isTopicJSON.boolValue
     }
     
-    // Model
+    // API Model
     func toJSON() -> JSON {
         let dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name), "IsTopic": JSON(isTopic)]
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Tag(uuid: uuid, name: name, isTopic: isTopic)
     }
     
 }
@@ -267,6 +298,10 @@ class Group: NSObject, APIModel {
             dict["PhotoURL"] = JSON(url)
         }
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Group(uuid: uuid, name: name, photoURL: photoURL, conversations: conversations)
     }
     
 }

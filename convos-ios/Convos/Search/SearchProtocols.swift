@@ -34,7 +34,7 @@ protocol SearchTableVCProtocol {
 // Search UI Delegates
 
 protocol SearchUIComponent {
-    var delegate: SearchTableComponentDelegate? { get set }
+    var searchVC: SearchTableComponentDelegate? { get set }
 }
 
 protocol SearchComponentDelegate {

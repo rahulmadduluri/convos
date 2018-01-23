@@ -63,14 +63,14 @@ func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, mess
 	return objs, err
 }
 
-func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestServerTimestamp int) ([]models.MessageObj, error) {
+func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error) {
 	var objs []models.MessageObj
 
 	rows, err := dbh.db.NamedQuery(dbh.messageQueries[_lastXMessages],
 		map[string]interface{}{
 			"conversationuuid": conversationUUID,
 			"x":                X,
-			"latestservertimestamp": latestServerTimestamp})
+			"latesttimestampserver": latestTimestampServer})
 
 	if err != nil {
 		log.Fatal("query error: ", err)

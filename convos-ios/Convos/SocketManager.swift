@@ -50,6 +50,10 @@ class Packet: NSObject, APIModel {
         }
         return JSON(dict)
     }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Packet(type: type, data: data)
+    }
 }
 
 final class SocketManager: NSObject, SocketManaging {    

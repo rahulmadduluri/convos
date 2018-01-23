@@ -206,8 +206,12 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
             for c in g.conversations {
                 let topicFilterRange = (c.topic as NSString).range(of: text, options: [.caseInsensitive])
                 if (topicFilterRange.location != NSNotFound) {
-                    g.conversations.append(c)
-                    filteredGroups.insert(g)
+                    if let gCopy = g.copy() as? Group {
+                        if !gCopy.conversations.contains(c) {
+                            gCopy.conversations.append(c)
+                        }
+                        filteredGroups.insert(g)
+                    }
                 }
             }
         }

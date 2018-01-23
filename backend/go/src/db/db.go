@@ -22,7 +22,7 @@ const (
 type DbHandler interface {
 	GetConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error)
 	GetUsers(name string) ([]models.User, error)
-	GetLastXMessages(conversationUUID string, X int, latestServerTimestamp int) ([]models.MessageObj, error)
+	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
 	Close()
 }

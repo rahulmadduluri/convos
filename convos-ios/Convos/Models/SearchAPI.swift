@@ -24,10 +24,14 @@ class SearchRequest: NSObject, APIModel {
         searchText = searchTextObject.stringValue
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
         let dict = ["SenderUuid": senderUuid, "SearchText": searchText]
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return SearchRequest(senderUuid: senderUuid, searchText: searchText)
     }
 }
 
@@ -37,6 +41,11 @@ class SearchResponse: NSObject, APIModel {
     let errorMsg: String?
     
     // init
+    init(groups: [Group]?, errorMsg: String?) {
+        self.groups = groups
+        self.errorMsg = errorMsg
+    }
+    
     required init?(json: JSON) {
         guard let dict = json.dictionary else {
             groups = nil
@@ -71,6 +80,10 @@ class SearchResponse: NSObject, APIModel {
             dict["ErrorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return SearchResponse(groups: groups, errorMsg: errorMsg)
     }
 }
 

@@ -13,7 +13,7 @@ private let headerReuseIdentifier = "SearchHeader"
 
 class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     
-    var searchVC: SearchComponentDelegate? = nil
+    var searchVC: SearchTableComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
@@ -72,17 +72,18 @@ extension SearchTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? SearchTableViewCell ??
             SearchTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
-                
+        
         cell.row = indexPath.row
         cell.section = indexPath.section
-        cell.delegate = self.searchVC as? SearchTableComponentDelegate
-                
+        cell.searchVC = searchVC
+        cell.refreshCollectionView(tag: indexPath.section)
+        
         return cell
     }
     
     // Header
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: cellReuseIdentifier) as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: cellReuseIdentifier)
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerReuseIdentifier) as? SearchTableViewHeader ?? SearchTableViewHeader(reuseIdentifier: headerReuseIdentifier)
         
         if let svd = searchVC?.getSearchViewData().keys[section] {
             header.customTextLabel.text = svd.text
@@ -90,7 +91,7 @@ extension SearchTableViewController {
         }
         
         header.section = section
-        header.delegate = self.searchVC as? SearchTableComponentDelegate
+        header.searchVC = self.searchVC
                 
         return header
     }

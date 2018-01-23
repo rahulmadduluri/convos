@@ -8,9 +8,15 @@ class PullMessagesRequest: NSObject, APIModel {
     // vars
     let conversationUUID: String
     let lastXMessages: Int
-    let earliestServerTimestamp: Int?
+    let latestTimestampServer: Int?
     
     // init
+    init(conversationUUID: String, lastXMessages: Int, latestTimestampServer: Int?) {
+        self.conversationUUID = conversationUUID
+        self.lastXMessages = lastXMessages
+        self.latestTimestampServer = latestTimestampServer
+    }
+    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let conversationUUIDJSON = dictionary["ConversationUUID"],
@@ -19,16 +25,20 @@ class PullMessagesRequest: NSObject, APIModel {
         }
         conversationUUID = conversationUUIDJSON.stringValue
         lastXMessages = lastXMessagesJSON.intValue
-        earliestServerTimestamp = dictionary["EarliestServerTimestamp"]?.int
+        latestTimestampServer = dictionary["LatestTimestampServer"]?.int
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
         var dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "LastXMessages": JSON(lastXMessages)]
-        if let earliestServerTimestamp = earliestServerTimestamp {
-            dict["EarliestServerTimestamp"] = JSON(earliestServerTimestamp)
+        if let latestTimestampServer = latestTimestampServer {
+            dict["LatestTimestampServer"] = JSON(latestTimestampServer)
         }
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return PullMessagesRequest(conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
     }
 }
 
@@ -39,6 +49,11 @@ class PullMessagesResponse: NSObject, APIModel {
     let errorMsg: String?
     
     // init
+    init(messages: [Message], errorMsg: String?) {
+        self.messages = messages
+        self.errorMsg = errorMsg
+    }
+    
     required init?(json: JSON) {
         guard let dict = json.dictionary else {
             errorMsg = nil
@@ -67,6 +82,10 @@ class PullMessagesResponse: NSObject, APIModel {
         }
         return JSON(dict)
     }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return PullMessagesResponse(messages: messages, errorMsg: errorMsg)
+    }
 }
 
 // MARK: Push Message
@@ -93,10 +112,14 @@ class PushMessageRequest: NSObject, APIModel {
         fullText = fullTextJSON.stringValue
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
         let dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "FullText": JSON(fullText)]
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return PushMessageRequest(conversationUUID: conversationUUID, fullText: fullText)
     }
 }
 
@@ -107,6 +130,11 @@ class PushMessageResponse: NSObject, APIModel {
     let errorMsg: String?
     
     // init
+    init(message: Message?, errorMsg: String?) {
+        self.message = message
+        self.errorMsg = errorMsg
+    }
+    
     required init?(json: JSON) {
         guard let dictionary = json.dictionary else {
             message = nil
@@ -121,7 +149,7 @@ class PushMessageResponse: NSObject, APIModel {
         errorMsg = dictionary["ErrorMsg"]?.string
     }
     
-    // Model
+    // APIModel
     func toJSON() -> JSON {
         var dict: [String: JSON] = [:]
         if let message = message {
@@ -131,6 +159,10 @@ class PushMessageResponse: NSObject, APIModel {
             dict["ErrorMsg"] = JSON(errorMsg)
         }
         return JSON(dict)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return PushMessageResponse(message: message, errorMsg: errorMsg)
     }
 }
 
