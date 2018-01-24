@@ -42,6 +42,7 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     // MARK: SearchVCDelegate
     
     func convoCreated(group: Group) {
+        // present convo created view controller
     }
     
     func convoSelected(conversation: Conversation) {
@@ -56,6 +57,7 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     }
     
     func groupSelected(group: Group) {
+        // present group info view controller
     }
     
     func keyboardWillShow() {

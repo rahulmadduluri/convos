@@ -106,10 +106,12 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchTable
         }
     }
     
-    func groupSelected(uuid: String) {
+    func groupSelected(conversationUUID: String) {
         for g in filteredGroups {
-            if (g.uuid == uuid) {
-                searchVCDelegate?.groupSelected(group: g)
+            for c in g.conversations {
+                if c.uuid == conversationUUID {
+                    searchVCDelegate?.groupSelected(group: g)
+                }
             }
         }
     }

@@ -12,6 +12,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()
+    let rightInfoButton = UIButton()
     
     var section = 0
     var searchVC: SearchTableComponentDelegate?
@@ -20,9 +21,6 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        
-        // Content View
-        contentView.backgroundColor = UIColor.red
         
         let marginGuide = contentView.layoutMarginsGuide
         
@@ -44,6 +42,16 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         customTextLabel.numberOfLines = 0
         customTextLabel.font = UIFont.systemFont(ofSize: Constants.textFontSize)
         
+        // Right GroupInfo Button
+        contentView.addSubview(rightInfoButton)
+        rightInfoButton.translatesAutoresizingMaskIntoConstraints = false
+        rightInfoButton.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor, constant: Constants.trailingRightInfoAnchorConstant).isActive = true
+        rightInfoButton.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
+        rightInfoButton.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.rightInfoWidth).isActive = true
+        rightInfoButton.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.rightInfoHeight).isActive = true
+        rightInfoButton.setImage(UIImage(named: "info_button"), for: .normal)
+        rightInfoButton.alpha = 0.5
+        rightInfoButton.addTarget(self, action: #selector(SearchTableViewHeader.tapInfo(_:)), for: .touchUpInside)
         
         // UIGestureRecognizer
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SearchTableViewHeader.tapHeader(_:))))
@@ -65,13 +73,12 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     }
     
     func tapInfo(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard let header = gestureRecognizer.view as? SearchTableViewHeader,
-            let svd = header.searchVC?.getSearchViewData().keys[header.section],
-            let uuid = svd.uuid else {
-                return
+        if let defaultConvo = searchVC?.getSearchViewData().keys[section] {
+            if let uuid = defaultConvo.uuid,
+                defaultConvo.type == SearchViewType.defaultConversation.rawValue {
+                searchVC?.groupSelected(conversationUUID: uuid)
+            }
         }
-        
-        searchVC?.convoSelected(uuid: uuid)
     }
 
 }
@@ -80,6 +87,9 @@ private struct Constants {
     static let textFontSize: CGFloat = 16
     static let leadingImageAnchorConstant: CGFloat = 20
     static let leadingLabelAnchorConstant: CGFloat = 60
+    static let trailingRightInfoAnchorConstant: CGFloat = 0
     static let imageWidth: CGFloat = 24
     static let imageHeight: CGFloat = 24
+    static let rightInfoWidth: CGFloat = 18
+    static let rightInfoHeight: CGFloat = 18
 }

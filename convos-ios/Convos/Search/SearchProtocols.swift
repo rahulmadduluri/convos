@@ -48,7 +48,7 @@ protocol SearchTextFieldDelegate: SearchComponentDelegate {
 protocol SearchTableComponentDelegate: SearchComponentDelegate {
     func convoCreated(groupUUID: String)
     func convoSelected(uuid: String)
-    func groupSelected(uuid: String)
+    func groupSelected(conversationUUID: String)
 }
 
 struct SearchViewData: Hashable, Comparable {
