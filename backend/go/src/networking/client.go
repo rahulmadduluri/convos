@@ -46,8 +46,9 @@ type client struct {
 
 // init
 func NewClient(ws *websocket.Conn) Client {
+	tempUUID, _ := uuid.NewV4()
 	return &client{
-		uuid:      uuid.NewV4().String(),
+		uuid:      tempUUID.String(),
 		socket:    ws,
 		sendQueue: make(chan Packet),
 	}

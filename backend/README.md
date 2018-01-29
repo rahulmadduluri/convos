@@ -1,13 +1,17 @@
-# Go Chat
+# Convos DB
 
-This is a simple chat web app written in Go
+1. Make sure go version is 1.9.3
+2. Install go dependencies from go_dependencies
+3. Use create_db_script.sql to populate database
 
-Just run the following
+
+To start server, run the following
 
 ```
-cd ./src
-go get github.com/gorilla/websocket
-go run main.go
+go run main/main.go
 ```
 
-Then point your browser to http://localhost:8000
+Server is running on Port 8000
+
+
+Test API calls found in api/test/ and for queries in db/test/

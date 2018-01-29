@@ -2,3 +2,6 @@
 #*.o
 #*.a
 #*.so
+
+pkg/darwin_amd64/github.com/
+github.com/
