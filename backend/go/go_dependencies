@@ -1,5 +1,6 @@
 github.com/go-sql-driver/mysql
 github.com/gorilla/websocket
+github.com/gorilla/mux
 github.com/jmoiron/sqlx
 github.com/nleof/goyesql
 github.com/satori/go.uuid
