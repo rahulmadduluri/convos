@@ -13,14 +13,14 @@ import (
 var _dbh = newDbHandler()
 
 const (
-	_dbPath                  = "root:webster93@tcp(127.0.0.1:3306)/convos"
-	_userQueriesPath         = "db/userQueries.sql"
-	_conversationQueriesPath = "db/conversationQueries.sql"
-	_messageQueriesPath      = "db/messageQueries.sql"
+	_dbPath             = "root:webster93@tcp(127.0.0.1:3306)/convos"
+	_userQueriesPath    = "db/userQueries.sql"
+	_searchQueriesPath  = "db/searchQueries.sql"
+	_messageQueriesPath = "db/messageQueries.sql"
 )
 
 type DbHandler interface {
-	GetConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error)
+	GetGroupObjs(userUUID string, searchText string) ([]models.GroupObj, error)
 	GetUsers(name string) ([]models.User, error)
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
@@ -28,10 +28,10 @@ type DbHandler interface {
 }
 
 type dbhandler struct {
-	db                  *sqlx.DB
-	userQueries         goyesql.Queries
-	conversationQueries goyesql.Queries
-	messageQueries      goyesql.Queries
+	db             *sqlx.DB
+	userQueries    goyesql.Queries
+	searchQueries  goyesql.Queries
+	messageQueries goyesql.Queries
 }
 
 func newDbHandler() *dbhandler {
@@ -44,20 +44,13 @@ func newDbHandler() *dbhandler {
 		log.Printf("No ping %v", err)
 	}
 	userQueries := goyesql.MustParseFile(_userQueriesPath)
-	conversationQueries := goyesql.MustParseFile(_conversationQueriesPath)
+	searchQueries := goyesql.MustParseFile(_searchQueriesPath)
 	messageQueries := goyesql.MustParseFile(_messageQueriesPath)
 	dbh := &dbhandler{
-		db:                  db,
-		userQueries:         userQueries,
-		conversationQueries: conversationQueries,
-		messageQueries:      messageQueries,
-	}
-	users, err := dbh.InsertMessage("uuid-2", "Welcome!", 1500, "uuid-1", null.StringFromPtr(nil), "uuid-1")
-	if err != nil {
-		log.Println("failed to add message to tables")
-		log.Println(err)
-	} else {
-		log.Println("Added messages to table. Users", users)
+		db:             db,
+		userQueries:    userQueries,
+		searchQueries:  searchQueries,
+		messageQueries: messageQueries,
 	}
 	return dbh
 }

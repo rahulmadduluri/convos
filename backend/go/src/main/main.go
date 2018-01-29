@@ -36,7 +36,7 @@ func main() {
 	// Test Search API
 	objs, _ := api.Search(api.SearchRequest{
 		SenderUUID: "uuid-1",
-		SearchText: "a",
+		SearchText: "p",
 	})
 	log.Println(objs)
 

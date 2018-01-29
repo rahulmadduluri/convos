@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 	topic_tag_id				int 			NOT NULL,
 	is_default					boolean			NOT NULL,
 	group_id					int             NOT NULL,
+	photo_url					varchar(200),
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id),
 	FOREIGN KEY (topic_tag_id) REFERENCES tags (id),
@@ -81,7 +82,7 @@ INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', '724309111', 'www.blah.com
 						 (NULL, 'uuid-2', 'Rahul', '724309222', 'www.mandarin.com', 1200);
 INSERT INTO tags VALUES (NULL, 'uuid-1', 'shopping', 0, 1500);
 INSERT INTO groups VALUES (NULL, 'uuid-1', 'lundys', 1500, 'www.lundysalon.com');
-INSERT INTO conversations VALUES (NULL, 'uuid-1', 1500, 1500, 1, 1, 1);
+INSERT INTO conversations VALUES (NULL, 'uuid-1', 1500, 1500, 1, 1, 1, 'www.convophoto.com');
 INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1);
 INSERT INTO group_users VALUES (1,1);
 INSERT INTO group_users VALUES (2,1);

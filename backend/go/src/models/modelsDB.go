@@ -5,44 +5,44 @@ import (
 )
 
 type User struct {
-	ID                       int
-	UUID                     string
-	Username                 string
-	Mobile_number            string
-	Photo_url                null.String
-	Created_timestamp_server int
+	ID                     int
+	UUID                   string
+	Username               string
+	MobileNumber           string
+	PhotoURL               null.String
+	CreatedTimestampServer int
 }
 
 type Tag struct {
-	ID                       int
-	UUID                     string
-	Name                     string
-	Is_topic                 bool
-	Created_timestamp_server int
+	ID                     int
+	UUID                   string
+	Name                   string
+	IsTopic                bool
+	CreatedTimestampServer int
 }
 
 type Message struct {
-	ID                       int
-	UUID                     string
-	All_text                 null.String
-	Created_timestamp_server int
-	Sender_id                int
-	Parent_id                int
+	ID                     int
+	UUID                   string
+	AllText                null.String
+	CreatedTimestampServer int
+	SenderID               int
+	ParentID               int
 }
 
 type Conversation struct {
-	ID                       int
-	UUID                     string
-	Created_timestamp_server int
-	Updated_timestamp_server int
-	Is_default               bool
-	Topic_tag_id             int
-	Group_id                 int
+	ID                     int
+	UUID                   string
+	CreatedTimestampServer int
+	UpdatedTimestampServer int
+	IsDefault              bool
+	TopicTagUUID           int
+	GroupID                int
 }
 
-type Groups struct {
-	ID        int
-	UUID      string
-	Name      string
-	Photo_url null.String
+type Group struct {
+	ID       int
+	UUID     string
+	Name     string
+	PhotoURL null.String
 }

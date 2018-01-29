@@ -24,21 +24,7 @@ func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, mess
 		"senderuuid":       senderUUID,
 		"parentuuid":       parentUUID,
 		"conversationuuid": conversationUUID}
-	// tx, err := dbh.db.Beginx()
-	// _, err = tx.NamedExec(dbh.messageQueries[_insertMessageInMessages], m)
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	return objs, err
-	// }
-	// _, err = tx.NamedExec(dbh.messageQueries[_insertMessageInConversation], m)
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	return objs, err
-	// }
-	// err = tx.Commit()
-	// if err != nil {
-	// 	return objs, err
-	// }
+
 	_, err := dbh.db.NamedExec(dbh.messageQueries[_insertMessage], m)
 	if err != nil {
 		return objs, err
