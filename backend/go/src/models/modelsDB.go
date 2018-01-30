@@ -41,8 +41,9 @@ type Conversation struct {
 }
 
 type Group struct {
-	ID       int
-	UUID     string
-	Name     string
-	PhotoURL null.String
+	ID                     int
+	UUID                   string
+	Name                   string
+	CreatedTimestampServer int
+	PhotoURL               null.String
 }

@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"models"
+
+	"github.com/jmoiron/sqlx"
 )
 
 // list of queries
@@ -70,12 +72,12 @@ func (dbh *dbhandler) getConversationObjs(userUUID string, searchText string) ([
 
 func (dbh *dbhandler) getGroupsWithUUIDs(groupUUIDs []string) ([]models.Group, error) {
 	var groups []models.Group
-	rows, err := dbh.db.NamedQuery(
-		dbh.searchQueries[_findGroupsWithUUIDs],
-		map[string]interface{}{
-			"group_uuids": groupUUIDs,
-		},
-	)
+	query, args, err := sqlx.In(dbh.searchQueries[_findGroupsWithUUIDs], groupUUIDs)
+	if err != nil {
+		return groups, err
+	}
+	query = dbh.db.Rebind(query)
+	rows, err := dbh.db.Queryx(query, args...)
 	if err != nil {
 		return groups, err
 	}
@@ -99,7 +101,7 @@ func combineGroupsAndConversations(groups []models.Group, conversationObjs []mod
 	var err error
 
 	// map of groupUUID to conversation Objs
-	var groupConvoMap map[string][]models.ConversationObj
+	groupConvoMap := map[string][]models.ConversationObj{}
 	for _, c := range conversationObjs {
 		groupConvoMap[c.GroupUUID] = append(groupConvoMap[c.GroupUUID], c)
 	}

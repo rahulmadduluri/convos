@@ -23,7 +23,8 @@ func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, mess
 		"messagetimestamp": messageTimestamp,
 		"senderuuid":       senderUUID,
 		"parentuuid":       parentUUID,
-		"conversationuuid": conversationUUID}
+		"conversationuuid": conversationUUID,
+	}
 
 	_, err := dbh.db.NamedExec(dbh.messageQueries[_insertMessage], m)
 	if err != nil {
