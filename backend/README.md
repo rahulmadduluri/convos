@@ -5,7 +5,7 @@
 3. Use create_db_script.sql to populate database
 
 
-To start server, run the following
+To start server, go to src/ directory & run the following:
 
 ```
 go run main/main.go

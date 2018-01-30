@@ -30,7 +30,7 @@ func main() {
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/ws", websocketHandler)
 	r.Handle("/static/{s3_uri}",
-		http.StripPrefix("/static/", http.FileServer(http.Dir("../static"))))
+		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
 
 	// Test Search API
@@ -52,6 +52,7 @@ func main() {
 // Home Handler
 func homeHandler(res http.ResponseWriter, req *http.Request) {
 	// do nothing
+	log.Println("Home accessed")
 }
 
 // Create new websocket
