@@ -10,7 +10,7 @@ type MessageObj struct {
 	CreatedTimestampServer int
 	SenderUUID             string
 	ParentUUID             null.String
-	SenderPhotoURL         string
+	SenderPhotoURI         string
 }
 
 type ConversationObj struct {
@@ -20,13 +20,13 @@ type ConversationObj struct {
 	IsDefault              bool
 	TopicTagUUID           string
 	GroupUUID              string
-	PhotoURL               null.String
+	PhotoURI               null.String
 }
 
 type GroupObj struct {
 	UUID          string
 	Name          string
-	PhotoURL      null.String
+	PhotoURI      null.String
 	Conversations []ConversationObj
 }
 

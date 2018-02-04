@@ -35,7 +35,7 @@ protocol MessageTableCellDelegate {
 struct MessageViewData: Hashable, Comparable {
     var uuid: String?
     var text: String
-    var photo: UIImage?
+    var photoURI: String?
     var isTopLevel: Bool
     var isCollapsed: Bool
     var createdTimestamp: Int
@@ -45,9 +45,9 @@ struct MessageViewData: Hashable, Comparable {
         return uuid?.hashValue ?? 0
     }
     
-    init(uuid: String? = nil, text: String, photo: UIImage?, isTopLevel: Bool = true, isCollapsed: Bool = true, createdTimestamp: Int, createdTimeText: String) {
+    init(uuid: String? = nil, text: String, photoURI: String?, isTopLevel: Bool = true, isCollapsed: Bool = true, createdTimestamp: Int, createdTimeText: String) {
         self.uuid = uuid
-        self.photo = photo
+        self.photoURI = photoURI
         self.text = text
         self.isTopLevel = isTopLevel
         self.isCollapsed = isCollapsed

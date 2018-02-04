@@ -16,7 +16,7 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     var row = 0
     var uuid: String?
     var searchCollectionView: UICollectionView?
-    var searchVC: SearchTableComponentDelegate?
+    var searchVC: SearchComponentDelegate?
     
     
     // MARK: Initalizers
@@ -42,7 +42,6 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
             layout.itemSize = CGSize(width: Constants.cellWidth, height: contentView.bounds.size.height)
             layout.minimumInteritemSpacing = Constants.betweenCellSpace
             searchCollectionView = UICollectionView(frame: contentView.bounds, collectionViewLayout: layout)
-            searchCollectionView?.backgroundColor = UIColor.clear
             configureCollectionView()
             contentView.addSubview(searchCollectionView!)
         }
@@ -64,6 +63,10 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
                 searchVC?.convoSelected(uuid: uuid)
             }
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 20
     }
     
     // MARK: UICollectionViewDataSource
@@ -92,9 +95,10 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
             cell.type = SearchViewType.conversation
             if let svd = searchVC?.getSearchViewData() {
                 let defaultConvo = svd.keys[groupIndex]
-                //cell.photoImageView.image = svd[defaultConvo]?[convoIndex].photo
-                cell.photoImageView.image = UIImage(named: "rahul_test_pic")
                 cell.customTextLabel.text = svd[defaultConvo]?[convoIndex].text
+                if let uri = svd[defaultConvo]?[convoIndex].photoURI {
+                    cell.photoImageView.af_setImage(withURL: REST.generateImageURL(imageURI: uri))
+                }
             }
         }
         cell.setNeedsLayout()
@@ -111,6 +115,7 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     // MARK: Private
     
     private func configureCollectionView() {
+        searchCollectionView?.backgroundColor = UIColor.clear
         searchCollectionView?.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: conversationReuseIdentifier)
         searchCollectionView?.delegate = self
         searchCollectionView?.dataSource = self
@@ -120,5 +125,5 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
 
 private struct Constants {
     static let cellWidth: CGFloat = 60.0
-    static let betweenCellSpace: CGFloat = 10.0
+    static let betweenCellSpace: CGFloat = 2.0
 }

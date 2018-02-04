@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import Alamofire
 
 class ConversationViewController: UIViewController, SocketManagerDelegate, MessageTableVCDelegate, UITextFieldDelegate {
     
@@ -19,7 +20,6 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate var allCachedMessages: [Message: [Message]] = [:]
     fileprivate var filteredMessages = OrderedDictionary<Message, [Message]>()
     fileprivate var messageViewData = OrderedDictionary<MessageViewData, [MessageViewData]>()
-    // TODO: add image cache (will need separate class for this)
     
     // MARK: UIViewController
 
@@ -163,6 +163,10 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
 
         testingSetup()
         messageTableVC.reloadMessageViewData()
+        
+        // Do we actually need lastXMessages?
+        let request = PullMessagesRequest(conversationUUID: "uuid-1", lastXMessages: 10, latestTimestampServer: nil)
+        ConversationAPI.pullMessages(pullMessagesRequest: request)
     }
     
     fileprivate func received(response: PullMessagesResponse) {
@@ -204,19 +208,19 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate func createMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]> {
         var res = OrderedDictionary<MessageViewData, [MessageViewData]>()
         for m1 in filteredMessages.keys {
-            res[MessageViewData(uuid: m1.uuid, text: m1.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
-                filteredMessages[m1]?.map { MessageViewData(uuid: $0.uuid, text: $0.fullText, photo: nil, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
+            res[MessageViewData(uuid: m1.uuid, text: m1.allText, photoURI: m1.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
+                filteredMessages[m1]?.map { MessageViewData(uuid: $0.uuid, text: $0.allText, photoURI: $0.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
         }
         return res
     }
     
     fileprivate func testingSetup() {
         // Add test messages
-        let testMessage = Message(uuid: "1", senderUUID: "1", fullText: "yoyoyoyoyoyoyoyoyo", createdTimestampServer: 0, isTopLevel: true, parentUUID: nil)
-        let testMessage2 = Message(uuid: "2", senderUUID: "2", fullText: "My Name is Jo!", createdTimestampServer: 1, isTopLevel: true, parentUUID: nil)
-        let testMessage3 = Message(uuid: "3", senderUUID: "1", fullText: "I have a big fro", createdTimestampServer: 2, isTopLevel: true, parentUUID: nil)
-        let testMessage4 = Message(uuid: "4", senderUUID: "2", fullText: "reply#1", createdTimestampServer: 2, isTopLevel: false, parentUUID: "2")
-        let testMessage5 = Message(uuid: "5", senderUUID: "2", fullText: "reply#2", createdTimestampServer: 7, isTopLevel: false, parentUUID: "2")
+        let testMessage = Message(uuid: "1", allText: "yoyoyoyoyoyoyoyoyo", createdTimestampServer: 0, senderUUID: "1", parentUUID: nil, senderPhotoURI: "rahul_prof")
+        let testMessage2 = Message(uuid: "2", allText: "My Name is Jo!", createdTimestampServer: 1, senderUUID: "2",  parentUUID: nil, senderPhotoURI: "prafulla_prof")
+        let testMessage3 = Message(uuid: "3", allText: "I have a big fro", createdTimestampServer: 2, senderUUID: "1", parentUUID: nil, senderPhotoURI: "rahul_prof")
+        let testMessage4 = Message(uuid: "4", allText: "reply#1", createdTimestampServer: 2, senderUUID: "2", parentUUID: "2", senderPhotoURI: "prafulla_prof")
+        let testMessage5 = Message(uuid: "5", allText: "reply#2", createdTimestampServer: 7, senderUUID: "2", parentUUID: "2", senderPhotoURI: "prafulla_prof")
         allCachedMessages[testMessage] = []
         allCachedMessages[testMessage2] = [testMessage4, testMessage5]
         allCachedMessages[testMessage3] = []

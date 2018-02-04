@@ -3,7 +3,7 @@ select
 	conversations.uuid as uuid,
 	conversations.updated_timestamp_server as updatedtimestampserver,
 	conversations.is_default as isdefault,
-	conversations.photo_url as photourl,
+	conversations.photo_uri as photouri,
 	groups.uuid as groupuuid,
 	tags.name as topic,
 	tags.uuid as topictaguuid
@@ -30,7 +30,7 @@ select
 	groups.uuid as uuid,
 	groups.name as name,
 	groups.created_timestamp_server as createdtimestampserver,
-	groups.photo_url as photourl
+	groups.photo_uri as photouri
 from groups
 where groups.uuid in (?)
 ;

@@ -9,7 +9,7 @@ type User struct {
 	UUID                   string
 	Username               string
 	MobileNumber           string
-	PhotoURL               null.String
+	PhotoURI               null.String
 	CreatedTimestampServer int
 }
 
@@ -45,5 +45,5 @@ type Group struct {
 	UUID                   string
 	Name                   string
 	CreatedTimestampServer int
-	PhotoURL               null.String
+	PhotoURI               null.String
 }

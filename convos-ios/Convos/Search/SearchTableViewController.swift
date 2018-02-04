@@ -13,7 +13,7 @@ private let headerReuseIdentifier = "SearchHeader"
 
 class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
     
-    var searchVC: SearchTableComponentDelegate? = nil
+    var searchVC: SearchComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
@@ -87,7 +87,9 @@ extension SearchTableViewController {
         
         if let svd = searchVC?.getSearchViewData().keys[section] {
             header.customTextLabel.text = svd.text
-            header.photoImageView.image = svd.photo
+            if let uri = svd.photoURI {
+                header.photoImageView.af_setImage(withURL: REST.generateImageURL(imageURI: uri))
+            }
         }
         
         header.section = section

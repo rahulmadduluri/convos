@@ -9,7 +9,7 @@
 import UIKit
 
 class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
-    var searchVC: SearchTableComponentDelegate?
+    var searchVC: SearchComponentDelegate?
     var type: SearchViewType?
     
     // MARK: UIView
@@ -33,6 +33,8 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
         
         customTextLabel.frame = CGRect(x: self.bounds.minX, y: self.bounds.height * 0.75, width: imageWidth, height: self.bounds.height * 0.25)
         customTextLabel.textAlignment = .center
+        customTextLabel.font = customTextLabel.font.withSize(17)
+        customTextLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(customTextLabel)
     }
     

@@ -27,7 +27,7 @@ select
 	messages.created_timestamp_server as createdtimestampserver,	
 	sender.uuid as senderuuid,		
 	parent.uuid as parentuuid,
-	sender.photo_url as senderphotourl	
+	sender.photo_uri as senderphotouri	
 from messages 
 join conversations
 	on conversations.id = messages.conversation_id

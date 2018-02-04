@@ -25,17 +25,17 @@ class User: NSObject, APIModel {
     // vars
     let uuid: String
     let username: String
-    let photoURL: String?
+    let photoURI: String?
     
     override var hashValue: Int {
         return uuid.hashValue
     }
     
     // init
-    init(uuid: String, username: String, photoURL: String?) {
+    init(uuid: String, username: String, photoURI: String?) {
         self.uuid = uuid
         self.username = username
-        self.photoURL = photoURL
+        self.photoURI = photoURI
     }
     
     required init?(json: JSON) {
@@ -46,20 +46,20 @@ class User: NSObject, APIModel {
         }
         uuid = uuidJSON.stringValue
         username = usernameJSON.stringValue
-        photoURL = dictionary["PhotoURL"]?.string
+        photoURI = dictionary["PhotoURI"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
         var dict: [String: JSON] = ["UUID": JSON(uuid), "Username": JSON(username)]
-        if let photoURL = photoURL {
-            dict["PhotoURL"] = JSON(photoURL)
+        if let photoURI = photoURI {
+            dict["PhotoURI"] = JSON(photoURI)
         }
         return JSON(dict)
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return User(uuid: uuid, username: username, photoURL: photoURL)
+        return User(uuid: uuid, username: username, photoURI: photoURI)
     }
     
 }
@@ -74,54 +74,56 @@ class Message: NSObject, APIModel {
 
     // vars
     let uuid: String
-    let senderUUID: String
-    let fullText: String
+    let allText: String
     let createdTimestampServer: Int
-    let isTopLevel: Bool
+    let senderUUID: String
     let parentUUID: String?
+    let senderPhotoURI: String?
     
     override var hashValue: Int {
         return uuid.hashValue
     }
 
     // init
-    init(uuid: String, senderUUID: String, fullText: String, createdTimestampServer: Int, isTopLevel: Bool, parentUUID: String?) {
+    init(uuid: String, allText: String, createdTimestampServer: Int, senderUUID: String, parentUUID: String?, senderPhotoURI: String?) {
         self.uuid = uuid
-        self.senderUUID = senderUUID
-        self.fullText = fullText
+        self.allText = allText
         self.createdTimestampServer = createdTimestampServer
-        self.isTopLevel = isTopLevel
+        self.senderUUID = senderUUID
         self.parentUUID = parentUUID
+        self.senderPhotoURI = senderPhotoURI
     }
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
-            let senderUUIDJSON = dictionary["SenderUUID"],
-            let fullTextJSON = dictionary["FullText"],
+            let allTextJSON = dictionary["AllText"],
             let createdTimestampServerJSON = dictionary["CreatedTimestampServer"],
-            let isTopLevelJSON = dictionary["IsTopLevel"] else {
+            let senderUUIDJSON = dictionary["SenderUUID"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
-        senderUUID = senderUUIDJSON.stringValue
-        fullText = fullTextJSON.stringValue
+        allText = allTextJSON.stringValue
         createdTimestampServer = createdTimestampServerJSON.intValue
-        isTopLevel = isTopLevelJSON.boolValue
+        senderUUID = senderUUIDJSON.stringValue
         parentUUID = dictionary["ParentUUID"]?.string
+        senderPhotoURI = dictionary["SenderPhotoURI"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["UUID": JSON(uuid), "SenderUUID": JSON(senderUUID), "FullText": JSON(fullText), "CreatedTimestampServer": JSON(createdTimestampServer), "IsTopLevel": JSON(isTopLevel)]
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "AllText": JSON(allText), "CreatedTimestampServer": JSON(createdTimestampServer), "SenderUUID": JSON(senderUUID)]
         if let parentUUID = parentUUID {
             dict["ParentUUID"] = JSON(parentUUID)
+        }
+        if let senderPhotoURI = senderPhotoURI {
+            dict["SenderPhotoURI"] = JSON(senderPhotoURI)
         }
         return JSON(dict)
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return Message(uuid: uuid, senderUUID: senderUUID, fullText: fullText, createdTimestampServer: createdTimestampServer, isTopLevel: isTopLevel, parentUUID: parentUUID)
+        return Message(uuid: uuid, allText: allText, createdTimestampServer: createdTimestampServer, senderUUID: senderUUID, parentUUID: parentUUID, senderPhotoURI: senderPhotoURI)
     }
 }
 
@@ -143,21 +145,21 @@ class Conversation: NSObject, APIModel {
     let topicTagUUID: String
     let topic: String
     let isDefault: Bool
-    let photoURL: String?
+    let photoURI: String?
     
     override var hashValue: Int {
         return uuid.hashValue
     }
     
     // init
-    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topicTagUUID: String, topic: String, isDefault: Bool, photoURL: String? = nil) {
+    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topicTagUUID: String, topic: String, isDefault: Bool, photoURI: String? = nil) {
         self.uuid = uuid
         self.groupUUID = groupUUID
         self.updatedTimestampServer = updatedTimestampServer
         self.topicTagUUID = topicTagUUID
         self.topic = topic
         self.isDefault = isDefault
-        self.photoURL = photoURL
+        self.photoURI = photoURI
     }
     
     
@@ -177,14 +179,14 @@ class Conversation: NSObject, APIModel {
         topicTagUUID = topicTagUUIDJSON.stringValue
         topic = topicJSON.stringValue
         isDefault = isDefaultJSON.boolValue
-        photoURL = dictionary["PhotoURL"]?.string
+        photoURI = dictionary["PhotoURI"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
         var dict: [String: JSON] = ["UUID": JSON(uuid), "GroupUUID": JSON(groupUUID), "UpdatedTimestampServer": JSON(updatedTimestampServer), "TopicTagUUID": JSON(topicTagUUID), "Topic": JSON(topic), "IsDefault": JSON(isDefault)]
-        if let url = photoURL {
-            dict["PhotoURL"] = JSON(url)
+        if let url = photoURI {
+            dict["PhotoURI"] = JSON(url)
         }
         return JSON(dict)
     }
@@ -257,7 +259,7 @@ class Group: NSObject, APIModel {
     // vars
     let uuid: String
     let name: String
-    let photoURL: String?
+    let photoURI: String?
     var conversations: [Conversation]
     
     override var hashValue: Int {
@@ -265,10 +267,10 @@ class Group: NSObject, APIModel {
     }
     
     // init
-    init(uuid: String, name: String, photoURL: String?, conversations: [Conversation]) {
+    init(uuid: String, name: String, photoURI: String?, conversations: [Conversation]) {
         self.uuid = uuid
         self.name = name
-        self.photoURL = photoURL
+        self.photoURI = photoURI
         self.conversations = conversations
     }
     
@@ -282,7 +284,7 @@ class Group: NSObject, APIModel {
         uuid = uuidJSON.stringValue
         name = nameJSON.stringValue
         conversations = []
-        photoURL = dictionary["photoURL"]?.stringValue
+        photoURI = dictionary["PhotoURI"]?.stringValue
         
         for cj in conversationsJSON.arrayValue {
             if let c = Conversation(json: cj) {
@@ -294,14 +296,14 @@ class Group: NSObject, APIModel {
     // Model
     func toJSON() -> JSON {
         var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name), "Conversations": JSON(conversations)]
-        if let url = photoURL {
-            dict["PhotoURL"] = JSON(url)
+        if let url = photoURI {
+            dict["PhotoURI"] = JSON(url)
         }
         return JSON(dict)
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return Group(uuid: uuid, name: name, photoURL: photoURL, conversations: conversations)
+        return Group(uuid: uuid, name: name, photoURI: photoURI, conversations: conversations)
     }
     
 }

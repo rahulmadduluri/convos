@@ -79,7 +79,7 @@ func PushMessage(req PushMessageRequest) (*PushMessageResponse, []string, error)
 			CreatedTimestampServer: timestampServer,
 			SenderUUID:             req.SenderUUID,
 			ParentUUID:             req.ParentUUID,
-			SenderPhotoURL:         "", // TODO: Fix this
+			SenderPhotoURI:         "", // TODO: Fix this
 		},
 	}, receiveruuids, err
 }

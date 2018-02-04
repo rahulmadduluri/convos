@@ -34,27 +34,24 @@ protocol SearchTableVCProtocol {
 // Search UI Delegates
 
 protocol SearchUIComponent {
-    var searchVC: SearchTableComponentDelegate? { get set }
+    var searchVC: SearchComponentDelegate? { get set }
 }
 
 protocol SearchComponentDelegate {
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
+    func convoCreated(groupUUID: String)
+    func convoSelected(uuid: String)
+    func groupSelected(conversationUUID: String)
 }
 
 protocol SearchTextFieldDelegate: SearchComponentDelegate {
     func searchTextUpdated(searchText: String)
 }
 
-protocol SearchTableComponentDelegate: SearchComponentDelegate {
-    func convoCreated(groupUUID: String)
-    func convoSelected(uuid: String)
-    func groupSelected(conversationUUID: String)
-}
-
 struct SearchViewData: Hashable, Comparable {
     var uuid: String?
     var text: String
-    var photo: UIImage?
+    var photoURI: String?
     var updatedTimestamp: Int
     var updatedTimeText: String
     var type: Int
@@ -63,10 +60,10 @@ struct SearchViewData: Hashable, Comparable {
         return uuid?.hashValue ?? 0
     }
     
-    init(uuid: String? = nil, text: String, photo: UIImage? = UIImage(named: "rahul_test_pic"), updatedTimestamp: Int, updatedTimeText: String, type: Int) {
+    init(uuid: String? = nil, text: String, photoURI: String? = nil, updatedTimestamp: Int, updatedTimeText: String, type: Int) {
         self.uuid = uuid
         self.text = text
-        self.photo = photo
+        self.photoURI = photoURI
         self.updatedTimestamp = updatedTimestamp
         self.updatedTimeText = updatedTimeText
         self.type = type

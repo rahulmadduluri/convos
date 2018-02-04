@@ -15,13 +15,14 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     let rightInfoButton = UIButton()
     
     var section = 0
-    var searchVC: SearchTableComponentDelegate?
+    var searchVC: SearchComponentDelegate?
     
     // MARK: Initalizers
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
+        contentView.backgroundColor = UIColor.purple
         let marginGuide = contentView.layoutMarginsGuide
         
         // configure image view

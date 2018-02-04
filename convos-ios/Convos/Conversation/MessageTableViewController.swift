@@ -115,7 +115,9 @@ extension MessageTableViewController {
         
         if let messageViewData = messageTableVCDelegate?.findMessageViewData(primaryIndex: indexPath.section, secondaryIndex: indexPath.row) {
             cell.customTextLabel.text = messageViewData.text
-            cell.photoImageView.image = messageViewData.photo
+            if let uri = messageViewData.photoURI {
+                cell.photoImageView.af_setImage(withURL: REST.generateImageURL(imageURI: uri))
+            }
         }
         
         cell.row = indexPath.row
@@ -131,7 +133,9 @@ extension MessageTableViewController {
         
         if let messageViewData = messageTableVCDelegate?.findMessageViewData(primaryIndex: section, secondaryIndex: nil) {
             header.customTextLabel.text = messageViewData.text
-            header.photoImageView.image = messageViewData.photo
+            if let uri = messageViewData.photoURI {
+                header.photoImageView.af_setImage(withURL: REST.generateImageURL(imageURI: uri))
+            }
         }
         
         header.section = section
