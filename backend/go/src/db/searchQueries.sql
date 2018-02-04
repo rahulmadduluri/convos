@@ -1,5 +1,5 @@
 -- name: findConversationsForUserWithSearch
-select 
+select distinct
 	conversations.uuid as uuid,
 	conversations.updated_timestamp_server as updatedtimestampserver,
 	conversations.is_default as isdefault,

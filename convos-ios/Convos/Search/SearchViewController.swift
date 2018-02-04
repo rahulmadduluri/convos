@@ -182,7 +182,11 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         containerView?.searchTextField.searchTextFieldDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        testingSetup()
+        //testingSetup()
+        let myUUID = "uuid-1"
+        let request = SearchRequest(senderUuid: myUUID, searchText: "")
+        SearchAPI.search(searchRequest: request)
+
         searchTableVC.reloadSearchViewData()
         
         containerView?.searchTextField.userStoppedTypingHandler = {

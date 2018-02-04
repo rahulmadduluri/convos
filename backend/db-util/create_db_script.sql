@@ -65,10 +65,10 @@ CREATE TABLE IF NOT EXISTS messages (
 
 -- relationship specifying users in a group
 CREATE TABLE IF NOT EXISTS group_users (
-	user_id 		int			NOT NULL,
 	group_id		int			NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES users (id),
-	FOREIGN KEY (group_id) REFERENCES groups (id)
+	user_id 		int			NOT NULL,
+	FOREIGN KEY (group_id) REFERENCES groups (id),
+	FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 -- relationship mapping conversations to tags
@@ -79,17 +79,34 @@ CREATE TABLE IF NOT EXISTS conversations_tags (
 	FOREIGN KEY (tag_id) REFERENCES tags (id)
 );
 
+-- repeat names are because group creates a tag that shares the group name
 INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', '724309111', 'prafulla_prof', 1000), 
 						 (NULL, 'uuid-2', 'Rahul', '724309222', 'rahul_prof', 1200),
 						 (NULL, 'uuid-3', 'Reia', '724309228', 'reia_prof', 1400);
-INSERT INTO tags VALUES (NULL, 'uuid-1', 'shopping', 0, 1500);
+INSERT INTO tags VALUES (NULL, 'uuid-1', 'Prafulla', 1, 1000),
+						(NULL, 'uuid-2', 'Rahul', 1, 1200),
+						(NULL, 'uuid-3', 'Reia', 1, 1400),
+						(NULL, 'uuid-4', 'A', 0, 1000),
+						(NULL, 'uuid-5', 'B', 0, 1200),
+						(NULL, 'uuid-6', 'C', 0, 1200),
+						(NULL, 'uuid-7', 'Scrub', 0, 1400),
+						(NULL, 'uuid-8', '93Webster', 1, 1600),
+						(NULL, 'uuid-9', 'Travel', 0, 1600);
 INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
 						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
-						  (NULL, 'uuid-3', 'Reia', 1400, 'reia_prof');
+						  (NULL, 'uuid-3', 'Reia', 1400, 'reia_prof'),
+						  (NULL, 'uuid-4', '93Webster', 1600, '93');
 INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, 1, 1, 1, 'prafulla_prof'),
-								 (NULL, 'uuid-2', 1200, 1200, 1, 1, 1, 'rahul_prof'),
-								 (NULL, 'uuid-3', 1400, 1400, 1, 1, 1, 'reia_prof');
+								 (NULL, 'uuid-2', 1200, 1200, 2, 1, 2, 'rahul_prof'),
+								 (NULL, 'uuid-3', 1400, 1400, 3, 1, 3, 'reia_prof'),
+								 (NULL, 'uuid-4', 1000, 1000, 4, 0, 1, 'prafulla_prof'),
+								 (NULL, 'uuid-5', 1200, 1200, 5, 0, 2, 'rahul_prof'),
+								 (NULL, 'uuid-6', 1200, 1200, 6, 0, 2, 'rahul_prof'),
+								 (NULL, 'uuid-7', 1200, 1200, 7, 0, 3, 'reia_prof'),
+								 (NULL, 'uuid-8', 1600, 1600, 8, 1, 4, '93'),
+								 (NULL, 'uuid-9', 1600, 1600, 9, 0, 4, 'plane');
+INSERT INTO group_users VALUES (1,1),(2,2),(3,3),(4,1),(4,2),(4,3);
+INSERT INTO conversations_tags VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9);
 INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1);
-INSERT INTO group_users VALUES (1,1),(2,2),(3,3);
 
 

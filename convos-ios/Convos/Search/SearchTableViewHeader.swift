@@ -27,7 +27,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         
         // configure image view
         contentView.addSubview(photoImageView)
-        photoImageView.layer.cornerRadius = 15.0
+        photoImageView.layer.cornerRadius = Constants.imageCornerRadius
         photoImageView.layer.masksToBounds = true
         photoImageView.translatesAutoresizingMaskIntoConstraints = false
         photoImageView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
@@ -86,11 +86,12 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
 
 private struct Constants {
     static let textFontSize: CGFloat = 16
-    static let leadingImageAnchorConstant: CGFloat = 20
-    static let leadingLabelAnchorConstant: CGFloat = 60
+    static let leadingImageAnchorConstant: CGFloat = 11
+    static let leadingLabelAnchorConstant: CGFloat = 25
     static let trailingRightInfoAnchorConstant: CGFloat = 0
-    static let imageWidth: CGFloat = 24
-    static let imageHeight: CGFloat = 24
+    static let imageWidth: CGFloat = 26
+    static let imageHeight: CGFloat = 26
+    static let imageCornerRadius: CGFloat = 13
     static let rightInfoWidth: CGFloat = 18
     static let rightInfoHeight: CGFloat = 18
 }
