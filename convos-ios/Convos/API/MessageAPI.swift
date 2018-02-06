@@ -127,26 +127,33 @@ class PushMessageResponse: NSObject, APIModel {
     
     // vars
     let message: Message?
+    var receiverUUIDs: [String] = []
     let errorMsg: String?
     
     // init
-    init(message: Message?, errorMsg: String?) {
+    init(message: Message?, receiverUUIDs: [String], errorMsg: String?) {
         self.message = message
+        self.receiverUUIDs = receiverUUIDs
         self.errorMsg = errorMsg
     }
     
     required init?(json: JSON) {
-        guard let dictionary = json.dictionary else {
+        guard let dict = json.dictionary else {
             message = nil
             errorMsg = nil
             return nil
         }
-        if let messageJSON = dictionary["Message"] {
+        if let messageJSON = dict["Message"] {
             message = Message(json: messageJSON)
         } else {
             message = nil
         }
-        errorMsg = dictionary["ErrorMsg"]?.string
+        if let uuids = dict["ReceiverUUIDs"]?.array {
+            for i in uuids {
+                receiverUUIDs.append(i.stringValue)
+            }
+        }
+        errorMsg = dict["ErrorMsg"]?.string
     }
     
     // APIModel
@@ -155,6 +162,7 @@ class PushMessageResponse: NSObject, APIModel {
         if let message = message {
             dict["Message"] = message.toJSON()
         }
+        dict["ReceiverUUIDs"] = JSON(receiverUUIDs)
         if let errorMsg = errorMsg {
             dict["ErrorMsg"] = JSON(errorMsg)
         }
@@ -162,13 +170,13 @@ class PushMessageResponse: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return PushMessageResponse(message: message, errorMsg: errorMsg)
+        return PushMessageResponse(message: message, receiverUUIDs: receiverUUIDs, errorMsg: errorMsg)
     }
 }
 
 // Conversation API
 
-class ConversationAPI: NSObject {
+class MessageAPI: NSObject {
     static let _PushMessageRequest = "PushMessageRequest"
     static let _PushMessageResponse = "PushMessageResponse"
     static let _PullMessagesRequest = "PullMessagesRequest"

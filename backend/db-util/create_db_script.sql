@@ -80,9 +80,16 @@ CREATE TABLE IF NOT EXISTS conversations_tags (
 );
 
 -- repeat names are because group creates a tag that shares the group name
+-- users: 1. prafulla, 2. rahul, 3. reia
 INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', '724309111', 'prafulla_prof', 1000), 
 						 (NULL, 'uuid-2', 'Rahul', '724309222', 'rahul_prof', 1200),
 						 (NULL, 'uuid-3', 'Reia', '724309228', 'reia_prof', 1400);
+-- groups: 1. prafulla, 2. rahul, 3. reia 4. 93 webster
+INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
+						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
+						  (NULL, 'uuid-3', 'Reia', 1400, 'reia_prof'),
+						  (NULL, 'uuid-4', '93Webster', 1600, '93');
+-- convos: 1. prafulla(1) 2. rahul(2) 3. reia(3) 4. A(1) 5. B(2) 6. C(2) 7. Scrub(3) 8. 93Webster(4) 9. Travel (4)
 INSERT INTO tags VALUES (NULL, 'uuid-1', 'Prafulla', 1, 1000),
 						(NULL, 'uuid-2', 'Rahul', 1, 1200),
 						(NULL, 'uuid-3', 'Reia', 1, 1400),
@@ -92,10 +99,6 @@ INSERT INTO tags VALUES (NULL, 'uuid-1', 'Prafulla', 1, 1000),
 						(NULL, 'uuid-7', 'Scrub', 0, 1400),
 						(NULL, 'uuid-8', '93Webster', 1, 1600),
 						(NULL, 'uuid-9', 'Travel', 0, 1600);
-INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
-						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
-						  (NULL, 'uuid-3', 'Reia', 1400, 'reia_prof'),
-						  (NULL, 'uuid-4', '93Webster', 1600, '93');
 INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, 1, 1, 1, 'prafulla_prof'),
 								 (NULL, 'uuid-2', 1200, 1200, 2, 1, 2, 'rahul_prof'),
 								 (NULL, 'uuid-3', 1400, 1400, 3, 1, 3, 'reia_prof'),
@@ -107,6 +110,7 @@ INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, 1, 1, 1, 'prafulla
 								 (NULL, 'uuid-9', 1600, 1600, 9, 0, 4, 'plane');
 INSERT INTO group_users VALUES (1,1),(2,2),(3,3),(4,1),(4,2),(4,3);
 INSERT INTO conversations_tags VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9);
-INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1);
-
-
+INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1),
+							(NULL, 'uuid-2', 'Yo yo yo', 1505, 1, NULL, 1),
+							(NULL, 'uuid-3', 'My name is jo', 1510, 1, 2, 1),
+							(NULL, 'uuid-4', 'Huh-Watchu talking about?', 1520, 1, 2, 1);

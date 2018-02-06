@@ -17,8 +17,6 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     fileprivate var containerView: MainSearchView? = nil
     // search results table
     fileprivate var searchTableVC = SearchTableViewController()
-    // filtered groups used for view data
-    fileprivate var filteredGroups = Set<Group>()
     // all group/conversations stored
     fileprivate var allCachedGroups = Set<Group>()
     // map of search view dat
@@ -103,7 +101,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     }
     
     func convoSelected(uuid: String) {
-        for g in filteredGroups {
+        for g in allCachedGroups {
             for c in g.conversations {
                 if c.uuid == uuid {
                     searchVCDelegate?.convoSelected(conversation: c)
@@ -113,7 +111,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     }
     
     func groupSelected(conversationUUID: String) {
-        for g in filteredGroups {
+        for g in allCachedGroups {
             for c in g.conversations {
                 if c.uuid == conversationUUID {
                     searchVCDelegate?.groupSelected(group: g)
@@ -163,9 +161,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         containerView?.searchTextField.stopLoadingIndicator()
     }
     
-    fileprivate func createSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
+    fileprivate func createSearchViewData(groups: Set<Group>) -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         var viewDataMap = OrderedDictionary<SearchViewData, [SearchViewData]>()
-        for g in filteredGroups {
+        for g in groups {
             let defaultConvo = g.conversations.filter { $0.isDefault == true }.first
             let cs = g.conversations.sorted(by: >).filter { $0.isDefault == false }
             if let defaultConvo = defaultConvo {
@@ -182,7 +180,6 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         containerView?.searchTextField.searchTextFieldDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        //testingSetup()
         let myUUID = "uuid-1"
         let request = SearchRequest(senderUuid: myUUID, searchText: "")
         SearchAPI.search(searchRequest: request)
@@ -200,12 +197,12 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     }
     
     fileprivate func localSearch(text: String) {
-        filteredGroups.removeAll()
+        var filteredGroups = Set<Group>()
         
         if text.isEmpty {
-            filteredGroups = allCachedGroups
+            searchViewData = createSearchViewData(groups: allCachedGroups)
+            return
         }
-                
         // get matching groups
         for g in allCachedGroups {
             let groupFilterRange = (g.name as NSString).range(of: text, options: [.caseInsensitive])
@@ -228,7 +225,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
                 }
             }
         }
-        searchViewData = createSearchViewData()
+        searchViewData = createSearchViewData(groups: filteredGroups)
     }
     
     fileprivate func remoteSearch(searchText: String) {
@@ -236,25 +233,5 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         let myUUID = "uuid-1"
         let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
         SearchAPI.search(searchRequest: request)
-    }
-    
-    fileprivate func testingSetup() {
-        let defaultconvo1 = Conversation(uuid: "1", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "1", topic: "Rahul", isDefault: true, photoURI: "rahul_prof")
-        let defaultconvo2 = Conversation(uuid: "2", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "2", topic: "Praful", isDefault: true, photoURI: "prafulla_prof")
-        let defaultconvo3 = Conversation(uuid: "3", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "3", topic: "Reia", isDefault: true, photoURI: "reia_prof")
-        
-        // non-default
-        let conversation1 = Conversation(uuid: "4", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "4", topic: "#A", isDefault: false, photoURI: "rahul_prof")
-        let conversation2 = Conversation(uuid: "5", groupUUID: "2", updatedTimestampServer: 0, topicTagUUID: "5", topic: "#B", isDefault: false, photoURI: "prafulla_prof")
-        let conversation3 = Conversation(uuid: "6", groupUUID: "1", updatedTimestampServer: 0, topicTagUUID: "6", topic: "#C", isDefault: false, photoURI: "rahul_prof")
-        let conversation4 = Conversation(uuid: "7", groupUUID: "3", updatedTimestampServer: 0, topicTagUUID: "7", topic: "#Scrub", isDefault: false, photoURI: "reia_prof")
-        
-        let group1 = Group(uuid: "1", name: "Rahul", photoURI: "rahul_prof", conversations: [defaultconvo1, conversation1, conversation3])
-        let group2 = Group(uuid: "2", name: "Praful", photoURI: "prafulla_prof", conversations: [defaultconvo2, conversation2])
-        let group3 = Group(uuid: "3", name: "Reia", photoURI: "reia_prof", conversations: [defaultconvo3, conversation4])
-        
-        filteredGroups.removeAll()
-        allCachedGroups = [group1, group2, group3]
-        searchTextUpdated(searchText: "")
     }
 }

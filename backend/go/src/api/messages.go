@@ -31,29 +31,28 @@ type PushMessageRequest struct {
 }
 
 type PushMessageResponse struct {
-	Message  models.MessageObj
-	ErrorMsg *string
+	Message       models.MessageObj
+	ReceiverUUIDs []string
+	ErrorMsg      *string
 }
 
 func PullMessages(req PullMessagesRequest) (*PullMessagesResponse, error) {
 	// get last X messages before latestTimestampServer. Returned in reverse chronological order
-	log.Println(req)
 	latestTimestampServer := int(time.Now().Unix())
 	if req.LatestTimestampServer != nil {
 		latestTimestampServer = *req.LatestTimestampServer
 	}
-	log.Println(req.ConversationUUID, req.LastXMessages, latestTimestampServer)
 	messages, err := dbh.GetLastXMessages(req.ConversationUUID, req.LastXMessages, latestTimestampServer)
 	if err != nil {
 		log.Println("failed to get messages for req", req)
-		log.Println(err)
+		return nil, err
 	}
 	return &PullMessagesResponse{
 		Messages: messages,
 	}, err
 }
 
-func PushMessage(req PushMessageRequest) (*PushMessageResponse, []string, error) {
+func PushMessage(req PushMessageRequest) (*PushMessageResponse, error) {
 	// first add message to messages table, then add the conversation_messages relationship. DOne in single query
 	log.Println(req)
 	originalMessageUUID, _ := uuid.NewV4()
@@ -64,7 +63,7 @@ func PushMessage(req PushMessageRequest) (*PushMessageResponse, []string, error)
 	if err != nil {
 		log.Println("failed to add message to tables. Insert failed", req)
 		fmt.Println(err)
-		return nil, nil, err
+		return nil, err
 	}
 
 	var receiveruuids []string
@@ -81,5 +80,6 @@ func PushMessage(req PushMessageRequest) (*PushMessageResponse, []string, error)
 			ParentUUID:             req.ParentUUID,
 			SenderPhotoURI:         "", // TODO: Fix this
 		},
-	}, receiveruuids, err
+		ReceiverUUIDs: receiveruuids,
+	}, err
 }

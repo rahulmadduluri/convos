@@ -51,7 +51,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         rightInfoButton.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.rightInfoWidth).isActive = true
         rightInfoButton.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.rightInfoHeight).isActive = true
         rightInfoButton.setImage(UIImage(named: "info_button"), for: .normal)
-        rightInfoButton.alpha = 0.5
+        rightInfoButton.alpha = Constants.rightInfoAlpha
         rightInfoButton.addTarget(self, action: #selector(SearchTableViewHeader.tapInfo(_:)), for: .touchUpInside)
         
         // UIGestureRecognizer
@@ -94,4 +94,5 @@ private struct Constants {
     static let imageCornerRadius: CGFloat = 13
     static let rightInfoWidth: CGFloat = 18
     static let rightInfoHeight: CGFloat = 18
+    static let rightInfoAlpha: CGFloat = 0.5
 }

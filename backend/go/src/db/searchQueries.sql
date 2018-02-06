@@ -1,5 +1,5 @@
 -- name: findConversationsForUserWithSearch
-select distinct
+select
 	conversations.uuid as uuid,
 	conversations.updated_timestamp_server as updatedtimestampserver,
 	conversations.is_default as isdefault,
@@ -8,7 +8,7 @@ select distinct
 	tags.name as topic,
 	tags.uuid as topictaguuid
 from (
-	select group_id
+	select distinct group_id
 	from group_users
 	where user_id in (
 		select user_id

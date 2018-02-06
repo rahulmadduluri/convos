@@ -1,25 +1,14 @@
 package networking
 
 import (
+	"encoding/json"
 	"log"
 	"time"
 
 	"api"
-	"models"
-
-	"encoding/json"
 
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
-)
-
-const (
-	_searchRequest        = "SearchRequest"
-	_searchResponse       = "SearchResponse"
-	_pullMessagesRequest  = "PullMessagesRequest"
-	_pullMessagesResponse = "PullMessagesResponse"
-	_pushMessageRequest   = "PushMessageRequest"
-	_pushMessageResponse  = "PushMessageResponse"
 )
 
 type Packet struct {
@@ -63,18 +52,18 @@ func (c *client) RunRead(h Hub) {
 	for {
 		_, data, err := c.socket.ReadMessage()
 		if err != nil {
-			log.Println("Socket ended")
+			log.Println("ERROR: failed to read message from socket -- Socket ended")
 			break
 		}
 
 		var packet Packet
 		err = json.Unmarshal(data, &packet)
 		if err != nil {
-			log.Println("Couldn't unmarshall packet")
+			log.Println("ERROR: Couldn't unmarshall packet -- Socket ended")
 			continue
 		}
 
-		err = c.performAPI(packet.Data, packet.Type, h)
+		err = c.performAPI(packet.Data, APIType(packet.Type), h)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -91,7 +80,7 @@ func (c *client) RunWrite(h Hub) {
 	for {
 		packet, ok := <-c.sendQueue
 		if !ok {
-			log.Println("Failed to pull message from send queue")
+			log.Println("ERROR: Failed to pull message from send queue")
 			break
 		}
 
@@ -116,74 +105,28 @@ func (c *client) Close() {
 	c.socket.Close()
 }
 
-//
-
-func (c *client) performAPI(data json.RawMessage, apiType string, h Hub) error {
-	var err error
-	var res models.Model
-	var resAPI string
-	var receiveruuids []string
-
-	// handle request
-	switch apiType {
-	case _searchRequest:
-		var searchRequest api.SearchRequest
-		err = json.Unmarshal(data, &searchRequest)
-		if err != nil {
-			return err
-		}
-		res, err = api.Search(searchRequest)
-		resAPI = _searchResponse
-		if err != nil {
-			return err
-		}
-	case _pullMessagesRequest:
-		var pullMessagesRequest api.PullMessagesRequest
-		err = json.Unmarshal(data, &pullMessagesRequest)
-		if err != nil {
-			return err
-		}
-		res, err = api.PullMessages(pullMessagesRequest)
-		resAPI = _pullMessagesResponse
-		if err != nil {
-			return err
-		}
-	case _pushMessageRequest:
-		var pushMessageRequest api.PushMessageRequest
-		err = json.Unmarshal(data, &pushMessageRequest)
-		if err != nil {
-			return err
-		}
-		res, receiveruuids, err = api.PushMessage(pushMessageRequest)
-		resAPI = _pushMessageResponse
-		if err != nil {
-			return err
-		}
-	}
-
-	serverTimestamp := time.Now()
-	responseData, err := json.Marshal(res)
+func (c *client) performAPI(data json.RawMessage, apiType APIType, h Hub) error {
+	res, err := routeAPI(data, apiType)
 	if err != nil {
 		return err
 	}
 
-	result := &Packet{
-		Type:            resAPI,
-		ServerTimestamp: &serverTimestamp,
-		Data:            responseData,
-	}
-
 	// just need to handle the case of PushMessagesRequest.
-	// The response contains the user uuid's to send to, so just calling h.send(res, uuid) on each on them should be enough.
-	if apiType == _pushMessageRequest {
-		for _, receiveruuid := range receiveruuids {
-			err = h.SendToUser(*result, receiveruuid)
+	// The response contains the user uuids to send to, so just calling h.send(res, uuid) on each on them should be enough.
+	if APIType(res.Type) == _pushMessageResponse {
+		var pmr api.PushMessageResponse
+		err = json.Unmarshal(data, &pmr)
+		if err != nil {
+			return err
+		}
+		for _, user := range pmr.ReceiverUUIDs {
+			err = h.SendToUser(*res, user)
 			if err != nil {
-				log.Println(err)
+				return err
 			}
 		}
 	} else {
-		c.Send(result)
+		c.Send(res)
 	}
 	return nil
 }
