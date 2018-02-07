@@ -14,7 +14,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     var containerView: MainConversationView?
     
-    fileprivate var uuid: String = ""
+    fileprivate var conversationUUID: String = ""
     fileprivate var titleText: String = ""
     fileprivate var messageTableVC = MessageTableViewController()
     // Message Cache
@@ -23,6 +23,8 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     // 2nd level values: replies
     fileprivate var allCachedMessages: [String: OrderedDictionary<Message, Set<Message>>] = [:]
     // Message view data
+    // Key: Top level message
+    // Value: List of replies
     fileprivate var messageViewData = OrderedDictionary<MessageViewData, [MessageViewData]>()
     fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
     
@@ -143,8 +145,9 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text {
-            let pushMessageRequest = PushMessageRequest(conversationUUID: uuid, fullText: text)
+        if let text = textField.text,
+            let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
+            let pushMessageRequest = PushMessageRequest(conversationUUID: conversationUUID, allText: text, senderUUID: uuid, parentUUID: nil)
             MessageAPI.pushMessage(pushMessageRequest: pushMessageRequest)
             textField.text = ""
         }
@@ -155,7 +158,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     // MARK: Public
     
     func setConversationInfo(uuid: String, newTitle: String) {
-        self.uuid = uuid
+        self.conversationUUID = uuid
         self.titleText = newTitle
         containerView?.topBarView.setTitle(newTitle: newTitle)
     }
@@ -166,7 +169,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         messageTableVC.messageTableVCDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        if let messages = allCachedMessages[uuid] {
+        if let messages = allCachedMessages[conversationUUID] {
             messageViewData = createMessageViewData(messages: messages)
         } else {
             messageViewData = createMessageViewData(messages: OrderedDictionary<Message, Set<Message>>())
@@ -174,7 +177,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         messageTableVC.reloadMessageViewData()
         
         // Do we actually need lastXMessages?
-        let request = PullMessagesRequest(conversationUUID: uuid, lastXMessages: 10, latestTimestampServer: nil)
+        let request = PullMessagesRequest(conversationUUID: conversationUUID, lastXMessages: 20, latestTimestampServer: nil)
         MessageAPI.pullMessages(pullMessagesRequest: request)
     }
     
@@ -184,7 +187,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         for m in (response.messages.sorted { $0.parentUUID == nil && $1.parentUUID != nil }) {
             addMessageToCache(m: m)
         }
-        if let messages = allCachedMessages[uuid] {
+        if let messages = allCachedMessages[conversationUUID] {
             messageViewData = createMessageViewData(messages: messages)
         }
         messageTableVC.reloadMessageViewData()
@@ -194,37 +197,39 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         if let m = response.message {
             addMessageToCache(m: m)
         }
-        if let messages = allCachedMessages[uuid] {
+        if let messages = allCachedMessages[conversationUUID] {
             messageViewData = createMessageViewData(messages: messages)
         }
         messageTableVC.reloadMessageViewData()
     }
     
     fileprivate func addMessageToCache(m: Message) {
-        if allCachedMessages[uuid] == nil {
-            allCachedMessages[uuid] = OrderedDictionary<Message, Set<Message>>()
+        if allCachedMessages[conversationUUID] == nil {
+            allCachedMessages[conversationUUID] = OrderedDictionary<Message, Set<Message>>()
         }
-        if allCachedMessages[uuid]![m] == nil {
+        if allCachedMessages[conversationUUID]![m] == nil {
             // if it has a parent add as a child, otherwise create new entry for 'm'
             if let _ = m.parentUUID {
-                for p in allCachedMessages[uuid]!.keys {
+                for p in allCachedMessages[conversationUUID]!.keys {
                     if p.uuid == m.parentUUID {
-                        allCachedMessages[uuid]![p]?.insert(m)
+                        allCachedMessages[conversationUUID]![p]?.insert(m)
                     }
                 }
             } else {
-                allCachedMessages[uuid]![m] = Set<Message>()
+                allCachedMessages[conversationUUID]![m] = Set<Message>()
             }
         }
     }
     
     fileprivate func createMessageViewData(messages: OrderedDictionary<Message, Set<Message>>) -> OrderedDictionary<MessageViewData, [MessageViewData]> {
-        var res = OrderedDictionary<MessageViewData, [MessageViewData]>()
+        var orderedMessages = OrderedDictionary<MessageViewData, [MessageViewData]>()
         for m1 in messages.keys {
-            res[MessageViewData(uuid: m1.uuid, text: m1.allText, photoURI: m1.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
-                messages[m1]?.map { MessageViewData(uuid: $0.uuid, text: $0.allText, photoURI: $0.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
+            let replies = messages[m1]?.sorted { $0 < $1 }
+            // see comment at top to understand data structure
+            orderedMessages[MessageViewData(uuid: m1.uuid, text: m1.allText, photoURI: m1.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer))] =
+                replies?.map { MessageViewData(uuid: $0.uuid, text: $0.allText, photoURI: $0.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
         }
-        return res
+        return orderedMessages
     }
     
 }

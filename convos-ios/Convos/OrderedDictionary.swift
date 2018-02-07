@@ -1,6 +1,7 @@
 public struct OrderedDictionary<K, V> where K: Hashable, K: Comparable {
     var keys = [K]()
     var dict = [K:V]()
+    var isIncreasing = true
     
     public var count: Int {
         return self.keys.count
@@ -19,7 +20,7 @@ public struct OrderedDictionary<K, V> where K: Hashable, K: Comparable {
                 let oldValue = self.dict.updateValue(newValue!, forKey: key)
                 if oldValue == nil {
                     self.keys.append(key)
-                    self.keys = self.keys.sorted { $0 > $1 }
+                    self.keys = isIncreasing ? self.keys.sorted { $0 < $1 } : self.keys.sorted { $0 > $1 }
                 }
             }
         }

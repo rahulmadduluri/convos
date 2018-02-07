@@ -71,6 +71,9 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     // MARK: Private
     
     fileprivate func configureHome() {
+        // TODO: Move this to auth controller
+        UserDefaults.standard.set("uuid-1", forKey: "uuid")
+        
         searchVC.searchVCDelegate = self
     }
     

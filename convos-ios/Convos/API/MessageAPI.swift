@@ -94,32 +94,42 @@ class PushMessageRequest: NSObject, APIModel {
     
     // vars
     let conversationUUID: String
-    let fullText: String
+    let allText: String
+    let senderUUID: String
+    let parentUUID: String?
     
     // init
-    init(conversationUUID: String, fullText: String) {
+    init(conversationUUID: String, allText: String, senderUUID: String, parentUUID: String?) {
         self.conversationUUID = conversationUUID
-        self.fullText = fullText
+        self.allText = allText
+        self.senderUUID = senderUUID
+        self.parentUUID = parentUUID
     }
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let conversationUUIDJSON = dictionary["ConversationUUID"],
-            let fullTextJSON = dictionary["FullText"] else {
+            let allTextJSON = dictionary["AllText"],
+            let senderUUIDJSON = dictionary["SenderUUID"] else {
             return nil
         }
         conversationUUID = conversationUUIDJSON.stringValue
-        fullText = fullTextJSON.stringValue
+        allText = allTextJSON.stringValue
+        senderUUID = senderUUIDJSON.stringValue
+        parentUUID = dictionary["ParentUUID"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        let dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "FullText": JSON(fullText)]
+        var dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "AllText": JSON(allText), "SenderUUID": JSON(senderUUID)]
+        if let parentUUID = parentUUID {
+            dict["ParentUUID"] = JSON(parentUUID)
+        }
         return JSON(dict)
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return PushMessageRequest(conversationUUID: conversationUUID, fullText: fullText)
+        return PushMessageRequest(conversationUUID: conversationUUID, allText: allText, senderUUID: senderUUID, parentUUID: parentUUID)
     }
 }
 

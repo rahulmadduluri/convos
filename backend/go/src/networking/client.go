@@ -111,11 +111,11 @@ func (c *client) performAPI(data json.RawMessage, apiType APIType, h Hub) error 
 		return err
 	}
 
-	// just need to handle the case of PushMessagesRequest.
-	// The response contains the user uuids to send to, so just calling h.send(res, uuid) on each on them should be enough.
+	// just need to handle the case of PushMessagesResponse
+	// send to each user specified by response object
 	if APIType(res.Type) == _pushMessageResponse {
 		var pmr api.PushMessageResponse
-		err = json.Unmarshal(data, &pmr)
+		err = json.Unmarshal(res.Data, &pmr)
 		if err != nil {
 			return err
 		}

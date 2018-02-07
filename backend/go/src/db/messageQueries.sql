@@ -11,7 +11,8 @@ insert into messages (uuid, all_text, created_timestamp_server, sender_id, paren
 
 -- name: getUsersForConversation
 select 
-	users.uuid as uuid
+	users.uuid as uuid,
+	users.photo_uri as photouri
 from users
 join group_users
 	on group_users.user_id = users.id

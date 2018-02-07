@@ -1,7 +1,6 @@
 package networking
 
 import (
-	"log"
 	"time"
 
 	"api"

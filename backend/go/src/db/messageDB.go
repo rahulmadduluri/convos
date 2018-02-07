@@ -60,7 +60,6 @@ func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestTim
 			"latesttimestampserver": latestTimestampServer})
 
 	if err != nil {
-		log.Fatal("query error: ", err)
 		return objs, err
 	}
 	defer rows.Close()

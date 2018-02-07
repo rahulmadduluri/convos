@@ -1,13 +1,13 @@
 package api
 
 import (
+	"time"
+
 	"db"
-	"fmt"
+	"models"
+
 	"github.com/guregu/null"
 	"github.com/satori/go.uuid"
-	"log"
-	"models"
-	"time"
 )
 
 var dbh = db.GetHandler()
@@ -44,7 +44,6 @@ func PullMessages(req PullMessagesRequest) (*PullMessagesResponse, error) {
 	}
 	messages, err := dbh.GetLastXMessages(req.ConversationUUID, req.LastXMessages, latestTimestampServer)
 	if err != nil {
-		log.Println("failed to get messages for req", req)
 		return nil, err
 	}
 	return &PullMessagesResponse{
@@ -53,21 +52,22 @@ func PullMessages(req PullMessagesRequest) (*PullMessagesResponse, error) {
 }
 
 func PushMessage(req PushMessageRequest) (*PushMessageResponse, error) {
-	// first add message to messages table, then add the conversation_messages relationship. DOne in single query
-	log.Println(req)
 	originalMessageUUID, _ := uuid.NewV4()
 	messageUUID := originalMessageUUID.String()
 
 	timestampServer := int(time.Now().Unix())
 	users, err := dbh.InsertMessage(messageUUID, req.AllText, timestampServer, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
+
 	if err != nil {
-		log.Println("failed to add message to tables. Insert failed", req)
-		fmt.Println(err)
 		return nil, err
 	}
 
 	var receiveruuids []string
+	var senderPhotoURI string
 	for _, user := range users {
+		if user.UUID == req.SenderUUID {
+			senderPhotoURI = user.PhotoURI.ValueOrZero()
+		}
 		receiveruuids = append(receiveruuids, user.UUID)
 	}
 
@@ -78,7 +78,7 @@ func PushMessage(req PushMessageRequest) (*PushMessageResponse, error) {
 			CreatedTimestampServer: timestampServer,
 			SenderUUID:             req.SenderUUID,
 			ParentUUID:             req.ParentUUID,
-			SenderPhotoURI:         "", // TODO: Fix this
+			SenderPhotoURI:         senderPhotoURI,
 		},
 		ReceiverUUIDs: receiveruuids,
 	}, err

@@ -19,7 +19,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     fileprivate var searchTableVC = SearchTableViewController()
     // all group/conversations stored
     fileprivate var allCachedGroups = Set<Group>()
-    // map of search view dat
+    // map of search view data
     // key: group's default conversation
     // value: list of group's conversations
     fileprivate var searchViewData = OrderedDictionary<SearchViewData, [SearchViewData]>()
@@ -163,6 +163,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     
     fileprivate func createSearchViewData(groups: Set<Group>) -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         var viewDataMap = OrderedDictionary<SearchViewData, [SearchViewData]>()
+        viewDataMap.isIncreasing = false
         for g in groups {
             let defaultConvo = g.conversations.filter { $0.isDefault == true }.first
             let cs = g.conversations.sorted(by: >).filter { $0.isDefault == false }
