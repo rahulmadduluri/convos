@@ -83,6 +83,18 @@ class Message: NSObject, APIModel {
     override var hashValue: Int {
         return uuid.hashValue
     }
+    
+    override var hash: Int {
+        return uuid.hash
+    }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        if let object = object as? Message {
+            return uuid == object.uuid
+        } else {
+            return false
+        }
+    }
 
     // init
     init(uuid: String, allText: String, createdTimestampServer: Int, senderUUID: String, parentUUID: String?, senderPhotoURI: String?) {
@@ -264,6 +276,18 @@ class Group: NSObject, APIModel {
     
     override var hashValue: Int {
         return uuid.hashValue
+    }
+    
+    override var hash: Int {
+        return uuid.hash
+    }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        if let object = object as? Group {
+            return uuid == object.uuid
+        } else {
+            return false
+        }
     }
     
     // init

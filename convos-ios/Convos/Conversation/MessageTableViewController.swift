@@ -63,18 +63,18 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeightAtIndexPath[indexPath] ?? 40.0
+        return cellHeightAtIndexPath[indexPath] ?? Constants.rowHeight
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return headerHeightAtSection[section] ?? 40.0
+        return headerHeightAtSection[section] ?? Constants.headerHeight
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let cell: MessageTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MessageTableViewCell ??
             MessageTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
-        let height = max(cell.frame.size.height, 40.0)
+        let height = max(cell.frame.size.height, Constants.rowHeight)
         cellHeightAtIndexPath[indexPath] = height
         return height
         
@@ -83,7 +83,7 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerReuseIdentifier) as? MessageTableViewHeader ?? MessageTableViewHeader(reuseIdentifier: headerReuseIdentifier)
         
-        let height = max(header.frame.size.height, 40.0)
+        let height = max(header.frame.size.height, Constants.headerHeight)
         headerHeightAtSection[section] = height
         return height
     }
@@ -99,6 +99,7 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
             selectedMvd = mvd.keys[section]
             selectedMvd.isCollapsed = !selectedMvd.isCollapsed
             messageTableVCDelegate?.setMessageViewData(parent: nil, mvd: selectedMvd)
+            tableView.reloadData()
         }
     }
     
@@ -145,3 +146,9 @@ extension MessageTableViewController {
     }
     
 }
+
+private struct Constants {
+    static let headerHeight: CGFloat = 30.0
+    static let rowHeight: CGFloat = 30.0
+}
+

@@ -214,16 +214,17 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         
         // get conversations with matching searchText (as long as their default group convo can be found)
         for g in allCachedGroups {
-            for c in g.conversations {
-                let topicFilterRange = (c.topic as NSString).range(of: text, options: [.caseInsensitive])
-                if (topicFilterRange.location != NSNotFound) {
-                    if let gCopy = g.copy() as? Group {
-                        if !gCopy.conversations.contains(c) {
-                            gCopy.conversations.append(c)
-                        }
-                        filteredGroups.insert(g)
+            if let gCopy = g.copy() as? Group, !filteredGroups.contains(g) {
+                var cs: [Conversation] = []
+                for c in g.conversations {
+                    let topicFilterRange = (c.topic as NSString).range(of: text, options: [.caseInsensitive])
+                    // if conversation is matched or is default, add to list
+                    if (topicFilterRange.location != NSNotFound) || c.isDefault == true {
+                        cs.append(c)
                     }
                 }
+                gCopy.conversations = cs
+                filteredGroups.insert(gCopy)
             }
         }
         searchViewData = createSearchViewData(groups: filteredGroups)

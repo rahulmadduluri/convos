@@ -26,10 +26,10 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
                 
         // configure image view
         contentView.addSubview(photoImageView)
-        photoImageView.layer.cornerRadius = 15.0
+        photoImageView.layer.cornerRadius = Constants.imageCornerRadius
         photoImageView.layer.masksToBounds = true
         photoImageView.translatesAutoresizingMaskIntoConstraints = false
-        photoImageView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
+        photoImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         photoImageView.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor, constant: Constants.leadingImageAnchorConstant).isActive = true
         photoImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.imageWidth).isActive = true
         photoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.imageHeight).isActive = true
@@ -75,8 +75,9 @@ class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
 
 private struct Constants {
     static let textFontSize: CGFloat = 16
-    static let leadingImageAnchorConstant: CGFloat = 20
-    static let leadingTextAnchorConstant: CGFloat = 20
-    static let imageWidth: CGFloat = 30
-    static let imageHeight: CGFloat = 30
+    static let leadingImageAnchorConstant: CGFloat = 18
+    static let leadingTextAnchorConstant: CGFloat = 18
+    static let imageWidth: CGFloat = 24
+    static let imageHeight: CGFloat = 24
+    static let imageCornerRadius: CGFloat = 12
 }

@@ -211,6 +211,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
             // if it has a parent add as a child, otherwise create new entry for 'm'
             if let _ = m.parentUUID {
                 for p in allCachedMessages[conversationUUID]!.keys {
+                    // if given message is m's parrent && m isn't already in the set
                     if p.uuid == m.parentUUID {
                         allCachedMessages[conversationUUID]![p]?.insert(m)
                     }
