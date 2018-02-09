@@ -12,7 +12,7 @@ private let cellReuseIdentifier = "SearchCell"
 private let headerReuseIdentifier = "SearchHeader"
 
 class SearchTableViewController: UITableViewController, SearchTableVCProtocol {
-    
+
     var searchVC: SearchComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()

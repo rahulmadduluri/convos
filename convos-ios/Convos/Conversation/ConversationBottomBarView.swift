@@ -9,6 +9,7 @@
 import UIKit
 
 class ConversationBottomBarView: UIView {
+    
     var newMessageTextField: UITextField = UITextField()
     
     // MARK: UIView

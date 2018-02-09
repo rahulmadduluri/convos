@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
-class SearchViewController: UIViewController, SocketManagerDelegate, SearchComponentDelegate, SearchTextFieldDelegate {
+class SearchViewController: UIViewController, SocketManagerDelegate, SearchComponentDelegate, SmartTextFieldDelegate {
     
     var searchVCDelegate: SearchVCDelegate? = nil
 
@@ -58,7 +58,6 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidChangeFrame(_:)), name: NSNotification.Name.UIKeyboardDidChangeFrame, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -71,31 +70,22 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     
     func keyboardWillShow(_ notification: Notification) {
         containerView?.searchTextField.hasInteracted = true
-        searchVCDelegate?.keyboardWillShow()
     }
     
     func keyboardWillHide(_ notification: Notification) {
-        searchVCDelegate?.keyboardWillHide()
+
     }
-    
-    func keyboardDidChangeFrame(_ notification: Notification) {
-        /*
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-            self?.keyboardFrame = ((notification as NSNotification).userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        }
-        */
-    }
-    
+        
     // MARK: SearchComponentDelegate
     
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         return searchViewData
     }
         
-    func convoCreated(groupUUID: String) {
+    func createConvo(groupUUID: String) {
         for g in allCachedGroups {
             if g.uuid == groupUUID {
-                searchVCDelegate?.convoCreated(group: g)
+                searchVCDelegate?.createConvo(group: g)
             }
         }
     }
@@ -120,19 +110,11 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         }
     }
     
-    // MARK: SearchTextFieldDelegate
+    // MARK: SmartTextFieldDelegate
     
-    func searchTextUpdated(searchText text: String) {
-        localSearch(text: text)
+    func smartTextUpdated(smartText: String) {
+        localSearch(text: smartText)
         searchTableVC.reloadSearchViewData()
-    }
-    
-    func keyboardWillShow() {
-        searchVCDelegate?.keyboardWillShow()
-    }
-    
-    func keyboardWillHide() {
-        searchVCDelegate?.keyboardWillHide()
     }
     
     // MARK: SocketManagerDelegate
@@ -157,7 +139,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
             }
         }
         let localSearchText = searchText ?? ""
-        searchTextUpdated(searchText: localSearchText)
+        smartTextUpdated(smartText: localSearchText)
         containerView?.searchTextField.stopLoadingIndicator()
     }
     
@@ -178,12 +160,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     
     fileprivate func configureSearch() {
         searchTableVC.searchVC = self
-        containerView?.searchTextField.searchTextFieldDelegate = self
+        containerView?.searchTextField.smartTextFieldDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        let myUUID = "uuid-1"
-        let request = SearchRequest(senderUuid: myUUID, searchText: "")
-        SearchAPI.search(searchRequest: request)
+        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
+            let request = SearchRequest(senderUuid: uuid, searchText: "")
+            SearchAPI.search(searchRequest: request)
+        }
 
         searchTableVC.reloadSearchViewData()
         
@@ -231,9 +214,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     }
     
     fileprivate func remoteSearch(searchText: String) {
-        // replace with actual UUID
-        let myUUID = "uuid-1"
-        let request = SearchRequest(senderUuid: myUUID, searchText: searchText)
-        SearchAPI.search(searchRequest: request)
+        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
+            let request = SearchRequest(senderUuid: uuid, searchText: searchText)
+            SearchAPI.search(searchRequest: request)
+        }
     }
 }

@@ -8,8 +8,6 @@
 
 import UIKit
 
-extension Group: Comparable {}
-
 enum SearchViewType: Int {
     case group
     case newConversation
@@ -20,11 +18,9 @@ enum SearchViewType: Int {
 // Search VC / Table VC
 
 protocol SearchVCDelegate {
-    func convoCreated(group: Group)
+    func createConvo(group: Group)
     func convoSelected(conversation: Conversation)
     func groupSelected(group: Group)
-    func keyboardWillShow()
-    func keyboardWillHide()
 }
 
 protocol SearchTableVCProtocol {
@@ -39,13 +35,9 @@ protocol SearchUIComponent {
 
 protocol SearchComponentDelegate {
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
-    func convoCreated(groupUUID: String)
+    func createConvo(groupUUID: String)
     func convoSelected(uuid: String)
     func groupSelected(conversationUUID: String)
-}
-
-protocol SearchTextFieldDelegate: SearchComponentDelegate {
-    func searchTextUpdated(searchText: String)
 }
 
 struct SearchViewData: Hashable, Comparable {

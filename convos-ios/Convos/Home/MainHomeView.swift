@@ -31,7 +31,7 @@ class MainHomeView: UIView {
         
         // Search Container
         if let sCV = searchContainerView {
-            sCV.bounds = CGRect(x: 100, y: 200, width: self.bounds.width, height: 500)
+            sCV.bounds = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
             
             self.addSubview(sCV)
         }

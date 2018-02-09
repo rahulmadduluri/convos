@@ -11,8 +11,10 @@ import UIKit
 class HomeViewController: UIViewController, SearchVCDelegate {
     var containerView: MainHomeView? = nil
 
-    var searchVC = SearchViewController() // search VC
-    var conversationVC: ConversationViewController? // conversation VC to transition to
+    var searchVC = SearchViewController()
+     // conversation VC to transition to
+    var conversationVC: ConversationViewController?
+   // var groupInfoVC: GroupInfoViewController?
     
     // MARK: UIViewController
     
@@ -41,7 +43,7 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     
     // MARK: SearchVCDelegate
     
-    func convoCreated(group: Group) {
+    func createConvo(group: Group) {
         // present convo created view controller
     }
     
@@ -58,14 +60,6 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     
     func groupSelected(group: Group) {
         // present group info view controller
-    }
-    
-    func keyboardWillShow() {
-        
-    }
-    
-    func keyboardWillHide() {
-        
     }
     
     // MARK: Private

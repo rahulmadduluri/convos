@@ -8,8 +8,6 @@
 
 import UIKit
 
-extension Message: Comparable {}
-
 protocol MessageUIDelegate {
     func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]>
     func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData?

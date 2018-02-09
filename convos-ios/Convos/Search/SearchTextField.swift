@@ -1,6 +1,6 @@
 //
-//  SearchTextField.swift
-//  SearchTextField
+//  SmartTextField.swift
+//  SmartTextField
 //
 //  Created by Alejandro Pasccon on 4/20/16.
 //  Copyright © 2016 Alejandro Pasccon. All rights reserved.
@@ -10,9 +10,13 @@
 
 import UIKit
 
-class SearchTextField: UITextField {
+protocol SmartTextFieldDelegate {
+    func smartTextUpdated(smartText: String)
+}
+
+class SmartTextField: UITextField {
     
-    var searchTextFieldDelegate: SearchTextFieldDelegate?
+    var smartTextFieldDelegate: SmartTextFieldDelegate?
     
     // public vars
     var maxNumberOfResults = 0
@@ -46,10 +50,10 @@ class SearchTextField: UITextField {
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         
-        self.addTarget(self, action: #selector(SearchTextField.textFieldDidChange), for: .editingChanged)
-        self.addTarget(self, action: #selector(SearchTextField.textFieldDidBeginEditing), for: .editingDidBegin)
-        self.addTarget(self, action: #selector(SearchTextField.textFieldDidEndEditing), for: .editingDidEnd)
-        self.addTarget(self, action: #selector(SearchTextField.textFieldDidEndEditingOnExit), for: .editingDidEndOnExit)
+        self.addTarget(self, action: #selector(SmartTextField.textFieldDidChange), for: .editingChanged)
+        self.addTarget(self, action: #selector(SmartTextField.textFieldDidBeginEditing), for: .editingDidBegin)
+        self.addTarget(self, action: #selector(SmartTextField.textFieldDidEndEditing), for: .editingDidEnd)
+        self.addTarget(self, action: #selector(SmartTextField.textFieldDidEndEditingOnExit), for: .editingDidEndOnExit)
     }
     
     override func layoutSubviews() {
@@ -112,7 +116,7 @@ class SearchTextField: UITextField {
         
         // Detect pauses while typing
         timer?.invalidate()
-        timer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(SearchTextField.typingDidStop), userInfo: self, repeats: false)
+        timer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(SmartTextField.typingDidStop), userInfo: self, repeats: false)
         
         if text!.isEmpty {
             placeholderLabel?.text = "Enter the Convos"
@@ -121,12 +125,12 @@ class SearchTextField: UITextField {
         }
         
         let updatedText = text ?? ""
-        searchTextFieldDelegate?.searchTextUpdated(searchText: updatedText)
+        smartTextFieldDelegate?.smartTextUpdated(smartText: updatedText)
     }
     
     func textFieldDidBeginEditing() {
         if let currentText = text {
-            searchTextFieldDelegate?.searchTextUpdated(searchText: currentText)
+            smartTextFieldDelegate?.smartTextUpdated(smartText: currentText)
         }
         placeholderLabel?.text = nil
         placeholderLabel?.attributedText = nil
@@ -140,10 +144,6 @@ class SearchTextField: UITextField {
     
     func textFieldDidEndEditingOnExit() {
         self.placeholderLabel?.text = nil
-
-        if let svd = searchTextFieldDelegate?.getSearchViewData(),
-            svd.keys.count > 0, self.text?.isEmpty == false {
-        }
     }
     
 }

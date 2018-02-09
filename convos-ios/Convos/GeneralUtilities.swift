@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AlamofireImage
 
 public extension Bool {
     mutating func negate() {

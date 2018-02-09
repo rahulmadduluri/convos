@@ -22,7 +22,7 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
         let imageHeight: CGFloat
         let imageWidth: CGFloat = self.bounds.width
         if type == .conversation {
-            imageHeight = self.bounds.height * 0.75
+            imageHeight = self.bounds.height * Constants.imageHeightRatioConversation
         }else {
             imageHeight = self.bounds.height
         }
@@ -31,11 +31,17 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
         photoImageView.backgroundColor = UIColor.cyan
         self.addSubview(photoImageView)
         
-        customTextLabel.frame = CGRect(x: self.bounds.minX, y: self.bounds.height * 0.75, width: imageWidth, height: self.bounds.height * 0.25)
+        customTextLabel.frame = CGRect(x: self.bounds.minX, y: self.bounds.height * Constants.imageHeightRatioConversation, width: imageWidth, height: self.bounds.height * (1-Constants.imageHeightRatioConversation))
         customTextLabel.textAlignment = .center
-        customTextLabel.font = customTextLabel.font.withSize(17)
+        customTextLabel.font = customTextLabel.font.withSize(Constants.textFontSize)
         customTextLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(customTextLabel)
     }
     
 }
+
+private struct Constants {
+    static let textFontSize: CGFloat = 17
+    static let imageHeightRatioConversation: CGFloat = 0.75
+}
+

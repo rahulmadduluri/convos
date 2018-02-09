@@ -10,8 +10,9 @@ import UIKit
 
 class MainSearchView: UIView {
     
-    var searchTextField: SearchTextField = SearchTextField()
+    var searchTextField: SmartTextField = SmartTextField()
     var searchTableContainerView: UIView? = nil
+    var bottomBarView: SearchBottomBarView = SearchBottomBarView()
     
     // MARK: Init
     
@@ -31,22 +32,28 @@ class MainSearchView: UIView {
         super.layoutSubviews()
         
         // SearchTextField
-        searchTextField.frame = CGRect(x: self.bounds.minX + Constants.searchTextFieldOriginXOffset, y: self.bounds.minY, width: Constants.searchTextFieldWidth, height: Constants.searchTextFieldHeight)
+        searchTextField.frame = CGRect(x: self.bounds.midX - Constants.searchTextFieldWidth/2, y: self.bounds.minY + Constants.searchTextFieldOriginYOffset, width: Constants.searchTextFieldWidth, height: Constants.searchTextFieldHeight)
         self.addSubview(searchTextField)
         
         // Search Table
         if let sCTV = searchTableContainerView {
-            sCTV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.searchTextFieldHeight, width: self.bounds.width, height: self.bounds.maxY-(self.bounds.minY + Constants.searchTextFieldHeight))
+            sCTV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.searchTextFieldHeight + Constants.searchTextFieldOriginYOffset + Constants.searchTextTableViewBuffer, width: self.bounds.width, height: self.bounds.maxY-(self.bounds.minY + Constants.searchTextFieldHeight))
             
             self.addSubview(sCTV)
         }
+        
+        // SearchTextField
+        bottomBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.maxY-Constants.bottomBarHeight, width: self.bounds.width, height: Constants.bottomBarHeight)
+        self.addSubview(bottomBarView)
     }
 }
 
 private struct Constants {
-    static let searchTextFieldOriginXOffset: CGFloat = 100
+    static let searchTextFieldOriginYOffset: CGFloat = 50
     static let searchTextFieldWidth: CGFloat = 200
-    static let searchTextFieldHeight: CGFloat = 100
+    static let searchTextFieldHeight: CGFloat = 40
+    static let searchTextTableViewBuffer: CGFloat = 10
+    static let bottomBarHeight: CGFloat = 50
 }
 
 
