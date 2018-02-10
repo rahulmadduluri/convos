@@ -12,6 +12,7 @@ class MainSearchView: UIView {
     
     var searchTextField: SmartTextField = SmartTextField()
     var searchTableContainerView: UIView? = nil
+    var newGroupButton: UIButton = UIButton()
     var bottomBarView: SearchBottomBarView = SearchBottomBarView()
     
     // MARK: Init
@@ -44,7 +45,14 @@ class MainSearchView: UIView {
         
         // SearchTextField
         bottomBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.maxY-Constants.bottomBarHeight, width: self.bounds.width, height: Constants.bottomBarHeight)
+        bottomBarView.searchTextField = searchTextField
         self.addSubview(bottomBarView)
+        
+        // New Group Button
+        newGroupButton.frame = CGRect(x: self.bounds.maxX - Constants.newGroupButtonSize - Constants.newGroupButtonTrailingBuffer, y: self.bounds.minY + Constants.newGroupButtonTopBuffer, width: Constants.newGroupButtonSize, height: Constants.newGroupButtonSize)
+        newGroupButton.imageView?.contentMode = .scaleAspectFit
+        newGroupButton.setImage(UIImage(named: "new_group"), for: .normal)
+        self.addSubview(newGroupButton)
     }
 }
 
@@ -54,6 +62,9 @@ private struct Constants {
     static let searchTextFieldHeight: CGFloat = 40
     static let searchTextTableViewBuffer: CGFloat = 10
     static let bottomBarHeight: CGFloat = 50
+    static let newGroupButtonTopBuffer: CGFloat = 40
+    static let newGroupButtonTrailingBuffer: CGFloat = 10
+    static let newGroupButtonSize: CGFloat = 30
 }
 
 

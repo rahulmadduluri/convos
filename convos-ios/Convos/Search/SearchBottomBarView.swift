@@ -10,6 +10,7 @@ import UIKit
 
 class SearchBottomBarView: UIView {
     
+    var searchTextField: SmartTextField?
     var searchButton = UIButton()
     var contactsButton = UIButton()
     var profileButton = UIButton()
@@ -25,20 +26,39 @@ class SearchBottomBarView: UIView {
         super.layoutSubviews()
         
         searchButton.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY, width: self.bounds.size.width / 3, height: self.bounds.height)
-        searchButton.backgroundColor = UIColor.blue
+        searchButton.backgroundColor = UIColor.white.withAlphaComponent(Constants.buttonBackgroundAlpha)
+        searchButton.imageView?.contentMode = .scaleAspectFit
+        searchButton.setImage(UIImage(named: "search"), for: .normal)
+        searchButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonImageEdgeInset, left: Constants.buttonImageEdgeInset, bottom: Constants.buttonImageEdgeInset, right: Constants.buttonImageEdgeInset)
+        searchButton.addTarget(self, action: #selector(SearchBottomBarView.tapSearch(_:)), for: .touchUpInside)
         self.addSubview(searchButton)
         
         contactsButton.frame = CGRect(x: self.bounds.minX + self.bounds.size.width/3, y: self.bounds.minY, width: self.bounds.size.width / 3, height: self.bounds.height)
-        contactsButton.backgroundColor = UIColor.brown
+        contactsButton.backgroundColor = UIColor.white.withAlphaComponent(Constants.buttonBackgroundAlpha)
+        contactsButton.imageView?.contentMode = .scaleAspectFit
+        contactsButton.setImage(UIImage(named: "contacts"), for: .normal)
+        contactsButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonImageEdgeInset, left: Constants.buttonImageEdgeInset, bottom: Constants.buttonImageEdgeInset, right: Constants.buttonImageEdgeInset)
         self.addSubview(contactsButton)
 
         
         profileButton.frame = CGRect(x: self.bounds.minX + self.bounds.size.width*2/3, y: self.bounds.minY, width: self.bounds.size.width / 3, height: self.bounds.height)
-        profileButton.backgroundColor = UIColor.cyan
+        profileButton.backgroundColor = UIColor.white.withAlphaComponent(Constants.buttonBackgroundAlpha)
+        profileButton.imageView?.contentMode = .scaleAspectFit
+        profileButton.setImage(UIImage(named: "profile"), for: .normal)
+        profileButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonImageEdgeInset, left: Constants.buttonImageEdgeInset, bottom: Constants.buttonImageEdgeInset, right: Constants.buttonImageEdgeInset)
         self.addSubview(profileButton)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func tapSearch(_ gestureRecognizer: UITapGestureRecognizer) {
+        searchTextField?.becomeFirstResponder()
+    }
+}
+
+private struct Constants {
+    static let buttonImageEdgeInset: CGFloat = 15
+    static let buttonBackgroundAlpha: CGFloat = 0.9
 }
