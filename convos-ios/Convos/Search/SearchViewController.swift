@@ -168,7 +168,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         socketManager.delegates.add(delegate: self)
         
         if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let request = SearchRequest(senderUuid: uuid, searchText: "")
+            let request = SearchRequest(senderUUID: uuid, searchText: "")
             SearchAPI.search(searchRequest: request)
         }
 
@@ -222,7 +222,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     
     fileprivate func remoteSearch(searchText: String) {
         if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let request = SearchRequest(senderUuid: uuid, searchText: searchText)
+            let request = SearchRequest(senderUUID: uuid, searchText: searchText)
             SearchAPI.search(searchRequest: request)
         }
     }

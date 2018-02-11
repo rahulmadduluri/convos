@@ -20,7 +20,7 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // MAYBE SHOULD REMOVE FROM SEARCH reloadMemberViewData()
+        reloadMemberViewData()
     }
     
     override func viewDidLoad() {

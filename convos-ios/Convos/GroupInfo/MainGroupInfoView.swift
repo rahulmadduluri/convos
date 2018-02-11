@@ -8,13 +8,14 @@
 
 import UIKit
 
-class MainGroupInfoView: UIView, GroupInfoUIComponent {
+class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     var groupInfoVC: GroupInfoComponentDelegate? = nil
     var groupPhotoImageView = UIImageView()
     var nameEditButton = UIButton()
     var nameTextField = UITextField()
     var memberTextField: SmartTextField = SmartTextField()
+    var memberEditButton = UIButton()
     var memberTableContainerView: UIView? = nil
     
     // MARK: Init
@@ -35,11 +36,19 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent {
         super.layoutSubviews()
         
         // MemberTextField
-        nameTextField.placeholder = "Group Name"
+        nameTextField.placeholder = Constants.nameTextFieldPlaceholder
+        nameTextField.isUserInteractionEnabled = false
         nameTextField.frame = CGRect(x: self.bounds.midX - Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameTextFieldOriginY, width: Constants.nameTextFieldWidth, height: Constants.nameTextFieldHeight)
         nameTextField.textAlignment = .center
-        nameTextField.backgroundColor = UIColor.purple
+        nameTextField.delegate = self
         self.addSubview(nameTextField)
+        
+        // NameEditButton
+        nameEditButton.frame = CGRect(x: self.bounds.midX + Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        nameEditButton.setImage(UIImage(named: "edit"), for: .normal)
+        nameEditButton.alpha = Constants.editButtonAlpha
+        nameEditButton.addTarget(self, action: #selector(MainGroupInfoView.tapEditName(_:)), for: .touchUpInside)
+        self.addSubview(nameEditButton)
         
         // configure image view
         groupPhotoImageView.frame = CGRect(x: self.bounds.midX - Constants.groupPhotoRadius/2, y: self.bounds.minY + Constants.groupPhotoOriginY, width: Constants.groupPhotoRadius, height: Constants.groupPhotoRadius)
@@ -49,11 +58,19 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent {
         self.addSubview(groupPhotoImageView)
         
         // MemberTextField
-        memberTextField.defaultPlaceholderText = "Members"
+        memberTextField.defaultPlaceholderText = Constants.memberTextFieldPlaceholder
         memberTextField.frame = CGRect(x: self.bounds.midX - Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberTextFieldOriginY, width: Constants.memberTextFieldWidth, height: Constants.memberTextFieldHeight)
+        memberTextField.isUserInteractionEnabled = false
         memberTextField.textAlignment = .center
-        memberTextField.backgroundColor = UIColor.purple
+        memberTextField.delegate = self
         self.addSubview(memberTextField)
+        
+        // MemberEditButton
+        memberEditButton.frame = CGRect(x: self.bounds.midX + Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        memberEditButton.setImage(UIImage(named: "edit"), for: .normal)
+        memberEditButton.alpha = Constants.editButtonAlpha
+        nameEditButton.addTarget(self, action: #selector(MainGroupInfoView.tapEditMember(_:)), for: .touchUpInside)
+        self.addSubview(memberEditButton)
         
         // Member Table
         if let mTCV = memberTableContainerView {
@@ -63,6 +80,30 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent {
             self.addSubview(mTCV)
         }
     }
+    
+    // MARK: Gesture Recognizer functions
+    
+    func tapEditName(_ gestureRecognizer: UITapGestureRecognizer) {
+        nameTextField.isUserInteractionEnabled = true
+        nameTextField.becomeFirstResponder()
+    }
+    
+    func tapEditMember(_ gestureRecognizer: UITapGestureRecognizer) {
+        nameTextField.isUserInteractionEnabled = true
+        memberTextField.becomeFirstResponder()
+    }
+    
+    // MARK: UITextFieldDelegate
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.isUserInteractionEnabled = false
+    }
+    
 }
 
 private struct Constants {
@@ -70,13 +111,22 @@ private struct Constants {
     static let groupPhotoRadius: CGFloat = 80
     static let groupImageCornerRadius: CGFloat = 40
     
+    static let nameTextFieldPlaceholder = "Group Name"
     static let nameTextFieldOriginY: CGFloat = 175
     static let nameTextFieldWidth: CGFloat = 150
     static let nameTextFieldHeight: CGFloat = 40
     
+    static let nameEditButtonOriginY: CGFloat = 186
+    static let editButtonAlpha: CGFloat = 0.2
+    static let editButtonWidth: CGFloat = 20
+    static let editButtonHeight: CGFloat = 20
+    
+    static let memberTextFieldPlaceholder = "Members"
     static let memberTextFieldOriginY: CGFloat = 250
     static let memberTextFieldWidth: CGFloat = 150
     static let memberTextFieldHeight: CGFloat = 40
+    
+    static let memberEditButtonOriginY: CGFloat = 261
     
     static let memberTableMarginConstant: CGFloat = 20
     static let memberTableOriginY: CGFloat = 300

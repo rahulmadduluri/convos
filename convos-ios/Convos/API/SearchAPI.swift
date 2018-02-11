@@ -5,33 +5,33 @@ import SwiftWebSocket
 class SearchRequest: NSObject, APIModel {
     
     // vars
-    let senderUuid: String
+    let senderUUID: String
     let searchText: String
     
     // init
-    init(senderUuid: String, searchText: String) {
-        self.senderUuid = senderUuid
+    init(senderUUID: String, searchText: String) {
+        self.senderUUID = senderUUID
         self.searchText = searchText
     }
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
-            let senderUuidObject = dictionary["SenderUuid"],
+            let senderUUIDObject = dictionary["SenderUUID"],
             let searchTextObject = dictionary["SearchText"] else {
                 return nil
         }
-        senderUuid = senderUuidObject.stringValue
+        senderUUID = senderUUIDObject.stringValue
         searchText = searchTextObject.stringValue
     }
     
     // APIModel
     func toJSON() -> JSON {
-        let dict = ["SenderUuid": senderUuid, "SearchText": searchText]
+        let dict = ["SenderUUID": JSON(senderUUID), "SearchText": JSON(searchText)]
         return JSON(dict)
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return SearchRequest(senderUuid: senderUuid, searchText: searchText)
+        return SearchRequest(senderUUID: senderUUID, searchText: searchText)
     }
 }
 

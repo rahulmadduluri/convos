@@ -40,6 +40,7 @@
 		B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE830202DC1F200B6D9A2 /* MemberTableViewController.swift */; };
 		B77CE834202DCBE400B6D9A2 /* MemberTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE833202DCBE400B6D9A2 /* MemberTableViewCell.swift */; };
 		B77CE836202DD7F500B6D9A2 /* SearchBottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE835202DD7F500B6D9A2 /* SearchBottomBarView.swift */; };
+		B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE837203085DE00B6D9A2 /* UserAPI.swift */; };
 		B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SmartTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
@@ -84,6 +85,7 @@
 		B77CE830202DC1F200B6D9A2 /* MemberTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberTableViewController.swift; sourceTree = "<group>"; };
 		B77CE833202DCBE400B6D9A2 /* MemberTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberTableViewCell.swift; sourceTree = "<group>"; };
 		B77CE835202DD7F500B6D9A2 /* SearchBottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBottomBarView.swift; sourceTree = "<group>"; };
+		B77CE837203085DE00B6D9A2 /* UserAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SmartTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SmartTextField.swift; path = ../../Search/SmartTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +158,7 @@
 			children = (
 				B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */,
 				B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */,
+				B77CE837203085DE00B6D9A2 /* UserAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -415,6 +418,7 @@
 				B77CE824202744D100B6D9A2 /* SocketManager.swift in Sources */,
 				B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */,
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
+				B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */,
 				B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */,
 				B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,

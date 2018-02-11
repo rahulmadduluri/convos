@@ -35,24 +35,40 @@ class MainSearchView: UIView, SearchUIComponent {
         super.layoutSubviews()
         
         // SearchTextField
-        searchTextField.frame = CGRect(x: self.bounds.midX - Constants.searchTextFieldWidth/2, y: self.bounds.minY + Constants.searchTextFieldOriginYOffset, width: Constants.searchTextFieldWidth, height: Constants.searchTextFieldHeight)
+        searchTextField.frame = CGRect(
+            x: self.bounds.midX - Constants.searchTextFieldWidth/2,
+            y: self.bounds.minY + Constants.searchTextFieldOriginYOffset,
+            width: Constants.searchTextFieldWidth,
+            height: Constants.searchTextFieldHeight)
         searchTextField.textAlignment = .center
         self.addSubview(searchTextField)
         
         // Search Table
         if let sCTV = searchTableContainerView {
-            sCTV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.searchTextFieldHeight + Constants.searchTextFieldOriginYOffset + Constants.searchTextTableViewBuffer, width: self.bounds.width, height: self.bounds.maxY-(self.bounds.minY + Constants.searchTextFieldHeight))
+            sCTV.frame = CGRect(
+                x: self.bounds.minX,
+                y: self.bounds.minY + Constants.searchTextFieldHeight + Constants.searchTextFieldOriginYOffset + Constants.searchTextTableViewBuffer,
+                width: self.bounds.width,
+                height: self.bounds.maxY-(self.bounds.minY + Constants.searchTextFieldHeight))
             
             self.addSubview(sCTV)
         }
         
         // SearchTextField
-        bottomBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.maxY-Constants.bottomBarHeight, width: self.bounds.width, height: Constants.bottomBarHeight)
+        bottomBarView.frame = CGRect(
+            x: self.bounds.origin.x,
+            y: self.bounds.maxY-Constants.bottomBarHeight,
+            width: self.bounds.width,
+            height: Constants.bottomBarHeight)
         bottomBarView.searchTextField = searchTextField
         self.addSubview(bottomBarView)
         
         // New Group Button
-        newGroupButton.frame = CGRect(x: self.bounds.maxX - Constants.newGroupButtonSize - Constants.newGroupButtonTrailingBuffer, y: self.bounds.minY + Constants.newGroupButtonTopBuffer, width: Constants.newGroupButtonSize, height: Constants.newGroupButtonSize)
+        newGroupButton.frame = CGRect(
+            x: self.bounds.maxX - Constants.newGroupButtonSize - Constants.newGroupButtonTrailingBuffer,
+            y: self.bounds.minY + Constants.newGroupButtonTopBuffer,
+            width: Constants.newGroupButtonSize,
+            height: Constants.newGroupButtonSize)
         newGroupButton.addTarget(self, action: #selector(MainSearchView.tapNewGroup(_:)), for: .touchUpInside)
         newGroupButton.imageView?.contentMode = .scaleAspectFit
         newGroupButton.setImage(UIImage(named: "new_group"), for: .normal)

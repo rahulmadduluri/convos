@@ -18,6 +18,7 @@ protocol MemberTableVCProtocol {
 
 protocol GroupInfoComponentDelegate {
     func getGroup() -> Group?
+    func getPeople() -> [User]
 }
 
 protocol GroupInfoUIComponent {

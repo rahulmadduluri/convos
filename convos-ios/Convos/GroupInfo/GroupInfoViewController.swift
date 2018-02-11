@@ -16,6 +16,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     // if group == nil, we are creating a new group
     fileprivate var group: Group? = nil
+    fileprivate var people: [User] = []
     fileprivate var containerView: MainGroupInfoView? = nil
     fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
     // group members table
@@ -79,6 +80,10 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         return group
     }
     
+    func getPeople() -> [User] {
+        return people
+    }
+    
     // MARK: Handle keyboard events
     
     func keyboardWillShow(_ notification: Notification) {
@@ -124,7 +129,14 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     fileprivate func remoteSearch(memberText: String) {
         if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            //UserAPI.getUsers
+            let searchText = memberSearchText ?? ""
+            let peopleRequest = GetPeopleRequest(userUUID: uuid, searchText: searchText, numPeople: nil)
+            UserAPI.getPeople(getPeopleRequest: peopleRequest)
         }
+    }
+    
+    fileprivate func received(people: [User]) {
+        memberTableVC.reloadMemberViewData()
+        containerView?.memberTextField.stopLoadingIndicator()
     }
 }
