@@ -41,7 +41,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         self.addChildViewController(searchTableVC)
         
         containerView = MainSearchView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-        
+        containerView?.searchVC = self
         containerView?.searchTableContainerView = searchTableVC.view
         self.view = containerView
     }
@@ -98,6 +98,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
                 }
             }
         }
+    }
+    
+    func createGroup() {
+        searchVCDelegate?.createGroup()
     }
     
     func groupSelected(conversationUUID: String) {
@@ -206,8 +210,11 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
                         cs.append(c)
                     }
                 }
-                gCopy.conversations = cs
-                filteredGroups.insert(gCopy)
+                // if there's > 1 convo match (default is always added), then the group needs to be added to results
+                if cs.count > 1 {
+                    gCopy.conversations = cs
+                    filteredGroups.insert(gCopy)
+                }
             }
         }
         searchViewData = createSearchViewData(groups: filteredGroups)

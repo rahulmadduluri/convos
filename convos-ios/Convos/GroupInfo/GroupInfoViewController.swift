@@ -10,12 +10,16 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
-class GroupInfoViewController: UIViewController, SmartTextFieldDelegate {
+class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupInfoComponentDelegate {
+    
     var groupInfoVCDelegate: GroupInfoVCDelegate? = nil
     
+    // if group == nil, we are creating a new group
+    fileprivate var group: Group? = nil
     fileprivate var containerView: MainGroupInfoView? = nil
+    fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
     // group members table
-    fileprivate var memberTableVC = GroupMemberTableViewController()
+    fileprivate var memberTableVC = MemberTableViewController()
     
     var memberSearchText: String? {
         return containerView?.memberTextField.text
@@ -33,6 +37,11 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate {
         self.addChildViewController(memberTableVC)
         
         containerView = MainGroupInfoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        containerView?.groupInfoVC = self
+        if group == nil {
+            containerView?.groupPhotoImageView.image = UIImage(named: "capybara")
+        }
+        containerView?.addGestureRecognizer(panGestureRecognizer)
         
         containerView?.memberTableContainerView = memberTableVC.view
         self.view = containerView
@@ -63,6 +72,13 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate {
     func smartTextUpdated(smartText: String) {
     }
     
+    
+    // MARK: GroupInfoComponentDelegate
+    
+    func getGroup() -> Group? {
+        return group
+    }
+    
     // MARK: Handle keyboard events
     
     func keyboardWillShow(_ notification: Notification) {
@@ -70,6 +86,21 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate {
     }
     
     func keyboardWillHide(_ notification: Notification) {
+    }
+    
+    // MARK: Public
+    
+    func setGroupInfo(group: Group?) {
+        self.group = group
+    }
+    
+    func respondToPanGesture(gesture: UIGestureRecognizer) {
+        if let panGesture = gesture as? UIPanGestureRecognizer {
+            let translation = panGesture.translation(in: self.view)
+            if (translation.x > 150) {
+                self.dismiss(animated: false, completion: nil)
+            }
+        }
     }
     
     // MARK: Private
@@ -87,6 +118,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate {
                 }
             }
         }
+        
+        panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
     fileprivate func remoteSearch(memberText: String) {

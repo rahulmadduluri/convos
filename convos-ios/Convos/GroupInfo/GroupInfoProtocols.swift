@@ -12,6 +12,14 @@ protocol GroupInfoVCDelegate {
     func groupCreated()
 }
 
-protocol GroupMemberTableVCProtocol {
+protocol MemberTableVCProtocol {
     func reloadMemberViewData()
+}
+
+protocol GroupInfoComponentDelegate {
+    func getGroup() -> Group?
+}
+
+protocol GroupInfoUIComponent {
+    var groupInfoVC: GroupInfoComponentDelegate? { get set }
 }

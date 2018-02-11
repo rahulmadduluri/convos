@@ -1,5 +1,5 @@
 //
-//  GroupMemberTableViewController.swift
+//  MemberTableViewController.swift
 //  Convos
 //
 //  Created by Rahul Madduluri on 2/9/18.
@@ -10,7 +10,7 @@ import UIKit
 
 private let cellReuseIdentifier = "MemberCell"
 
-class GroupMemberTableViewController: UITableViewController, GroupMemberTableVCProtocol {
+class MemberTableViewController: UITableViewController, MemberTableVCProtocol {
     
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
@@ -40,10 +40,10 @@ class GroupMemberTableViewController: UITableViewController, GroupMemberTableVCP
     // UITableViewController
         
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let cell: GroupMemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? GroupMemberTableViewCell ??
-            GroupMemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
+        let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
+            MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
-        return max(cell.frame.size.height, 30.0)
+        return max(cell.frame.size.height, Constants.cellHeight)
         
     }
 
@@ -51,15 +51,19 @@ class GroupMemberTableViewController: UITableViewController, GroupMemberTableVCP
 
 // MARK: - UITableViewController
 
-extension GroupMemberTableViewController {
+extension MemberTableViewController {
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: GroupMemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? GroupMemberTableViewCell ??
-            GroupMemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
+        let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
+            MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         
         cell.row = indexPath.row
         
         return cell
     }
     
+}
+
+private struct Constants {
+    static let cellHeight: CGFloat = 30
 }

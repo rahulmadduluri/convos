@@ -20,6 +20,7 @@ enum SearchViewType: Int {
 protocol SearchVCDelegate {
     func createConvo(group: Group)
     func convoSelected(conversation: Conversation)
+    func createGroup()
     func groupSelected(group: Group)
 }
 
@@ -37,6 +38,7 @@ protocol SearchComponentDelegate {
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]>
     func createConvo(groupUUID: String)
     func convoSelected(uuid: String)
+    func createGroup()
     func groupSelected(conversationUUID: String)
 }
 

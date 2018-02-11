@@ -1,5 +1,5 @@
 //
-//  GroupMemberCell.swift
+//  MemberCell.swift
 //  Convos
 //
 //  Created by Rahul Madduluri on 2/9/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GroupMemberTableViewCell: UITableViewCell {
+class MemberTableViewCell: UITableViewCell {
     
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()
@@ -22,7 +22,7 @@ class GroupMemberTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         let marginGuide = contentView.layoutMarginsGuide
-        
+                
         // configure separator
         contentView.addSubview(separator)
         separator.backgroundColor = UIColor.blue

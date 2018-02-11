@@ -17,14 +17,16 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate var conversationUUID: String = ""
     fileprivate var titleText: String = ""
     fileprivate var messageTableVC = MessageTableViewController()
-    // Message Cache
-    // First level key: Conversation UUID
-    // 2nd level key: top level message
-    // 2nd level values: replies
+    /* Message Cache
+     First level key: Conversation UUID
+     2nd level key: top level message
+     2nd level values: replies
+    */
     fileprivate var allCachedMessages: [String: OrderedDictionary<Message, Set<Message>>] = [:]
-    // Message view data
-    // Key: Top level message
-    // Value: List of replies
+    /* Message view data
+     Key: Top level message
+     Value: List of replies
+    */
     fileprivate var messageViewData = OrderedDictionary<MessageViewData, [MessageViewData]>()
     fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
     

@@ -8,8 +8,9 @@
 
 import UIKit
 
-class MainSearchView: UIView {
+class MainSearchView: UIView, SearchUIComponent {
     
+    var searchVC: SearchComponentDelegate?
     var searchTextField: SmartTextField = SmartTextField()
     var searchTableContainerView: UIView? = nil
     var newGroupButton: UIButton = UIButton()
@@ -20,6 +21,7 @@ class MainSearchView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.searchTextField.defaultPlaceholderText = "Enter the Convos"
         self.backgroundColor = UIColor.white
     }
     
@@ -34,6 +36,7 @@ class MainSearchView: UIView {
         
         // SearchTextField
         searchTextField.frame = CGRect(x: self.bounds.midX - Constants.searchTextFieldWidth/2, y: self.bounds.minY + Constants.searchTextFieldOriginYOffset, width: Constants.searchTextFieldWidth, height: Constants.searchTextFieldHeight)
+        searchTextField.textAlignment = .center
         self.addSubview(searchTextField)
         
         // Search Table
@@ -50,9 +53,14 @@ class MainSearchView: UIView {
         
         // New Group Button
         newGroupButton.frame = CGRect(x: self.bounds.maxX - Constants.newGroupButtonSize - Constants.newGroupButtonTrailingBuffer, y: self.bounds.minY + Constants.newGroupButtonTopBuffer, width: Constants.newGroupButtonSize, height: Constants.newGroupButtonSize)
+        newGroupButton.addTarget(self, action: #selector(MainSearchView.tapNewGroup(_:)), for: .touchUpInside)
         newGroupButton.imageView?.contentMode = .scaleAspectFit
         newGroupButton.setImage(UIImage(named: "new_group"), for: .normal)
         self.addSubview(newGroupButton)
+    }
+    
+    func tapNewGroup(_ gestureRecognizer: UITapGestureRecognizer) {
+        searchVC?.createGroup()
     }
 }
 
@@ -60,11 +68,14 @@ private struct Constants {
     static let searchTextFieldOriginYOffset: CGFloat = 50
     static let searchTextFieldWidth: CGFloat = 200
     static let searchTextFieldHeight: CGFloat = 40
+    
     static let searchTextTableViewBuffer: CGFloat = 10
-    static let bottomBarHeight: CGFloat = 50
+    
     static let newGroupButtonTopBuffer: CGFloat = 40
     static let newGroupButtonTrailingBuffer: CGFloat = 10
     static let newGroupButtonSize: CGFloat = 30
+    
+    static let bottomBarHeight: CGFloat = 50
 }
 
 

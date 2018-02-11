@@ -40,10 +40,11 @@ class SmartTextField: UITextField {
         self.rightViewMode = .never
         indicator.stopAnimating()
     }
+    
+    var defaultPlaceholderText: String = ""
         
     // private vars
     fileprivate var timer: Timer? = nil
-    fileprivate var placeholderLabel: UILabel?
     fileprivate let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     
@@ -59,51 +60,13 @@ class SmartTextField: UITextField {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        buildPlaceholderLabel()
+        placeholder = defaultPlaceholderText
         
         // Create the loading indicator
         indicator.hidesWhenStopped = true
         self.rightView = indicator
     }
     
-    override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
-        var rightFrame = super.rightViewRect(forBounds: bounds)
-        rightFrame.origin.x -= 5
-        return rightFrame
-    }
-    
-    fileprivate func buildPlaceholderLabel() {
-        var newRect = self.placeholderRect(forBounds: self.bounds)
-        var caretRect = self.caretRect(for: self.beginningOfDocument)
-        let textRect = self.textRect(forBounds: self.bounds)
-        
-        if let range = textRange(from: beginningOfDocument, to: endOfDocument) {
-            caretRect = self.firstRect(for: range)
-        }
-        
-        newRect.origin.x = caretRect.origin.x + caretRect.size.width + textRect.origin.x
-        newRect.size.width = newRect.size.width - newRect.origin.x
-        
-        if let placeholderLabel = placeholderLabel {
-            placeholderLabel.font = self.font
-            placeholderLabel.frame = newRect
-        } else {
-            placeholderLabel = UILabel(frame: newRect)
-            placeholderLabel?.text = "Enter the Convos"
-            placeholderLabel?.font = self.font
-            placeholderLabel?.backgroundColor = UIColor.clear
-            placeholderLabel?.lineBreakMode = .byClipping
-            
-            if let placeholderColor = self.attributedPlaceholder?.attribute(NSForegroundColorAttributeName, at: 0, effectiveRange: nil) as? UIColor {
-                placeholderLabel?.textColor = placeholderColor
-            } else {
-                placeholderLabel?.textColor = UIColor ( red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0 )
-            }
-            
-            self.addSubview(placeholderLabel!)
-        }
-    }
-        
     func typingDidStop() {
         if userStoppedTypingHandler != nil {
             self.userStoppedTypingHandler!()
@@ -119,9 +82,7 @@ class SmartTextField: UITextField {
         timer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(SmartTextField.typingDidStop), userInfo: self, repeats: false)
         
         if text!.isEmpty {
-            placeholderLabel?.text = "Enter the Convos"
-        } else {
-            placeholderLabel?.text = ""
+            placeholder = defaultPlaceholderText
         }
         
         let updatedText = text ?? ""
@@ -132,18 +93,12 @@ class SmartTextField: UITextField {
         if let currentText = text {
             smartTextFieldDelegate?.smartTextUpdated(smartText: currentText)
         }
-        placeholderLabel?.text = nil
-        placeholderLabel?.attributedText = nil
     }
     
     func textFieldDidEndEditing() {
-        if text?.isEmpty == true {
-            self.placeholderLabel?.text = "Enter the Convos"
-        }
     }
     
     func textFieldDidEndEditingOnExit() {
-        self.placeholderLabel?.text = nil
     }
     
 }

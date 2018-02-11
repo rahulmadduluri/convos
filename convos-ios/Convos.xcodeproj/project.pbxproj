@@ -37,10 +37,10 @@
 		B77CE82B202DAD3000B6D9A2 /* ModelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE82A202DAD3000B6D9A2 /* ModelExtensions.swift */; };
 		B77CE82D202DADDE00B6D9A2 /* GroupInfoProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE82C202DADDE00B6D9A2 /* GroupInfoProtocols.swift */; };
 		B77CE82F202DB38D00B6D9A2 /* MainGroupInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE82E202DB38D00B6D9A2 /* MainGroupInfoView.swift */; };
-		B77CE831202DC1F200B6D9A2 /* GroupMemberTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE830202DC1F200B6D9A2 /* GroupMemberTableViewController.swift */; };
-		B77CE834202DCBE400B6D9A2 /* GroupMemberTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE833202DCBE400B6D9A2 /* GroupMemberTableViewCell.swift */; };
+		B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE830202DC1F200B6D9A2 /* MemberTableViewController.swift */; };
+		B77CE834202DCBE400B6D9A2 /* MemberTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE833202DCBE400B6D9A2 /* MemberTableViewCell.swift */; };
 		B77CE836202DD7F500B6D9A2 /* SearchBottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE835202DD7F500B6D9A2 /* SearchBottomBarView.swift */; };
-		B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SearchTextField.swift */; };
+		B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SmartTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
 		B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107E1F539D23009AC9FE /* SearchViewController.swift */; };
@@ -81,10 +81,10 @@
 		B77CE82A202DAD3000B6D9A2 /* ModelExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExtensions.swift; sourceTree = "<group>"; };
 		B77CE82C202DADDE00B6D9A2 /* GroupInfoProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupInfoProtocols.swift; sourceTree = "<group>"; };
 		B77CE82E202DB38D00B6D9A2 /* MainGroupInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainGroupInfoView.swift; sourceTree = "<group>"; };
-		B77CE830202DC1F200B6D9A2 /* GroupMemberTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMemberTableViewController.swift; sourceTree = "<group>"; };
-		B77CE833202DCBE400B6D9A2 /* GroupMemberTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMemberTableViewCell.swift; sourceTree = "<group>"; };
+		B77CE830202DC1F200B6D9A2 /* MemberTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberTableViewController.swift; sourceTree = "<group>"; };
+		B77CE833202DCBE400B6D9A2 /* MemberTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberTableViewCell.swift; sourceTree = "<group>"; };
 		B77CE835202DD7F500B6D9A2 /* SearchBottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBottomBarView.swift; sourceTree = "<group>"; };
-		B781CDA71F53BE920088FB3B /* SearchTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchTextField.swift; path = ../../Search/SearchTextField.swift; sourceTree = "<group>"; };
+		B781CDA71F53BE920088FB3B /* SmartTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SmartTextField.swift; path = ../../Search/SmartTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B788107C1F539D23009AC9FE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -174,8 +174,8 @@
 			children = (
 				B77CE82C202DADDE00B6D9A2 /* GroupInfoProtocols.swift */,
 				B77CE828202DAC5200B6D9A2 /* GroupInfoViewController.swift */,
-				B77CE830202DC1F200B6D9A2 /* GroupMemberTableViewController.swift */,
-				B77CE833202DCBE400B6D9A2 /* GroupMemberTableViewCell.swift */,
+				B77CE830202DC1F200B6D9A2 /* MemberTableViewController.swift */,
+				B77CE833202DCBE400B6D9A2 /* MemberTableViewCell.swift */,
 				B77CE82E202DB38D00B6D9A2 /* MainGroupInfoView.swift */,
 			);
 			path = GroupInfo;
@@ -184,7 +184,7 @@
 		B77CE832202DC8B200B6D9A2 /* SmartTextField */ = {
 			isa = PBXGroup;
 			children = (
-				B781CDA71F53BE920088FB3B /* SearchTextField.swift */,
+				B781CDA71F53BE920088FB3B /* SmartTextField.swift */,
 			);
 			path = SmartTextField;
 			sourceTree = "<group>";
@@ -413,7 +413,7 @@
 				B77CE829202DAC5200B6D9A2 /* GroupInfoViewController.swift in Sources */,
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
 				B77CE824202744D100B6D9A2 /* SocketManager.swift in Sources */,
-				B77CE831202DC1F200B6D9A2 /* GroupMemberTableViewController.swift in Sources */,
+				B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */,
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
 				B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */,
 				B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */,
@@ -422,10 +422,10 @@
 				B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */,
 				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
 				B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */,
-				B781CDA81F53BE920088FB3B /* SearchTextField.swift in Sources */,
+				B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */,
 				B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */,
 				B708F99F1FAC75CD00757721 /* ConversationBottomBarView.swift in Sources */,
-				B77CE834202DCBE400B6D9A2 /* GroupMemberTableViewCell.swift in Sources */,
+				B77CE834202DCBE400B6D9A2 /* MemberTableViewCell.swift in Sources */,
 				B77CE82B202DAD3000B6D9A2 /* ModelExtensions.swift in Sources */,
 				B77CE82D202DADDE00B6D9A2 /* GroupInfoProtocols.swift in Sources */,
 				B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */,

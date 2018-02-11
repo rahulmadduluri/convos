@@ -25,7 +25,6 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
         view.backgroundColor = UIColor.white
         tableView.separatorStyle = .none
         
-        // Setup Gesture recognizer
         tableView.panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     

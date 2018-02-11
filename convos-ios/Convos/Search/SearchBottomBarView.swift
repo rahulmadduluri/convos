@@ -40,7 +40,6 @@ class SearchBottomBarView: UIView {
         contactsButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonImageEdgeInset, left: Constants.buttonImageEdgeInset, bottom: Constants.buttonImageEdgeInset, right: Constants.buttonImageEdgeInset)
         self.addSubview(contactsButton)
 
-        
         profileButton.frame = CGRect(x: self.bounds.minX + self.bounds.size.width*2/3, y: self.bounds.minY, width: self.bounds.size.width / 3, height: self.bounds.height)
         profileButton.backgroundColor = UIColor.white.withAlphaComponent(Constants.buttonBackgroundAlpha)
         profileButton.imageView?.contentMode = .scaleAspectFit

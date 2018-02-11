@@ -14,7 +14,7 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     var searchVC = SearchViewController()
      // conversation VC to transition to
     var conversationVC: ConversationViewController?
-   // var groupInfoVC: GroupInfoViewController?
+    var groupInfoVC: GroupInfoViewController?
     
     // MARK: UIViewController
     
@@ -54,6 +54,17 @@ class HomeViewController: UIViewController, SearchVCDelegate {
         conversationVC?.setConversationInfo(uuid: conversation.uuid, newTitle: conversation.topic)
         
         if let newVC = self.conversationVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
+    }
+    
+    func createGroup() {
+        if self.groupInfoVC == nil {
+            self.groupInfoVC = GroupInfoViewController()
+        }
+        groupInfoVC?.setGroupInfo(group: nil)
+        
+        if let newVC = self.groupInfoVC {
             self.present(newVC, animated: false, completion: nil)
         }
     }
