@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS messages (
 CREATE TABLE IF NOT EXISTS group_users (
 	group_id		int			NOT NULL,
 	user_id 		int			NOT NULL,
+	UNIQUE KEY (group_id, user_id),
 	FOREIGN KEY (group_id) REFERENCES groups (id),
 	FOREIGN KEY (user_id) REFERENCES users (id)
 );
@@ -75,8 +76,18 @@ CREATE TABLE IF NOT EXISTS group_users (
 CREATE TABLE IF NOT EXISTS conversations_tags (
 	conversation_id	int			NOT NULL,
 	tag_id 			int			NOT NULL,
+	UNIQUE KEY (conversation_id, tag_id),
 	FOREIGN KEY (conversation_id) REFERENCES conversations (id),
 	FOREIGN KEY (tag_id) REFERENCES tags (id)
+);
+
+-- relationship between users and other users
+CREATE TABLE IF NOT EXISTS people (
+	user_id 	int 	NOT NULL,
+	person_id 	int 	NOT NULL,
+	UNIQUE KEY (user_id, person_id),
+	FOREIGN KEY (user_id) REFERENCES users (id),
+	FOREIGN KEY (person_id) REFERENCES users (id)
 );
 
 -- repeat names are because group creates a tag that shares the group name
@@ -84,6 +95,7 @@ CREATE TABLE IF NOT EXISTS conversations_tags (
 INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', '724309111', 'prafulla_prof', 1000), 
 						 (NULL, 'uuid-2', 'Rahul', '724309222', 'rahul_prof', 1200),
 						 (NULL, 'uuid-3', 'Reia', '724309228', 'reia_prof', 1400);
+INSERT INTO people VALUES (1,2),(1,3),(2,1),(2,3),(3,1),(3,2);
 -- groups: 1. prafulla, 2. rahul, 3. reia 4. 93 webster
 INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
 						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
