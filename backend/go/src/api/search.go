@@ -1,6 +1,7 @@
 package api
 
 import (
+	"db"
 	"models"
 )
 
@@ -14,8 +15,9 @@ type SearchResponse struct {
 	ErrorMsg *string
 }
 
+// Search is function called by Websocket Router's performAPI
 func Search(req SearchRequest) (SearchResponse, error) {
-	groups, err := dbh.GetGroupObjs(req.SenderUUID, req.SearchText)
+	groups, err := db.GetHandler().GetGroups(req.SenderUUID, req.SearchText)
 	return SearchResponse{
 		Groups: groups,
 	}, err

@@ -10,8 +10,6 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-var dbh = db.GetHandler()
-
 type PullMessagesRequest struct {
 	ConversationUUID      string
 	LastXMessages         int
@@ -36,13 +34,14 @@ type PushMessageResponse struct {
 	ErrorMsg      *string
 }
 
+// PullMessages is function called by Websocket Router's performAPI
 func PullMessages(req PullMessagesRequest) (*PullMessagesResponse, error) {
 	// get last X messages before latestTimestampServer. Returned in reverse chronological order
 	latestTimestampServer := int(time.Now().Unix())
 	if req.LatestTimestampServer != nil {
 		latestTimestampServer = *req.LatestTimestampServer
 	}
-	messages, err := dbh.GetLastXMessages(req.ConversationUUID, req.LastXMessages, latestTimestampServer)
+	messages, err := db.GetHandler().GetLastXMessages(req.ConversationUUID, req.LastXMessages, latestTimestampServer)
 	if err != nil {
 		return nil, err
 	}
@@ -51,12 +50,13 @@ func PullMessages(req PullMessagesRequest) (*PullMessagesResponse, error) {
 	}, err
 }
 
+// PushMessage is function called by Websocket Router's performAPI
 func PushMessage(req PushMessageRequest) (*PushMessageResponse, error) {
 	originalMessageUUID, _ := uuid.NewV4()
 	messageUUID := originalMessageUUID.String()
 
 	timestampServer := int(time.Now().Unix())
-	users, err := dbh.InsertMessage(messageUUID, req.AllText, timestampServer, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
+	users, err := db.GetHandler().InsertMessage(messageUUID, req.AllText, timestampServer, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
 
 	if err != nil {
 		return nil, err

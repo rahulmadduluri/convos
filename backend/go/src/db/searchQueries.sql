@@ -11,7 +11,7 @@ from (
 	select distinct group_id
 	from group_users
 	where user_id in (
-		select user_id
+		select id
 		from users
 		where users.uuid = :user_uuid
 	)

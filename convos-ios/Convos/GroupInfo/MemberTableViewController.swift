@@ -12,6 +12,7 @@ private let cellReuseIdentifier = "MemberCell"
 
 class MemberTableViewController: UITableViewController, MemberTableVCProtocol {
     
+    var groupInfoVC: GroupInfoComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
@@ -56,6 +57,13 @@ extension MemberTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
             MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
+        
+        if let uvd = groupInfoVC?.getUserViewData()[indexPath.row] {
+            cell.customTextLabel.text = uvd.text
+            if let uri = uvd.photoURI {
+                cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+            }
+        }
         
         cell.row = indexPath.row
         

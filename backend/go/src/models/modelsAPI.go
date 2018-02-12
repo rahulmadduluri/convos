@@ -32,5 +32,6 @@ type GroupObj struct {
 
 type UserObj struct {
 	UUID     string
+	Name     string
 	PhotoURI null.String
 }

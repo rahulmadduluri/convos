@@ -10,7 +10,7 @@ import (
 	"models"
 )
 
-var _dbh = newDbHandler()
+var _dbh *dbHandler
 
 const (
 	_dbPath             = "root:webster93@tcp(127.0.0.1:3306)/convos"
@@ -20,21 +20,21 @@ const (
 )
 
 type DbHandler interface {
-	GetGroupObjs(userUUID string, searchText string) ([]models.GroupObj, error)
-	GetUsers(name string) ([]models.User, error)
+	GetGroups(userUUID string, searchText string) ([]models.GroupObj, error)
+	GetPeople(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
 	Close()
 }
 
-type dbhandler struct {
+type dbHandler struct {
 	db             *sqlx.DB
 	userQueries    goyesql.Queries
 	searchQueries  goyesql.Queries
 	messageQueries goyesql.Queries
 }
 
-func newDbHandler() *dbhandler {
+func newDbHandler() *dbHandler {
 	db, err := sqlx.Open("mysql", _dbPath)
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +46,7 @@ func newDbHandler() *dbhandler {
 	userQueries := goyesql.MustParseFile(_userQueriesPath)
 	searchQueries := goyesql.MustParseFile(_searchQueriesPath)
 	messageQueries := goyesql.MustParseFile(_messageQueriesPath)
-	dbh := &dbhandler{
+	dbh := &dbHandler{
 		db:             db,
 		userQueries:    userQueries,
 		searchQueries:  searchQueries,
@@ -59,6 +59,10 @@ func GetHandler() DbHandler {
 	return _dbh
 }
 
-func (dbh *dbhandler) Close() {
+func ConfigHandler() {
+	_dbh = newDbHandler()
+}
+
+func (dbh *dbHandler) Close() {
 	dbh.db.Close()
 }

@@ -15,7 +15,7 @@ const (
 	_findGroupsWithUUIDs  = "findGroupsWithUUIDs"
 )
 
-func (dbh *dbhandler) GetGroupObjs(userUUID string, searchText string) ([]models.GroupObj, error) {
+func (dbh *dbHandler) GetGroups(userUUID string, searchText string) ([]models.GroupObj, error) {
 	// Get All possible conversations
 	conversationObjs, err := dbh.getConversationObjs(userUUID, searchText)
 	if err != nil {
@@ -40,7 +40,7 @@ func (dbh *dbhandler) GetGroupObjs(userUUID string, searchText string) ([]models
 	return groupObjs, err
 }
 
-func (dbh *dbhandler) getConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error) {
+func (dbh *dbHandler) getConversationObjs(userUUID string, searchText string) ([]models.ConversationObj, error) {
 	var objs []models.ConversationObj
 
 	wildcardSearch := "%" + searchText + "%"
@@ -70,7 +70,7 @@ func (dbh *dbhandler) getConversationObjs(userUUID string, searchText string) ([
 	return objs, err
 }
 
-func (dbh *dbhandler) getGroupsWithUUIDs(groupUUIDs []string) ([]models.Group, error) {
+func (dbh *dbHandler) getGroupsWithUUIDs(groupUUIDs []string) ([]models.Group, error) {
 	var groups []models.Group
 	query, args, err := sqlx.In(dbh.searchQueries[_findGroupsWithUUIDs], groupUUIDs)
 	if err != nil {

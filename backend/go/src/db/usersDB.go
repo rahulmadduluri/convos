@@ -8,14 +8,21 @@ import (
 
 // list of queries
 const (
-	_findUsersByUsername = "findUsersByUsername"
+	_findPeople = "findPeople"
 )
 
-func (dbh *dbhandler) GetUsers(name string) ([]models.User, error) {
-	var objs []models.User
+func (dbh *dbHandler) GetPeople(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error) {
+	var objs []models.UserObj
 
-	usernameSearch := "%" + name + "%"
-	rows, err := dbh.db.Queryx(dbh.userQueries[_findUsersByUsername], usernameSearch)
+	wildcardSearch := "%" + searchText + "%"
+	rows, err := dbh.db.NamedQuery(
+		dbh.userQueries[_findPeople],
+		map[string]interface{}{
+			"user_uuid":   userUUID,
+			"search_text": wildcardSearch,
+			"max_people":  maxPeople,
+		},
+	)
 
 	if err != nil {
 		return objs, err
@@ -23,7 +30,7 @@ func (dbh *dbhandler) GetUsers(name string) ([]models.User, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var obj models.User
+		var obj models.UserObj
 		err := rows.StructScan(&obj)
 		if err != nil {
 			log.Fatal("scan error: ", err)

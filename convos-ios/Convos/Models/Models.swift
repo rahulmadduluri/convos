@@ -24,7 +24,7 @@ class User: NSObject, APIModel {
     
     // vars
     let uuid: String
-    let username: String
+    let name: String
     let photoURI: String?
     
     override var hashValue: Int {
@@ -32,26 +32,26 @@ class User: NSObject, APIModel {
     }
     
     // init
-    init(uuid: String, username: String, photoURI: String?) {
+    init(uuid: String, name: String, photoURI: String?) {
         self.uuid = uuid
-        self.username = username
+        self.name = name
         self.photoURI = photoURI
     }
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
-            let usernameJSON = dictionary["Username"] else {
+            let nameJSON = dictionary["Name"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
-        username = usernameJSON.stringValue
+        name = nameJSON.stringValue
         photoURI = dictionary["PhotoURI"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["UUID": JSON(uuid), "Username": JSON(username)]
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name)]
         if let photoURI = photoURI {
             dict["PhotoURI"] = JSON(photoURI)
         }
@@ -59,7 +59,7 @@ class User: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return User(uuid: uuid, username: username, photoURI: photoURI)
+        return User(uuid: uuid, name: name, photoURI: photoURI)
     }
     
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"api"
+	"db"
 	"networking"
 
 	"net/http"
@@ -24,21 +25,16 @@ func main() {
 	log.SetFlags(0 | log.Lshortfile)
 
 	log.Println("Start application")
+	db.ConfigHandler()
 	go hub.Run()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/ws", websocketHandler)
+	r.HandleFunc("/users/{uuid}/people", api.GetPeople).Methods("GET")
 	r.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
-
-	// Test Search API
-	objs, _ := api.Search(api.SearchRequest{
-		SenderUUID: "uuid-1",
-		SearchText: "p",
-	})
-	log.Println(objs)
 
 	// Start listening on port 8000
 	err := http.ListenAndServe(":8000", nil)

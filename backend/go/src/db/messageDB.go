@@ -13,7 +13,7 @@ const (
 	_lastXMessages           = "lastXMessages"
 )
 
-func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error) {
+func (dbh *dbHandler) InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error) {
 	// Returns users who need to be informed about message
 	var objs []models.UserObj
 
@@ -50,7 +50,7 @@ func (dbh *dbhandler) InsertMessage(messageUUID string, messageText string, mess
 	return objs, err
 }
 
-func (dbh *dbhandler) GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error) {
+func (dbh *dbHandler) GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error) {
 	var objs []models.MessageObj
 
 	rows, err := dbh.db.NamedQuery(dbh.messageQueries[_lastXMessages],

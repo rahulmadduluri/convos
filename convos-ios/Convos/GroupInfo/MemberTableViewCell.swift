@@ -69,10 +69,12 @@ private struct Constants {
     static let leadingSeparatorAnchorConstant: CGFloat = 0
     static let topSeparatorAnchorConstant: CGFloat = 0
     static let bottomSeparatorAnchorConstant: CGFloat = 0
-    static let textFontSize: CGFloat = 16
-    static let leadingImageAnchorConstant: CGFloat = -13
-    static let leadingMessageAnchorConstant: CGFloat = 20
     static let separatorWidth: CGFloat = 2
+    
+    static let leadingMessageAnchorConstant: CGFloat = 20
+    static let textFontSize: CGFloat = 16
+    
+    static let leadingImageAnchorConstant: CGFloat = -13
     static let imageWidth: CGFloat = 24
     static let imageHeight: CGFloat = 24
     static let imageCornerRadius: CGFloat = 12

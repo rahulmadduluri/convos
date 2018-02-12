@@ -13,6 +13,7 @@ import SwiftWebSocket
 class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupInfoComponentDelegate {
     
     var groupInfoVCDelegate: GroupInfoVCDelegate? = nil
+    var userViewData: [UserViewData] = []
     
     // if group == nil, we are creating a new group
     fileprivate var group: Group? = nil
@@ -80,8 +81,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         return group
     }
     
-    func getPeople() -> [User] {
-        return people
+    func getUserViewData() -> [UserViewData] {
+        return userViewData
     }
     
     // MARK: Handle keyboard events
@@ -116,27 +117,38 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         memberTableVC.reloadMemberViewData()
         
         containerView?.memberTextField.userStoppedTypingHandler = {
-            if let memberText = self.containerView?.memberTextField.text {
+            if let memberText = self.memberSearchText {
                 if memberText.characters.count > 0 {
                     self.containerView?.memberTextField.showLoadingIndicator()
-                    self.remoteSearch(memberText: memberText) // upon completion reload search results data
+                    self.remoteSearch(memberText: memberText)
                 }
             }
         }
         
+        remoteSearch(memberText: memberSearchText ?? "")
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
     fileprivate func remoteSearch(memberText: String) {
         if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = memberSearchText ?? ""
-            let peopleRequest = GetPeopleRequest(userUUID: uuid, searchText: searchText, numPeople: nil)
-            UserAPI.getPeople(getPeopleRequest: peopleRequest)
+            UserAPI.getPeople(userUUID: uuid, searchText: searchText, maxPeople: 20, completion: { people in
+                if let p = people {
+                    self.received(people: p)
+                }
+            })
         }
     }
     
     fileprivate func received(people: [User]) {
+        userViewData = createUserViewData(people: people)
         memberTableVC.reloadMemberViewData()
         containerView?.memberTextField.stopLoadingIndicator()
+    }
+    
+    fileprivate func createUserViewData(people: [User]) -> [UserViewData] {
+        return people.map({ p -> UserViewData in
+            return UserViewData(uuid: p.uuid, text: p.name, photoURI: p.photoURI)
+        })
     }
 }

@@ -49,13 +49,13 @@ CREATE TABLE IF NOT EXISTS conversations (
 );
 
 CREATE TABLE IF NOT EXISTS messages (
-	id  			int 			NOT NULL AUTO_INCREMENT,
-	uuid			varchar(36)		NOT NULL,
-	all_text		varchar(1000),
+	id  						int 			NOT NULL AUTO_INCREMENT,
+	uuid						varchar(36)		NOT NULL,
+	all_text					varchar(1000),
 	created_timestamp_server	int				NOT NULL,
-	sender_id		int 			NOT NULL,
-	parent_id		int,
-	conversation_id int,
+	sender_id					int 			NOT NULL,
+	parent_id					int,
+	conversation_id 			int,
 	UNIQUE KEY (uuid),
 	PRIMARY KEY (id),
 	FOREIGN KEY	(sender_id) REFERENCES users (id),
@@ -83,8 +83,9 @@ CREATE TABLE IF NOT EXISTS conversations_tags (
 
 -- relationship between users and other users
 CREATE TABLE IF NOT EXISTS people (
-	user_id 	int 	NOT NULL,
-	person_id 	int 	NOT NULL,
+	user_id 					int 	NOT NULL,
+	person_id 					int 	NOT NULL,
+	created_timestamp_server	int		NOT NULL,
 	UNIQUE KEY (user_id, person_id),
 	FOREIGN KEY (user_id) REFERENCES users (id),
 	FOREIGN KEY (person_id) REFERENCES users (id)
@@ -95,7 +96,7 @@ CREATE TABLE IF NOT EXISTS people (
 INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', '724309111', 'prafulla_prof', 1000), 
 						 (NULL, 'uuid-2', 'Rahul', '724309222', 'rahul_prof', 1200),
 						 (NULL, 'uuid-3', 'Reia', '724309228', 'reia_prof', 1400);
-INSERT INTO people VALUES (1,2),(1,3),(2,1),(2,3),(3,1),(3,2);
+INSERT INTO people VALUES (1,2,500),(1,3,600),(2,1,500),(2,3,700),(3,1,600),(3,2,700);
 -- groups: 1. prafulla, 2. rahul, 3. reia 4. 93 webster
 INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
 						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
