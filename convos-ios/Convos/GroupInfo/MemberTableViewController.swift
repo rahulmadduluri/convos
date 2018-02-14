@@ -39,6 +39,10 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol {
     }
     
     // UITableViewController
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return groupInfoVC?.getUserViewData().count ?? 0
+    }
         
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??

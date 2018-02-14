@@ -15,19 +15,30 @@ class REST: NSObject {
     }
     
     static func getPeopleURL(userUUID: String, searchText: String?, maxPeople: Int?) -> URL {
-        var urlString = "http://localhost:8000/user/" + userUUID + "/people"
-        let searchTextParameter = "searchText="
-        let maxPeopleParameter = "maxPeople="
+        let urlString = "http://localhost:8000/users/" + userUUID + "/people"
+        return generateSearchForPeopleURL(urlString: urlString, searchText: searchText, maxPeople: maxPeople)
+    }
+    
+    static func getPeopleURL(groupUUID: String, searchText: String?, maxPeople: Int?) -> URL {
+        let urlString = "http://localhost:8000/groups/" + groupUUID + "/people"
+        return generateSearchForPeopleURL(urlString: urlString, searchText: searchText, maxPeople: maxPeople)
+    }
+    
+    private static func generateSearchForPeopleURL(urlString: String, searchText: String?, maxPeople: Int?) -> URL {
+        var mus = urlString
+        let searchTextParameter = "searchtext="
+        let maxPeopleParameter = "maxpeople="
         if searchText != nil || maxPeople != nil {
-            urlString = urlString + "?"
+            mus += "?"
             if let searchText = searchText, maxPeople == nil {
-                urlString = urlString + searchTextParameter + searchText
+                mus += searchTextParameter + searchText
             } else if let searchText = searchText, maxPeople != nil {
-                urlString = urlString + searchTextParameter + searchText + "&" + maxPeopleParameter + "maxPeople"
+                mus += searchTextParameter + searchText + "&"
+                mus += maxPeopleParameter + String(maxPeople!)
             } else {
-                urlString = urlString + maxPeopleParameter + "maxPeople"
+                mus += maxPeopleParameter + "maxPeople"
             }
         }
-        return URL(string: urlString)!
+        return URL(string: mus)!
     }
 }

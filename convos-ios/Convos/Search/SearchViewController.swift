@@ -60,6 +60,12 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        remoteSearch(searchText: "")
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -167,11 +173,6 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         containerView?.searchTextField.smartTextFieldDelegate = self
         socketManager.delegates.add(delegate: self)
         
-        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let request = SearchRequest(senderUUID: uuid, searchText: "")
-            SearchAPI.search(searchRequest: request)
-        }
-
         searchTableVC.reloadSearchViewData()
         
         containerView?.searchTextField.userStoppedTypingHandler = {

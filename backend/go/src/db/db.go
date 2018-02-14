@@ -21,7 +21,8 @@ const (
 
 type DbHandler interface {
 	GetGroups(userUUID string, searchText string) ([]models.GroupObj, error)
-	GetPeople(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
+	GetPeopleForUser(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
+	GetPeopleForGroup(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
 	Close()

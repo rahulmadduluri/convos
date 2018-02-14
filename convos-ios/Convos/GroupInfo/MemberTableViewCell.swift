@@ -74,7 +74,7 @@ private struct Constants {
     static let leadingMessageAnchorConstant: CGFloat = 20
     static let textFontSize: CGFloat = 16
     
-    static let leadingImageAnchorConstant: CGFloat = -13
+    static let leadingImageAnchorConstant: CGFloat = 20
     static let imageWidth: CGFloat = 24
     static let imageHeight: CGFloat = 24
     static let imageCornerRadius: CGFloat = 12

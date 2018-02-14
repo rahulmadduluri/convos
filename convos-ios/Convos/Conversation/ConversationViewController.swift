@@ -32,11 +32,6 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     // MARK: UIViewController
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureConversation()
-    }
-    
     override func loadView() {
         self.addChildViewController(messageTableVC)
     
@@ -54,6 +49,16 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        // Needs to be here to make sure cache is re-configured every time
+        configureConversation()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Do we actually need lastXMessages?
+        remotePullMessages(lastXMessages: 20, latestTimestampServer: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -177,10 +182,6 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
             messageViewData = createMessageViewData(messages: OrderedDictionary<Message, Set<Message>>())
         }
         messageTableVC.reloadMessageViewData()
-        
-        // Do we actually need lastXMessages?
-        let request = PullMessagesRequest(conversationUUID: conversationUUID, lastXMessages: 20, latestTimestampServer: nil)
-        MessageAPI.pullMessages(pullMessagesRequest: request)
     }
     
     fileprivate func received(response: PullMessagesResponse) {
@@ -233,6 +234,11 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
                 replies?.map { MessageViewData(uuid: $0.uuid, text: $0.allText, photoURI: $0.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
         }
         return orderedMessages
+    }
+    
+    fileprivate func remotePullMessages(lastXMessages: Int, latestTimestampServer: Int?) {
+        let request = PullMessagesRequest(conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
+        MessageAPI.pullMessages(pullMessagesRequest: request)
     }
     
 }

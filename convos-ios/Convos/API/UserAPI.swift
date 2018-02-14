@@ -68,24 +68,42 @@ class UserAPI: NSObject {
             method: .get)
         .validate()
         .responseJSON { response in
-            guard response.result.isSuccess else {
-                print("Error while fetching people: \(response.result.error)")
-                completion(nil)
-                return
-            }
-            
-            guard let value = response.result.value as? [String: Any],
-                let rows = value["rows"] as? [String: Any] else {
-                print("Malformed data received for getPeople")
-                completion(nil)
-                return
-            }
-            
-            let people = rows.flatMap({ (personJSONData) -> User? in
-                return User(json: JSON(personJSONData))
-            })
-            
-            completion(people)
+            completion(convertResponseToPeople(res: response))
         }
     }
+
+    static func getPeople(
+        groupUUID: String,
+        searchText: String?,
+        maxPeople: Int?,
+        completion: (@escaping ([User]?) -> Void)) {
+        let url = REST.getPeopleURL(groupUUID: groupUUID, searchText: searchText, maxPeople: maxPeople)
+        Alamofire.request(
+            url,
+            method: .get)
+        .validate()
+        .responseJSON { response in
+            completion(convertResponseToPeople(res: response))
+        }
+    }
+    
+    private static func convertResponseToPeople(res: Alamofire.DataResponse<Any>) -> [User]? {
+        guard res.result.isSuccess else {
+            print("Error while fetching people: \(res.result.error)")
+            return nil
+        }
+        
+        if res.data != nil {
+            let jsonArray = JSON(data: res.data!)
+            var people: [User] = []
+            for (_, p) in jsonArray {
+                if let u = User(json: p) {
+                    people.append(u)
+                }
+            }
+            return people
+        }
+        return nil
+    }
+
 }

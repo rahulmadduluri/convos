@@ -31,7 +31,8 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/ws", websocketHandler)
-	r.HandleFunc("/users/{uuid}/people", api.GetPeople).Methods("GET")
+	r.HandleFunc("/users/{uuid}/people", api.GetPeopleForUser).Methods("GET")
+	r.HandleFunc("/groups/{uuid}/people", api.GetPeopleForGroup).Methods("GET")
 	r.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)

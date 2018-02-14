@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -10,18 +9,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetPeople(w http.ResponseWriter, r *http.Request) {
+const (
+	_paramSearchText = "searchtext"
+	_paramMaxPeople  = "maxpeople"
+)
+
+func GetPeopleForUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userUUID, _ := vars["uuid"]
 
-	searchText := r.FormValue("searchtext")
-	maxPeople, _ := strconv.Atoi(r.FormValue("maxpeople"))
+	searchText := r.FormValue(_paramSearchText)
+	maxPeople, _ := strconv.Atoi(r.FormValue(_paramMaxPeople))
 	// If MaxPeople, isn't given, set upper bound to 100
 	if maxPeople == 0 {
-		maxPeople = 100 // arbitrary upper bound
+		maxPeople = 100
 	}
 
-	people, err := db.GetHandler().GetPeople(userUUID, searchText, maxPeople)
+	people, err := db.GetHandler().GetPeopleForUser(userUUID, searchText, maxPeople)
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "ERROR: failed to get people")
@@ -31,25 +35,23 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, people)
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	// count, _ := strconv.Itoa(r.FormValue("userUUID"))
-	// start, _ := strconv.Atoi(r.FormValue("searchText"))
+func GetPeopleForGroup(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	groupUUID, _ := vars["uuid"]
 
-	// objs, _ := api.GetPeople(api.SearchRequest{
-	// 	SenderUUID: "uuid-1",
-	// 	SearchText: "p",
-	// })
-	// log.Println(objs)
-}
+	searchText := r.FormValue(_paramSearchText)
+	maxPeople, _ := strconv.Atoi(r.FormValue(_paramMaxPeople))
+	// If MaxPeople, isn't given, set upper bound to 100
+	if maxPeople == 0 {
+		maxPeople = 100
+	}
 
-func respondWithError(w http.ResponseWriter, code int, message string) {
-	respondWithJSON(w, code, map[string]string{"error": message})
-}
+	people, err := db.GetHandler().GetPeopleForGroup(groupUUID, searchText, maxPeople)
 
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "ERROR: failed to get people")
+		return
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(response)
+	respondWithJSON(w, http.StatusOK, people)
 }

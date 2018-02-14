@@ -27,6 +27,10 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         return containerView?.memberTextField.text
     }
     
+    var isEditingMembers: Bool {
+        return containerView?.memberEditButton.state == .selected
+    }
+    
     // MARK: UIViewController
     
     override func viewDidLoad() {
@@ -39,7 +43,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         self.addChildViewController(memberTableVC)
         
         containerView = MainGroupInfoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-        containerView?.groupInfoVC = self
+
         if group == nil {
             containerView?.groupPhotoImageView.image = UIImage(named: "capybara")
         }
@@ -61,6 +65,11 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        remoteSearch(memberText: memberSearchText ?? "")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -113,7 +122,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     fileprivate func configureGroupInfo() {
         containerView?.memberTextField.smartTextFieldDelegate = self
-        
+        memberTableVC.groupInfoVC = self
         memberTableVC.reloadMemberViewData()
         
         containerView?.memberTextField.userStoppedTypingHandler = {
@@ -125,18 +134,30 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             }
         }
         
-        remoteSearch(memberText: memberSearchText ?? "")
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
     fileprivate func remoteSearch(memberText: String) {
-        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
+        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = memberSearchText ?? ""
-            UserAPI.getPeople(userUUID: uuid, searchText: searchText, maxPeople: 20, completion: { people in
-                if let p = people {
-                    self.received(people: p)
+            let maxPeople = 20 // arbitrary upper bound
+            if isEditingMembers == true {
+                UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: maxPeople, completion: { people in
+                    if let p = people {
+                        self.received(people: p)
+                    }
+                })
+            } else {
+                // only grab group members if we're grabbing existing group members
+                // NOTE: this will break when we try adding people to new group -- need to fix this
+                if let groupUUID = group?.uuid {
+                    UserAPI.getPeople(groupUUID: groupUUID, searchText: searchText, maxPeople: maxPeople, completion: { people in
+                        if let p = people {
+                            self.received(people: p)
+                        }
+                    })
                 }
-            })
+            }
         }
     }
     
