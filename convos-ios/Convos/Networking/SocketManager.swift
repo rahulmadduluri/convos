@@ -96,6 +96,8 @@ final class SocketManager: NSObject, SocketManaging {
                 if (self.retryConnectionCount < 10) {
                     print("Trying to reopen")
                     ws.open()
+                    // retryConnectionCount += 1
+                    // wait 5 seconds
                     print("Web Socket Reopened!")
                 } else {
                     print("error: tried to connect Web Socket too many times")

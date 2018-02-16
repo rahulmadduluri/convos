@@ -15,6 +15,8 @@ class MemberTableViewCell: UITableViewCell {
     private let separator = UIView()
     
     var row = 0
+    var isNew = false
+    var isPending = false
     
     // MARK: Initalizers
     

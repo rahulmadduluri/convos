@@ -10,12 +10,18 @@ import UIKit
 
 class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
+    fileprivate var nameEditSuccessButton = UIButton()
+    fileprivate var nameEditCancelButton = UIButton()
+    fileprivate var memberEditSuccessButton = UIButton()
+    fileprivate var memberEditCancelButton = UIButton()
+    fileprivate var createNewGroupButton = UIButton()
+    // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
+    fileprivate var editAlertHasBeenPressed = false
+    
     var groupInfoVC: GroupInfoComponentDelegate? = nil
-    var groupPhotoImageView = UIImageView()
-    var nameEditButton = UIButton()
     var nameTextField = UITextField()
     var memberTextField: SmartTextField = SmartTextField()
-    var memberEditButton = UIButton()
+    var groupPhotoImageView = UIImageView()
     var memberTableContainerView: UIView? = nil
     
     // MARK: Init
@@ -37,40 +43,60 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         
         // MemberTextField
         nameTextField.placeholder = Constants.nameTextFieldPlaceholder
-        nameTextField.isUserInteractionEnabled = false
         nameTextField.frame = CGRect(x: self.bounds.midX - Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameTextFieldOriginY, width: Constants.nameTextFieldWidth, height: Constants.nameTextFieldHeight)
         nameTextField.textAlignment = .center
+        nameTextField.tag = Constants.nameTextFieldTag
         nameTextField.delegate = self
         self.addSubview(nameTextField)
         
-        // NameEditButton
-        nameEditButton.frame = CGRect(x: self.bounds.midX + Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
-        nameEditButton.setImage(UIImage(named: "edit"), for: .normal)
-        nameEditButton.alpha = Constants.editButtonAlpha
-        nameEditButton.addTarget(self, action: #selector(MainGroupInfoView.tapEditName(_:)), for: .touchUpInside)
-        self.addSubview(nameEditButton)
+        // NameEditSuccessButton
+        nameEditSuccessButton.frame = CGRect(x: self.bounds.midX + Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        nameEditSuccessButton.setImage(UIImage(named: "done"), for: .normal)
+        nameEditSuccessButton.alpha = 0
+        nameEditSuccessButton.addTarget(self, action: #selector(MainGroupInfoView.tapNameEditSuccess(_:)), for: .touchUpInside)
+        self.addSubview(nameEditSuccessButton)
+        
+        // NameEditCancelButton
+        nameEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.nameTextFieldWidth/2 + Constants.editButtonWidth + Constants.editButtonHorizontalBuffer, y: self.bounds.minY + Constants.nameEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        nameEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
+        nameEditCancelButton.alpha = 0
+        nameEditCancelButton.addTarget(self, action: #selector(MainGroupInfoView.tapNameEditCancel(_:)), for: .touchUpInside)
+        self.addSubview(nameEditCancelButton)
         
         // configure image view
         groupPhotoImageView.frame = CGRect(x: self.bounds.midX - Constants.groupPhotoRadius/2, y: self.bounds.minY + Constants.groupPhotoOriginY, width: Constants.groupPhotoRadius, height: Constants.groupPhotoRadius)
         groupPhotoImageView.layer.cornerRadius = Constants.groupImageCornerRadius
         groupPhotoImageView.layer.masksToBounds = true
-        groupPhotoImageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(groupPhotoImageView)
         
         // MemberTextField
         memberTextField.defaultPlaceholderText = Constants.memberTextFieldPlaceholder
         memberTextField.frame = CGRect(x: self.bounds.midX - Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberTextFieldOriginY, width: Constants.memberTextFieldWidth, height: Constants.memberTextFieldHeight)
-        memberTextField.isUserInteractionEnabled = false
         memberTextField.textAlignment = .center
+        memberTextField.tag = Constants.memberTextFieldTag
         memberTextField.delegate = self
         self.addSubview(memberTextField)
         
-        // MemberEditButton
-        memberEditButton.frame = CGRect(x: self.bounds.midX + Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
-        memberEditButton.setImage(UIImage(named: "edit"), for: .normal)
-        memberEditButton.alpha = Constants.editButtonAlpha
-        nameEditButton.addTarget(self, action: #selector(MainGroupInfoView.tapEditMember(_:)), for: .touchUpInside)
-        self.addSubview(memberEditButton)
+        // MemberEditSuccessButton
+        memberEditSuccessButton.frame = CGRect(x: self.bounds.midX + Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        memberEditSuccessButton.setImage(UIImage(named: "done"), for: .normal)
+        memberEditSuccessButton.alpha = 0
+        memberEditSuccessButton.addTarget(self, action: #selector(MainGroupInfoView.tapMemberEditSuccess(_:)), for: .touchUpInside)
+        self.addSubview(memberEditSuccessButton)
+        
+        // MemberEditCancelButton
+        memberEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.memberTextFieldWidth/2 + Constants.editButtonWidth + Constants.editButtonHorizontalBuffer, y: self.bounds.minY + Constants.memberEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        memberEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
+        memberEditCancelButton.alpha = 0
+        memberEditCancelButton.addTarget(self, action: #selector(MainGroupInfoView.tapMemberEditCancel(_:)), for: .touchUpInside)
+        self.addSubview(memberEditCancelButton)
+        
+        // CreateNewGroupButton
+        createNewGroupButton.frame = CGRect(x: self.bounds.midX - Constants.createGroupButtonRadius/2, y: self.bounds.minY + Constants.createGroupButtonOriginY, width: Constants.createGroupButtonRadius, height: Constants.createGroupButtonRadius)
+        createNewGroupButton.setImage(UIImage(named: "rocket_launch"), for: .normal)
+        createNewGroupButton.alpha = groupInfoVC?.getGroup() != nil ? 0 : 1
+        createNewGroupButton.addTarget(self, action: #selector(MainGroupInfoView.tapCreateNewGroup(_:)), for: .touchUpInside)
+        self.addSubview(createNewGroupButton)
         
         // Member Table
         if let mTCV = memberTableContainerView {
@@ -83,17 +109,69 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     // MARK: Gesture Recognizer functions
     
-    func tapEditName(_ gestureRecognizer: UITapGestureRecognizer) {
-        nameTextField.isUserInteractionEnabled = true
-        nameTextField.becomeFirstResponder()
+    func tapNameEditSuccess(_ gestureRecognizer: UITapGestureRecognizer) {
+        nameEditSuccessButton.alpha = 0
+        nameEditCancelButton.alpha = 0
+        
+        // send edit request
+        
+        nameTextField.resignFirstResponder()
     }
     
-    func tapEditMember(_ gestureRecognizer: UITapGestureRecognizer) {
-        nameTextField.isUserInteractionEnabled = true
-        memberTextField.becomeFirstResponder()
+    func tapNameEditCancel(_ gestureRecognizer: UITapGestureRecognizer) {
+        nameEditSuccessButton.alpha = 0
+        nameEditCancelButton.alpha = 0
+        
+        if let g = groupInfoVC?.getGroup() {
+            nameTextField.text = g.name
+        } else {
+            nameTextField.text = ""
+        }
+        
+        nameTextField.resignFirstResponder()
+    }
+
+    
+    func tapMemberEditSuccess(_ gestureRecognizer: UITapGestureRecognizer) {
+        memberEditSuccessButton.alpha = 0
+        memberEditCancelButton.alpha = 0
+        groupInfoVC?.isEditingMembers = false
+        
+        groupInfoVC?.groupMembersEdited()
+        
+        memberTextField.resignFirstResponder()
+    }
+    
+    func tapMemberEditCancel(_ gestureRecognizer: UITapGestureRecognizer) {
+        memberEditSuccessButton.alpha = 0
+        memberEditCancelButton.alpha = 0
+        
+        // if group exists, go back to original name
+        memberTextField.text = ""
+        
+        memberTextField.resignFirstResponder()
+    }
+    
+    func tapCreateNewGroup(_ gestureRecognizer: UITapGestureRecognizer) {
+        if let name = nameTextField.text {
+            groupInfoVC?.groupCreated(name: name, photo: groupPhotoImageView.image)
+        }
     }
     
     // MARK: UITextFieldDelegate
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        if editAlertHasBeenPressed == true {
+            editAlertHasBeenPressed = false
+            return true
+        } else {
+            groupInfoVC?.presentAlertOption(tag: textField.tag)
+            return false
+        }
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -101,7 +179,21 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.isUserInteractionEnabled = false
+    }
+    
+    // MARK: Public
+    
+    func beginEditPressed(tag: Int) {
+        editAlertHasBeenPressed = true
+        if tag == Constants.nameTextFieldTag {
+            nameEditSuccessButton.alpha = 1
+            nameEditCancelButton.alpha = 1
+            nameTextField.becomeFirstResponder()
+        } else if tag == Constants.memberTextFieldTag {
+            memberEditSuccessButton.alpha = 1
+            memberEditCancelButton.alpha = 1
+            memberTextField.becomeFirstResponder()
+        }
     }
     
 }
@@ -117,9 +209,9 @@ private struct Constants {
     static let nameTextFieldHeight: CGFloat = 40
     
     static let nameEditButtonOriginY: CGFloat = 186
-    static let editButtonAlpha: CGFloat = 0.2
     static let editButtonWidth: CGFloat = 20
     static let editButtonHeight: CGFloat = 20
+    static let editButtonHorizontalBuffer: CGFloat = 20
     
     static let memberTextFieldPlaceholder = "Members"
     static let memberTextFieldOriginY: CGFloat = 250
@@ -128,8 +220,14 @@ private struct Constants {
     
     static let memberEditButtonOriginY: CGFloat = 261
     
-    static let memberTableMarginConstant: CGFloat = 20
+    static let memberTableMarginConstant: CGFloat = 25
     static let memberTableOriginY: CGFloat = 300
-    static let memberTableHeight: CGFloat = 300
+    static let memberTableHeight: CGFloat = 275
+    
+    static let createGroupButtonOriginY: CGFloat = 600
+    static let createGroupButtonRadius: CGFloat = 40
+    
+    static let nameTextFieldTag: Int = 1
+    static let memberTextFieldTag: Int = 2
 }
 

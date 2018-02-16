@@ -17,8 +17,14 @@ protocol MemberTableVCProtocol {
 }
 
 protocol GroupInfoComponentDelegate {
+    var isEditingMembers: Bool { get set }
+    
     func getUserViewData() -> [UserViewData]
     func getGroup() -> Group?
+    func groupNameEdited(name: String)
+    func groupMembersEdited()
+    func groupCreated(name: String, photo: UIImage?)
+    func presentAlertOption(tag: Int)
 }
 
 protocol GroupInfoUIComponent {

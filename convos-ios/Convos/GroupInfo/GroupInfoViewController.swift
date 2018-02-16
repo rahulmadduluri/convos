@@ -12,10 +12,11 @@ import SwiftWebSocket
 
 class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupInfoComponentDelegate {
     
+    // if isNewGroup == true, GroupInfoVC is creating a new group
+    
     var groupInfoVCDelegate: GroupInfoVCDelegate? = nil
     var userViewData: [UserViewData] = []
     
-    // if group == nil, we are creating a new group
     fileprivate var group: Group? = nil
     fileprivate var people: [User] = []
     fileprivate var containerView: MainGroupInfoView? = nil
@@ -23,12 +24,9 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     // group members table
     fileprivate var memberTableVC = MemberTableViewController()
     
+    var isEditingMembers: Bool = false
     var memberSearchText: String? {
         return containerView?.memberTextField.text
-    }
-    
-    var isEditingMembers: Bool {
-        return containerView?.memberEditButton.state == .selected
     }
     
     // MARK: UIViewController
@@ -44,11 +42,12 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         
         containerView = MainGroupInfoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
 
-        if group == nil {
+        if isNewGroup() == true {
             containerView?.groupPhotoImageView.image = UIImage(named: "capybara")
         }
         containerView?.addGestureRecognizer(panGestureRecognizer)
         
+        containerView?.groupInfoVC = self
         containerView?.memberTableContainerView = memberTableVC.view
         self.view = containerView
     }
@@ -94,10 +93,55 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         return userViewData
     }
     
+    func groupNameEdited(name: String) {
+        if isNewGroup() == false {
+            // send request to edit name
+        }
+    }
+    
+    func groupMembersEdited() {
+        if isNewGroup() == false {
+            let memberUUIDs: [String] = userViewData.flatMap { $0.uuid }
+            // 1. send request to edit members
+            // 2. on completion make this call:
+            let searchText = memberSearchText ?? ""
+            UserAPI.getPeople(groupUUID: group!.uuid, searchText: searchText, maxPeople: Constants.maxPeople, completion: { people in
+                if let p = people {
+                    self.received(people: p)
+                }
+            })
+        }
+    }
+    
+    func groupCreated(name: String, photo: UIImage?) {
+        if isNewGroup() == true {
+            let memberUUIDs: [String] = userViewData.flatMap { $0.uuid }
+            // create group w/ name, memberUUIDs, and photo
+            memberTableVC.reloadMemberViewData()
+        }
+    }
+    
+    func presentAlertOption(tag: Int) {
+        var editActionTitle: String = "Edit"
+        let groupName = group?.name ?? ""
+        let alert = UIAlertController(title: groupName, message: "", preferredStyle: .actionSheet)
+        if tag == Constants.nameTag {
+            editActionTitle += " Name"
+        } else if tag == Constants.memberTag {
+            alert.addAction(UIAlertAction(title: "Search Group", style: .default) { action in
+            })
+            editActionTitle += " Members"
+        }
+        alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
+            self.containerView?.beginEditPressed(tag: tag)
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
+        present(alert, animated: true)
+    }
+    
     // MARK: Handle keyboard events
     
     func keyboardWillShow(_ notification: Notification) {
-        containerView?.memberTextField.hasInteracted = true
     }
     
     func keyboardWillHide(_ notification: Notification) {
@@ -140,23 +184,19 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate func remoteSearch(memberText: String) {
         if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = memberSearchText ?? ""
-            let maxPeople = 20 // arbitrary upper bound
-            if isEditingMembers == true {
-                UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: maxPeople, completion: { people in
+            // if editing, grab user's contacts, otherwise grab group members
+            if searchText.isEmpty == false {
+                UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: Constants.maxPeople, completion: { people in
                     if let p = people {
                         self.received(people: p)
                     }
                 })
-            } else {
-                // only grab group members if we're grabbing existing group members
-                // NOTE: this will break when we try adding people to new group -- need to fix this
-                if let groupUUID = group?.uuid {
-                    UserAPI.getPeople(groupUUID: groupUUID, searchText: searchText, maxPeople: maxPeople, completion: { people in
-                        if let p = people {
-                            self.received(people: p)
-                        }
-                    })
-                }
+            } else if isNewGroup() == false {
+                UserAPI.getPeople(groupUUID: group!.uuid, searchText: searchText, maxPeople: Constants.maxPeople, completion: { people in
+                    if let p = people {
+                        self.received(people: p)
+                    }
+                })
             }
         }
     }
@@ -172,4 +212,14 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             return UserViewData(uuid: p.uuid, text: p.name, photoURI: p.photoURI)
         })
     }
+    
+    fileprivate func isNewGroup() -> Bool {
+        return group == nil
+    }
+}
+
+private struct Constants {
+    static let maxPeople = 20
+    static let nameTag = 1
+    static let memberTag = 2
 }
