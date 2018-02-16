@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
-class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupInfoComponentDelegate {
+class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupInfoComponentDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // if isNewGroup == true, GroupInfoVC is creating a new group
     
@@ -21,6 +21,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate var people: [User] = []
     fileprivate var containerView: MainGroupInfoView? = nil
     fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
+    fileprivate var imagePicker = UIImagePickerController()
     // group members table
     fileprivate var memberTableVC = MemberTableViewController()
     
@@ -131,6 +132,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             alert.addAction(UIAlertAction(title: "Search Group", style: .default) { action in
             })
             editActionTitle += " Members"
+        } else if tag == Constants.photoTag {
+            editActionTitle += " Photo"
         }
         alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
             self.containerView?.beginEditPressed(tag: tag)
@@ -145,6 +148,19 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     }
     
     func keyboardWillHide(_ notification: Notification) {
+    }
+    
+    // MARK: - UIImagePickerControllerDelegate
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [String : AnyObject])
+    {
+        if let chosenImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            containerView?.groupPhotoImageView.image = chosenImage
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: Public
@@ -168,6 +184,13 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         containerView?.memberTextField.smartTextFieldDelegate = self
         memberTableVC.groupInfoVC = self
         memberTableVC.reloadMemberViewData()
+        
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = false
+            imagePicker.sourceType = .camera
+            imagePicker.cameraCaptureMode = .photo
+        }
         
         containerView?.memberTextField.userStoppedTypingHandler = {
             if let memberText = self.memberSearchText {
@@ -222,4 +245,5 @@ private struct Constants {
     static let maxPeople = 20
     static let nameTag = 1
     static let memberTag = 2
+    static let photoTag = 3
 }

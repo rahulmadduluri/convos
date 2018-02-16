@@ -67,6 +67,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         groupPhotoImageView.frame = CGRect(x: self.bounds.midX - Constants.groupPhotoRadius/2, y: self.bounds.minY + Constants.groupPhotoOriginY, width: Constants.groupPhotoRadius, height: Constants.groupPhotoRadius)
         groupPhotoImageView.layer.cornerRadius = Constants.groupImageCornerRadius
         groupPhotoImageView.layer.masksToBounds = true
+        groupPhotoImageView.tag = Constants.groupPhotoTag
         self.addSubview(groupPhotoImageView)
         
         // MemberTextField
@@ -193,6 +194,8 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
             memberEditSuccessButton.alpha = 1
             memberEditCancelButton.alpha = 1
             memberTextField.becomeFirstResponder()
+        } else if tag == Constants.groupPhotoTag {
+            
         }
     }
     
@@ -229,5 +232,6 @@ private struct Constants {
     
     static let nameTextFieldTag: Int = 1
     static let memberTextFieldTag: Int = 2
+    static let groupPhotoTag: Int = 3
 }
 
