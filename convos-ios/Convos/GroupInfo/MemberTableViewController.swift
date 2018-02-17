@@ -41,7 +41,7 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol {
     // UITableViewController
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupInfoVC?.getUserViewData().count ?? 0
+        return groupInfoVC?.getMemberViewData().count ?? 0
     }
         
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -61,11 +61,23 @@ extension MemberTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
             MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
-        
-        if let uvd = groupInfoVC?.getUserViewData()[indexPath.row] {
-            cell.customTextLabel.text = uvd.text
-            if let uri = uvd.photoURI {
+        cell.groupInfoVC = groupInfoVC
+                
+        if let mvd = groupInfoVC?.getMemberViewData()[indexPath.row] {
+            cell.customTextLabel.text = mvd.text
+            if let uri = mvd.photoURI {
                 cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+            }
+            cell.data = mvd
+            switch mvd.status {
+            case .memberExists:
+                cell.statusButton.setImage(UIImage(named: "done"), for: .normal)
+            case .memberNew:
+                cell.statusButton.setImage(UIImage(named: "pending_user"), for: .normal)
+            case .memberRemovable:
+                cell.statusButton.setImage(UIImage(named: "cancel"), for: .normal)
+            default:
+                break
             }
         }
         

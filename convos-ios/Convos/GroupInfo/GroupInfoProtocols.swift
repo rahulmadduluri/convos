@@ -8,7 +8,19 @@
 
 import UIKit
 
-protocol GroupInfoVCDelegate {
+enum MemberViewMode {
+    case viewing
+    case modifying
+}
+
+enum MemberViewStatus {
+    case normal
+    case memberExists
+    case memberNew
+    case memberRemovable
+}
+
+protocol GroupInfoVCDelegate {    
     func groupCreated()
 }
 
@@ -19,10 +31,13 @@ protocol MemberTableVCProtocol {
 protocol GroupInfoComponentDelegate {
     var isEditingMembers: Bool { get set }
     
-    func getUserViewData() -> [UserViewData]
+    func getMemberViewData() -> [MemberViewData]
     func getGroup() -> Group?
+    func groupPhotoEdited(image: UIImage)
     func groupNameEdited(name: String)
-    func groupMembersEdited()
+    func memberSearchUpdated()
+    func resetMembers()
+    func memberStatusSelected(mvd: MemberViewData)
     func groupCreated(name: String, photo: UIImage?)
     func presentAlertOption(tag: Int)
 }
@@ -31,22 +46,24 @@ protocol GroupInfoUIComponent {
     var groupInfoVC: GroupInfoComponentDelegate? { get set }
 }
 
-struct UserViewData: Hashable, Equatable {
+struct MemberViewData: Hashable, Equatable {
     var uuid: String
     var text: String
+    var status: MemberViewStatus
     var photoURI: String?
     
     var hashValue: Int {
         return uuid.hashValue
     }
     
-    init(uuid: String, text: String, photoURI: String?) {
+    init(uuid: String, text: String, status: MemberViewStatus, photoURI: String?) {
         self.uuid = uuid
         self.text = text
+        self.status = status
         self.photoURI = photoURI
     }
 }
 
-func ==(lhs: UserViewData, rhs: UserViewData) -> Bool {
+func ==(lhs: MemberViewData, rhs: MemberViewData) -> Bool {
     return lhs.uuid == rhs.uuid
 }

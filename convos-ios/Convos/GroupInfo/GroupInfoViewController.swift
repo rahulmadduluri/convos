@@ -15,8 +15,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     // if isNewGroup == true, GroupInfoVC is creating a new group
     
     var groupInfoVCDelegate: GroupInfoVCDelegate? = nil
-    var userViewData: [UserViewData] = []
-    
+    var memberViewData: [MemberViewData] = []
+
     fileprivate var group: Group? = nil
     fileprivate var people: [User] = []
     fileprivate var containerView: MainGroupInfoView? = nil
@@ -24,6 +24,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate var imagePicker = UIImagePickerController()
     // group members table
     fileprivate var memberTableVC = MemberTableViewController()
+    // queue of removable members *while creating a new group*
+    fileprivate var removableMemberViewDataQueue: [MemberViewData] = []
     
     var isEditingMembers: Bool = false
     var memberSearchText: String? {
@@ -69,7 +71,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        remoteSearch(memberText: memberSearchText ?? "")
+        fetchGroupMembers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -90,50 +92,85 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         return group
     }
     
-    func getUserViewData() -> [UserViewData] {
-        return userViewData
+    func getMemberViewData() -> [MemberViewData] {
+        return memberViewData
+    }
+    
+    func groupPhotoEdited(image: UIImage) {
+        if isNewGroup() == false{
+            GroupAPI.updateGroupPhoto(groupUUID: group!.uuid, photo: image) { newGroup in
+                if newGroup != nil {
+                    self.group = newGroup
+                }
+            }
+        }
     }
     
     func groupNameEdited(name: String) {
         if isNewGroup() == false {
-            // send request to edit name
+            GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: name, newMemberUUID: nil) { newGroup in
+                if newGroup != nil {
+                    self.group = newGroup
+                }
+            }
         }
     }
     
-    func groupMembersEdited() {
-        if isNewGroup() == false {
-            let memberUUIDs: [String] = userViewData.flatMap { $0.uuid }
-            // 1. send request to edit members
-            // 2. on completion make this call:
-            let searchText = memberSearchText ?? ""
-            UserAPI.getPeople(groupUUID: group!.uuid, searchText: searchText, maxPeople: Constants.maxPeople, completion: { people in
-                if let p = people {
-                    self.received(people: p)
+    func memberSearchUpdated() {
+        self.containerView?.memberTextField.showLoadingIndicator()
+        fetchPotentialMembers()
+    }
+        
+    func resetMembers() {
+        removableMemberViewDataQueue = []
+        fetchGroupMembers()
+    }
+    
+    func memberStatusSelected(mvd: MemberViewData) {
+        // If creating new group (status should always be removable)
+        if mvd.status == .memberRemovable && isNewGroup() == true {
+            removableMemberViewDataQueue = removableMemberViewDataQueue.filter { $0.uuid != mvd.uuid }
+            memberViewData = removableMemberViewDataQueue
+            memberTableVC.reloadMemberViewData()
+        // If existing group (and is a new member, add to group)
+        } else if mvd.status == .memberNew && isNewGroup() == false {
+            removableMemberViewDataQueue = []
+            GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: nil, newMemberUUID: mvd.uuid, completion: { newGroup in
+                if newGroup != nil {
+                    self.group = newGroup
+                    self.fetchGroupMembers()
                 }
             })
+        // if new group, set status to removable and add to list
+        } else if mvd.status == .memberNew && isNewGroup() == true {
+            var removableMVD = mvd
+            removableMVD.status = .memberRemovable
+            removableMemberViewDataQueue.append(removableMVD)
+            memberViewData = removableMemberViewDataQueue
+            containerView?.memberTextField.text = ""
+            containerView?.hideMemberCancel()
+            memberTableVC.reloadMemberViewData()
         }
     }
     
     func groupCreated(name: String, photo: UIImage?) {
         if isNewGroup() == true {
-            let memberUUIDs: [String] = userViewData.flatMap { $0.uuid }
+            let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
             // create group w/ name, memberUUIDs, and photo
             memberTableVC.reloadMemberViewData()
         }
     }
     
     func presentAlertOption(tag: Int) {
-        var editActionTitle: String = "Edit"
-        let groupName = group?.name ?? ""
+        var editActionTitle: String = ""
+        let groupName = group?.name ?? "New Group"
         let alert = UIAlertController(title: groupName, message: "", preferredStyle: .actionSheet)
         if tag == Constants.nameTag {
-            editActionTitle += " Name"
+            editActionTitle += "Edit Name"
         } else if tag == Constants.memberTag {
-            alert.addAction(UIAlertAction(title: "Search Group", style: .default) { action in
-            })
-            editActionTitle += " Members"
+            editActionTitle += "Add Members"
         } else if tag == Constants.photoTag {
-            editActionTitle += " Photo"
+            editActionTitle += "Edit Photo"
         }
         alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
             self.containerView?.beginEditPressed(tag: tag)
@@ -151,14 +188,16 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     }
     
     // MARK: - UIImagePickerControllerDelegate
-    func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [String : AnyObject])
-    {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let chosenImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             containerView?.groupPhotoImageView.image = chosenImage
+            // make edit photo request
         }
         dismiss(animated: true, completion: nil)
+
     }
+
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
@@ -192,47 +231,62 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             imagePicker.cameraCaptureMode = .photo
         }
         
-        containerView?.memberTextField.userStoppedTypingHandler = {
-            if let memberText = self.memberSearchText {
-                if memberText.characters.count > 0 {
-                    self.containerView?.memberTextField.showLoadingIndicator()
-                    self.remoteSearch(memberText: memberText)
-                }
-            }
-        }
-        
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
-    fileprivate func remoteSearch(memberText: String) {
-        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let searchText = memberSearchText ?? ""
-            // if editing, grab user's contacts, otherwise grab group members
-            if searchText.isEmpty == false {
-                UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: Constants.maxPeople, completion: { people in
-                    if let p = people {
-                        self.received(people: p)
-                    }
-                })
-            } else if isNewGroup() == false {
-                UserAPI.getPeople(groupUUID: group!.uuid, searchText: searchText, maxPeople: Constants.maxPeople, completion: { people in
-                    if let p = people {
-                        self.received(people: p)
-                    }
-                })
-            }
+    fileprivate func fetchGroupMembers() {
+        if isNewGroup() == false {
+            GroupAPI.getPeople(groupUUID: group!.uuid, searchText: "", maxPeople: Constants.maxPeople, completion: { people in
+                if let p = people {
+                    self.receivedCurrentMembers(people: p)
+                }
+            })
+        } else {
+            self.receivedCurrentMembers(people: [])
         }
     }
     
-    fileprivate func received(people: [User]) {
-        userViewData = createUserViewData(people: people)
+    fileprivate func fetchPotentialMembers() {
+        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
+            let searchText = memberSearchText ?? ""
+            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: Constants.maxPeople, completion: { allUsers in
+                if let allUsers = allUsers {
+                    self.receivedPotentialMembers(potentialMembers: allUsers)
+                }
+            })
+        }
+    }
+    
+    fileprivate func receivedCurrentMembers(people: [User]) {
+        memberViewData = createMemberViewData(people: people)
         memberTableVC.reloadMemberViewData()
         containerView?.memberTextField.stopLoadingIndicator()
     }
     
-    fileprivate func createUserViewData(people: [User]) -> [UserViewData] {
-        return people.map({ p -> UserViewData in
-            return UserViewData(uuid: p.uuid, text: p.name, photoURI: p.photoURI)
+    // Get all potential members, and separate them into old & new
+    fileprivate func receivedPotentialMembers(potentialMembers: [User]) {
+        var allMemberViewData = createMemberViewData(people: potentialMembers, status: .memberNew)
+        if isNewGroup() == false {
+            for mvd in allMemberViewData {
+                // if existing memberViewData matches (current group overlaps w/ potential member)
+                if var matchingMember = memberViewData.filter({ $0.uuid == mvd.uuid }).first {
+                    // update status of view data to memberExists
+                    allMemberViewData = allMemberViewData.filter{ $0.uuid != mvd.uuid }
+                    matchingMember.status = .memberExists
+                    allMemberViewData.append(matchingMember)
+                }
+            }
+            memberViewData = allMemberViewData
+        } else {
+            memberViewData = allMemberViewData
+        }
+        memberTableVC.reloadMemberViewData()
+        containerView?.memberTextField.stopLoadingIndicator()
+    }
+    
+    fileprivate func createMemberViewData(people: [User], status: MemberViewStatus = .normal) -> [MemberViewData] {
+        return people.map({ p -> MemberViewData in
+            return MemberViewData(uuid: p.uuid, text: p.name, status: status, photoURI: p.photoURI)
         })
     }
     
