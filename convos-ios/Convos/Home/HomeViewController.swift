@@ -70,7 +70,14 @@ class HomeViewController: UIViewController, SearchVCDelegate {
     }
     
     func groupSelected(group: Group) {
-        // present group info view controller
+        if self.groupInfoVC == nil {
+            self.groupInfoVC = GroupInfoViewController()
+        }
+        groupInfoVC?.setGroupInfo(group: group)
+
+        if let newVC = self.groupInfoVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
     }
     
     // MARK: Private

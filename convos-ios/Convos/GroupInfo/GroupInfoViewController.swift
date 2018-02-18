@@ -27,29 +27,21 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     // queue of removable members *while creating a new group*
     fileprivate var removableMemberViewDataQueue: [MemberViewData] = []
     
-    var isEditingMembers: Bool = false
     var memberSearchText: String? {
         return containerView?.memberTextField.text
     }
+    var isNewGroup: Bool {
+        return group == nil
+    }
     
     // MARK: UIViewController
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        configureGroupInfo()
-    }
     
     override func loadView() {
         self.addChildViewController(memberTableVC)
         
         containerView = MainGroupInfoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
 
-        if isNewGroup() == true {
-            containerView?.groupPhotoImageView.image = UIImage(named: "capybara")
-        }
         containerView?.addGestureRecognizer(panGestureRecognizer)
-        
         containerView?.groupInfoVC = self
         containerView?.memberTableContainerView = memberTableVC.view
         self.view = containerView
@@ -71,6 +63,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        configureGroupInfo()
         fetchGroupMembers()
     }
     
@@ -97,7 +90,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     }
     
     func groupPhotoEdited(image: UIImage) {
-        if isNewGroup() == false{
+        if isNewGroup == false{
             GroupAPI.updateGroupPhoto(groupUUID: group!.uuid, photo: image) { newGroup in
                 if newGroup != nil {
                     self.group = newGroup
@@ -107,12 +100,20 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     }
     
     func groupNameEdited(name: String) {
-        if isNewGroup() == false {
+        if isNewGroup == false {
             GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: name, newMemberUUID: nil) { newGroup in
                 if newGroup != nil {
                     self.group = newGroup
                 }
             }
+        }
+    }
+    
+    func groupCreated(name: String, photo: UIImage?) {
+        if isNewGroup == true {
+            let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
+            // create group w/ name, memberUUIDs, and photo
+            memberTableVC.reloadMemberViewData()
         }
     }
     
@@ -128,12 +129,24 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     func memberStatusSelected(mvd: MemberViewData) {
         // If creating new group (status should always be removable)
-        if mvd.status == .memberRemovable && isNewGroup() == true {
+        if mvd.status == .memberRemovable && isNewGroup == true {
             removableMemberViewDataQueue = removableMemberViewDataQueue.filter { $0.uuid != mvd.uuid }
             memberViewData = removableMemberViewDataQueue
             memberTableVC.reloadMemberViewData()
+        // if new group, set status to removable and add to list
+        } else if mvd.status == .memberNew && isNewGroup == true {
+            var removableMVD = mvd
+            removableMVD.status = .memberRemovable
+            // only add user to removable queue if it's not already there
+            if !removableMemberViewDataQueue.contains(where: { $0.uuid == mvd.uuid }) {
+                removableMemberViewDataQueue.append(removableMVD)
+            }
+            memberViewData = removableMemberViewDataQueue
+            containerView?.memberTextField.text = ""
+            containerView?.hideMemberCancel()
+            memberTableVC.reloadMemberViewData()
         // If existing group (and is a new member, add to group)
-        } else if mvd.status == .memberNew && isNewGroup() == false {
+        } else if mvd.status == .memberNew && isNewGroup == false {
             removableMemberViewDataQueue = []
             GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: nil, newMemberUUID: mvd.uuid, completion: { newGroup in
                 if newGroup != nil {
@@ -141,23 +154,6 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
                     self.fetchGroupMembers()
                 }
             })
-        // if new group, set status to removable and add to list
-        } else if mvd.status == .memberNew && isNewGroup() == true {
-            var removableMVD = mvd
-            removableMVD.status = .memberRemovable
-            removableMemberViewDataQueue.append(removableMVD)
-            memberViewData = removableMemberViewDataQueue
-            containerView?.memberTextField.text = ""
-            containerView?.hideMemberCancel()
-            memberTableVC.reloadMemberViewData()
-        }
-    }
-    
-    func groupCreated(name: String, photo: UIImage?) {
-        if isNewGroup() == true {
-            let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
-            // create group w/ name, memberUUIDs, and photo
-            memberTableVC.reloadMemberViewData()
         }
     }
     
@@ -168,7 +164,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         if tag == Constants.nameTag {
             editActionTitle += "Edit Name"
         } else if tag == Constants.memberTag {
-            editActionTitle += "Add Members"
+            editActionTitle += "Add Member"
         } else if tag == Constants.photoTag {
             editActionTitle += "Edit Photo"
         }
@@ -231,12 +227,22 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             imagePicker.cameraCaptureMode = .photo
         }
         
+        if isNewGroup == false {
+            containerView?.nameTextField.text = group!.name
+            if let uri = group!.photoURI {
+                containerView?.groupPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+            }
+        } else {
+            containerView?.groupPhotoImageView.image = UIImage(named: "capybara")
+            containerView?.createNewGroupButton.alpha = 1
+        }
+        
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
     fileprivate func fetchGroupMembers() {
-        if isNewGroup() == false {
-            GroupAPI.getPeople(groupUUID: group!.uuid, searchText: "", maxPeople: Constants.maxPeople, completion: { people in
+        if isNewGroup == false {
+            GroupAPI.getPeople(groupUUID: group!.uuid, searchText: "", maxPeople: nil, completion: { people in
                 if let p = people {
                     self.receivedCurrentMembers(people: p)
                 }
@@ -249,7 +255,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate func fetchPotentialMembers() {
         if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = memberSearchText ?? ""
-            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: Constants.maxPeople, completion: { allUsers in
+            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: nil, completion: { allUsers in
                 if let allUsers = allUsers {
                     self.receivedPotentialMembers(potentialMembers: allUsers)
                 }
@@ -266,7 +272,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     // Get all potential members, and separate them into old & new
     fileprivate func receivedPotentialMembers(potentialMembers: [User]) {
         var allMemberViewData = createMemberViewData(people: potentialMembers, status: .memberNew)
-        if isNewGroup() == false {
+        if isNewGroup == false {
             for mvd in allMemberViewData {
                 // if existing memberViewData matches (current group overlaps w/ potential member)
                 if var matchingMember = memberViewData.filter({ $0.uuid == mvd.uuid }).first {
@@ -289,14 +295,9 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             return MemberViewData(uuid: p.uuid, text: p.name, status: status, photoURI: p.photoURI)
         })
     }
-    
-    fileprivate func isNewGroup() -> Bool {
-        return group == nil
-    }
 }
 
 private struct Constants {
-    static let maxPeople = 20
     static let nameTag = 1
     static let memberTag = 2
     static let photoTag = 3

@@ -12,7 +12,6 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()
-    let rightInfoButton = UIButton()
     
     var section = 0
     var searchVC: SearchComponentDelegate?
@@ -32,8 +31,10 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         photoImageView.translatesAutoresizingMaskIntoConstraints = false
         photoImageView.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
         photoImageView.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor, constant: Constants.leadingImageAnchorConstant).isActive = true
-        photoImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.imageWidth).isActive = true
-        photoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.imageHeight).isActive = true
+        photoImageView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.imageRadius).isActive = true
+        photoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.imageRadius).isActive = true
+        photoImageView.isUserInteractionEnabled = true
+        photoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SearchTableViewHeader.tapGroupInfo(_:))))
         
         // Title label
         contentView.addSubview(customTextLabel)
@@ -42,17 +43,8 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         customTextLabel.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
         customTextLabel.numberOfLines = 0
         customTextLabel.font = UIFont.systemFont(ofSize: Constants.textFontSize)
-        
-        // Right GroupInfo Button
-        contentView.addSubview(rightInfoButton)
-        rightInfoButton.translatesAutoresizingMaskIntoConstraints = false
-        rightInfoButton.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor, constant: Constants.trailingRightInfoAnchorConstant).isActive = true
-        rightInfoButton.centerYAnchor.constraint(equalTo: marginGuide.centerYAnchor).isActive = true
-        rightInfoButton.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.rightInfoWidth).isActive = true
-        rightInfoButton.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.rightInfoHeight).isActive = true
-        rightInfoButton.setImage(UIImage(named: "info_button"), for: .normal)
-        rightInfoButton.alpha = Constants.rightInfoAlpha
-        rightInfoButton.addTarget(self, action: #selector(SearchTableViewHeader.tapInfo(_:)), for: .touchUpInside)
+        customTextLabel.isUserInteractionEnabled = true
+        customTextLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SearchTableViewHeader.tapGroupInfo(_:))))
         
         // UIGestureRecognizer
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SearchTableViewHeader.tapHeader(_:))))
@@ -73,7 +65,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         }
     }
     
-    func tapInfo(_ gestureRecognizer: UITapGestureRecognizer) {
+    func tapGroupInfo(_ gestureRecognizer: UITapGestureRecognizer) {
         if let defaultConvo = searchVC?.getSearchViewData().keys[section] {
             if let uuid = defaultConvo.uuid,
                 defaultConvo.type == SearchViewType.defaultConversation.rawValue {
@@ -81,18 +73,14 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
             }
         }
     }
-
+    
 }
 
 private struct Constants {
     static let textFontSize: CGFloat = 16
-    static let leadingImageAnchorConstant: CGFloat = 11
     static let leadingLabelAnchorConstant: CGFloat = 25
-    static let trailingRightInfoAnchorConstant: CGFloat = 0
-    static let imageWidth: CGFloat = 26
-    static let imageHeight: CGFloat = 26
+    
+    static let leadingImageAnchorConstant: CGFloat = 11
+    static let imageRadius: CGFloat = 26
     static let imageCornerRadius: CGFloat = 13
-    static let rightInfoWidth: CGFloat = 18
-    static let rightInfoHeight: CGFloat = 18
-    static let rightInfoAlpha: CGFloat = 0.5
 }

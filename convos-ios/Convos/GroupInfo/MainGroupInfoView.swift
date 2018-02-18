@@ -12,7 +12,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     fileprivate var nameEditCancelButton = UIButton()
     fileprivate var memberEditCancelButton = UIButton()
-    fileprivate var createNewGroupButton = UIButton()
     // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
     fileprivate var editAlertHasBeenPressed = false
     
@@ -20,6 +19,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     var nameTextField = UITextField()
     var memberTextField: SmartTextField = SmartTextField()
     var groupPhotoImageView = UIImageView()
+    var createNewGroupButton = UIButton()
     var memberTableContainerView: UIView? = nil
     
     // MARK: Init
@@ -42,6 +42,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         // NameTextField
         nameTextField.placeholder = Constants.nameTextFieldPlaceholder
         nameTextField.frame = CGRect(x: self.bounds.midX - Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameTextFieldOriginY, width: Constants.nameTextFieldWidth, height: Constants.nameTextFieldHeight)
+        nameTextField.font = nameTextField.font?.withSize(Constants.nameTextFieldFontSize)
         nameTextField.textAlignment = .center
         nameTextField.tag = Constants.nameTextFieldTag
         nameTextField.delegate = self
@@ -79,7 +80,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         // CreateNewGroupButton
         createNewGroupButton.frame = CGRect(x: self.bounds.midX - Constants.createGroupButtonRadius/2, y: self.bounds.minY + Constants.createGroupButtonOriginY, width: Constants.createGroupButtonRadius, height: Constants.createGroupButtonRadius)
         createNewGroupButton.setImage(UIImage(named: "rocket_launch"), for: .normal)
-        createNewGroupButton.alpha = groupInfoVC?.getGroup() != nil ? 0 : 1
+        createNewGroupButton.alpha = 0
         createNewGroupButton.addTarget(self, action: #selector(MainGroupInfoView.tapCreateNewGroup(_:)), for: .touchUpInside)
         self.addSubview(createNewGroupButton)
         
@@ -97,10 +98,10 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     func tapNameEditCancel(_ gestureRecognizer: UITapGestureRecognizer) {
         nameEditCancelButton.alpha = 0
         
-        if let g = groupInfoVC?.getGroup() {
-            nameTextField.text = g.name
-        } else {
+        if (groupInfoVC?.isNewGroup ?? false) == true {
             nameTextField.text = ""
+        } else {
+            nameTextField.text = groupInfoVC?.getGroup()?.name
         }
         
         nameTextField.resignFirstResponder()
@@ -111,7 +112,9 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         
         // if group exists, go back to original name
         memberTextField.text = ""
-        groupInfoVC?.resetMembers()
+        if (groupInfoVC?.isNewGroup ?? false) == false {
+            groupInfoVC?.resetMembers()
+        }
         
         memberTextField.resignFirstResponder()
     }
@@ -138,6 +141,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         let text = textField.text ?? ""
         if textField.tag == Constants.nameTextFieldTag {
             groupInfoVC?.groupNameEdited(name: text)
+            nameEditCancelButton.alpha = 0
         } else if textField.tag == Constants.memberTextFieldTag {
             groupInfoVC?.memberSearchUpdated()
         }
@@ -174,9 +178,10 @@ private struct Constants {
     static let nameTextFieldPlaceholder: String = "Group Name"
     static let nameTextFieldOriginY: CGFloat = 175
     static let nameTextFieldWidth: CGFloat = 150
-    static let nameTextFieldHeight: CGFloat = 40
+    static let nameTextFieldHeight: CGFloat = 60
+    static let nameTextFieldFontSize: CGFloat = 24
     
-    static let nameEditButtonOriginY: CGFloat = 186
+    static let nameEditButtonOriginY: CGFloat = 196
     static let editButtonWidth: CGFloat = 20
     static let editButtonHeight: CGFloat = 20
     

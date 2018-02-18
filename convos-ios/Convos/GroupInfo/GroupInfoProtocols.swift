@@ -29,7 +29,7 @@ protocol MemberTableVCProtocol {
 }
 
 protocol GroupInfoComponentDelegate {
-    var isEditingMembers: Bool { get set }
+    var isNewGroup: Bool { get }
     
     func getMemberViewData() -> [MemberViewData]
     func getGroup() -> Group?

@@ -14,24 +14,32 @@ var _dbh *dbHandler
 
 const (
 	_dbPath             = "root:webster93@tcp(127.0.0.1:3306)/convos"
-	_userQueriesPath    = "db/userQueries.sql"
 	_searchQueriesPath  = "db/searchQueries.sql"
+	_userQueriesPath    = "db/userQueries.sql"
+	_groupQueriesPath   = "db/groupQueries.sql"
 	_messageQueriesPath = "db/messageQueries.sql"
 )
 
 type DbHandler interface {
+	//Search
 	GetGroups(userUUID string, searchText string) ([]models.GroupObj, error)
+	// User
 	GetPeopleForUser(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
-	GetPeopleForGroup(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
+	// Group
+	GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
+	UpdateGroup(groupUUID string, name string, newMemberUUID string)
+	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
+	// DB
 	Close()
 }
 
 type dbHandler struct {
 	db             *sqlx.DB
-	userQueries    goyesql.Queries
 	searchQueries  goyesql.Queries
+	userQueries    goyesql.Queries
+	groupQueries   goyesql.Queries
 	messageQueries goyesql.Queries
 }
 
@@ -44,13 +52,15 @@ func newDbHandler() *dbHandler {
 	if err != nil {
 		log.Printf("No ping %v", err)
 	}
-	userQueries := goyesql.MustParseFile(_userQueriesPath)
 	searchQueries := goyesql.MustParseFile(_searchQueriesPath)
+	userQueries := goyesql.MustParseFile(_userQueriesPath)
+	groupQueries := goyesql.MustParseFile(_groupQueriesPath)
 	messageQueries := goyesql.MustParseFile(_messageQueriesPath)
 	dbh := &dbHandler{
 		db:             db,
-		userQueries:    userQueries,
 		searchQueries:  searchQueries,
+		userQueries:    userQueries,
+		groupQueries:   groupQueries,
 		messageQueries: messageQueries,
 	}
 	return dbh
