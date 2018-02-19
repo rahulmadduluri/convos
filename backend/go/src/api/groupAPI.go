@@ -38,14 +38,17 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
 	name := r.FormValue(_paramName)
-	memberUUID := r.FormValue(_paramMemberUUID)
+	newMemberUUID := r.FormValue(_paramMemberUUID)
 
-	group, err := db.GetHandler().UpdateGroup(groupUUID, name, memberUUID)
+	err := db.GetHandler().UpdateGroup(groupUUID, name, newMemberUUID)
 
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "failed to get people")
-		return
+		respondWithError(w, http.StatusInternalServerError, "failed to update group")
 	}
 
-	respondWithJSON(w, http.StatusOK, group)
+	respondWithJSON(w, http.StatusOK, nil)
+}
+
+func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
+	respondWithJSON(w, http.StatusOK, nil)
 }

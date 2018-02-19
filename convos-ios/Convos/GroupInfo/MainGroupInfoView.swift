@@ -95,7 +95,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     // MARK: Gesture Recognizer functions
     
-    func tapNameEditCancel(_ gestureRecognizer: UITapGestureRecognizer) {
+    func tapNameEditCancel(_ obj: Any) {
         nameEditCancelButton.alpha = 0
         
         if (groupInfoVC?.isNewGroup ?? false) == true {
@@ -107,7 +107,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         nameTextField.resignFirstResponder()
     }
 
-    func tapMemberEditCancel(_ gestureRecognizer: UITapGestureRecognizer) {
+    func tapMemberEditCancel(_ obj: Any) {
         memberEditCancelButton.alpha = 0
         
         // if group exists, go back to original name
@@ -119,7 +119,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         memberTextField.resignFirstResponder()
     }
     
-    func tapCreateNewGroup(_ gestureRecognizer: UITapGestureRecognizer) {
+    func tapCreateNewGroup(_ obj: Any) {
         if let name = nameTextField.text {
             groupInfoVC?.groupCreated(name: name, photo: groupPhotoImageView.image)
         }
@@ -175,7 +175,7 @@ private struct Constants {
     static let groupPhotoRadius: CGFloat = 80
     static let groupImageCornerRadius: CGFloat = 40
     
-    static let nameTextFieldPlaceholder: String = "Group Name"
+    static let nameTextFieldPlaceholder: String = "Guild Name"
     static let nameTextFieldOriginY: CGFloat = 175
     static let nameTextFieldWidth: CGFloat = 150
     static let nameTextFieldHeight: CGFloat = 60

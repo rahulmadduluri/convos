@@ -269,9 +269,9 @@ func ==(lhs: Tag, rhs: Tag) -> Bool {
 class Group: NSObject, APIModel {
     
     // vars
-    let uuid: String
-    let name: String
-    let photoURI: String?
+    var uuid: String
+    var name: String
+    var photoURI: String?
     var conversations: [Conversation]
     
     override var hashValue: Int {

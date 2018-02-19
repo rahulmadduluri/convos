@@ -15,28 +15,38 @@ class GroupAPI: NSObject {
         groupUUID: String,
         newGroupName: String?,
         newMemberUUID: String?,
-        completion: (@escaping (Group?) -> Void)) {
+        completion: (@escaping (Bool) -> Void)) {
         let url = REST.updateGroupURL(groupUUID: groupUUID, name: newGroupName, newMemberUUID: newMemberUUID)
         Alamofire.request(
             url,
             method: .put)
             .validate()
-            .responseJSON { response in
-                completion(convertResponseToGroup(res: response))
+            .response { res in
+                if res.error == nil {
+                    completion(true)
+                } else {
+                    print("Error while updating group: \(res.error)")
+                    completion(false)
+                }
         }
     }
     
     static func updateGroupPhoto(
         groupUUID: String,
         photo: UIImage,
-        completion: (@escaping (Group?) -> Void)) {
+        completion: (@escaping (Bool) -> Void)) {
         let url = REST.updateGroupPhotoURL(groupUUID: groupUUID)
         Alamofire.request(
             url,
             method: .put)
             .validate()
-            .responseJSON { response in
-                completion(convertResponseToGroup(res: response))
+            .response { res in
+                if res.error == nil {
+                    completion(true)
+                } else {
+                    print("Error while updating group photo: \(res.error)")
+                    completion(false)
+                }
         }
     }
     
@@ -73,18 +83,5 @@ class GroupAPI: NSObject {
         }
         return nil
     }
-    
-    private static func convertResponseToGroup(res: Alamofire.DataResponse<Any>) -> Group? {
-        guard res.result.isSuccess else {
-            print("Error while fetching people: \(res.result.error)")
-            return nil
-        }
-        
-        if let d = res.data,
-            let group = Group(json: JSON(d)) {
-            return group
-        }
-        return nil
-    }
-    
+
 }

@@ -91,9 +91,9 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     func groupPhotoEdited(image: UIImage) {
         if isNewGroup == false{
-            GroupAPI.updateGroupPhoto(groupUUID: group!.uuid, photo: image) { newGroup in
-                if newGroup != nil {
-                    self.group = newGroup
+            GroupAPI.updateGroupPhoto(groupUUID: group!.uuid, photo: image) { success in
+                if success == false {
+                    print("Failed to update group :( ")
                 }
             }
         }
@@ -101,9 +101,11 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     func groupNameEdited(name: String) {
         if isNewGroup == false {
-            GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: name, newMemberUUID: nil) { newGroup in
-                if newGroup != nil {
-                    self.group = newGroup
+            GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: name, newMemberUUID: nil) { success in
+                if success == false {
+                    print("Failed to update group :( ")
+                } else {
+                    self.group?.name = name
                 }
             }
         }
@@ -147,19 +149,24 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             memberTableVC.reloadMemberViewData()
         // If existing group (and is a new member, add to group)
         } else if mvd.status == .memberNew && isNewGroup == false {
-            removableMemberViewDataQueue = []
-            GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: nil, newMemberUUID: mvd.uuid, completion: { newGroup in
-                if newGroup != nil {
-                    self.group = newGroup
-                    self.fetchGroupMembers()
-                }
+            let alert = UIAlertController(title: "New Guild Member", message: "Add " + mvd.text + " to the guild?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
+                GroupAPI.updateGroup(groupUUID: self.group!.uuid, newGroupName: nil, newMemberUUID: mvd.uuid, completion: { success in
+                    if success == false {
+                        print("Failed to update group :( ")
+                    } else {
+                        self.containerView?.tapMemberEditCancel("")
+                    }
+                })
             })
+            alert.addAction(UIAlertAction(title: "No", style: .destructive))
+            present(alert, animated: true)
         }
     }
     
     func presentAlertOption(tag: Int) {
         var editActionTitle: String = ""
-        let groupName = group?.name ?? "New Group"
+        let groupName = group?.name ?? "New Guild"
         let alert = UIAlertController(title: groupName, message: "", preferredStyle: .actionSheet)
         if tag == Constants.nameTag {
             editActionTitle += "Edit Name"

@@ -27,7 +27,7 @@ type DbHandler interface {
 	GetPeopleForUser(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
 	// Group
 	GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
-	UpdateGroup(groupUUID string, name string, newMemberUUID string)
+	UpdateGroup(groupUUID string, name string, newMemberUUID string) error
 	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)

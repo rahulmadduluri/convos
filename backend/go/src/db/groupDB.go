@@ -2,13 +2,15 @@ package db
 
 import (
 	"log"
+	"time"
 
 	"models"
 )
 
 const (
 	_findPeopleForGroup = "findPeopleForGroup"
-	_updateGroup        = "updateGroup"
+	_updateGroupName    = "updateGroupName"
+	_updateGroupMembers = "updateGroupMembers"
 )
 
 func (dbh *dbHandler) GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error) {
@@ -42,64 +44,30 @@ func (dbh *dbHandler) GetPeopleForGroup(groupUUID string, searchText string, max
 	return objs, err
 }
 
-func (dbh *dbHandler) GetGroup(groupUUID string) (models.GroupObj, error) {
-	var obj models.GroupObj
+func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, newMemberUUID string) error {
+	var err error = nil
 
-	rows, err := dbh.db.NamedQuery(
-		dbh.groupQueries[_updateGroup],
-		map[string]interface{}{
-			"group_uuid": groupUUID,
-		},
-	)
-
-	if err != nil {
-		return obj, err
+	if name != "" {
+		_, err := dbh.db.NamedQuery(
+			dbh.groupQueries[_updateGroupName],
+			map[string]interface{}{
+				"group_uuid": groupUUID,
+				"name":       name,
+			},
+		)
+		return err
+	} else if newMemberUUID != "" {
+		createdTimestampServer := int(time.Now().Unix())
+		_, err := dbh.db.NamedQuery(
+			dbh.groupQueries[_updateGroupMembers],
+			map[string]interface{}{
+				"group_uuid":               groupUUID,
+				"member_uuid":              newMemberUUID,
+				"created_timestamp_server": createdTimestampServer,
+			},
+		)
+		return err
 	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var obj models.UserObj
-		err := rows.StructScan(&obj)
-		if err != nil {
-			log.Fatal("scan error: ", err)
-			continue
-		}
-		objs = append(objs, obj)
-	}
-	err = rows.Err()
-	return objs, err
-}
-
-func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, memberUUID string) (string, error) {
-	var objs []models.GroupObj
-
-	// 1. if name, update group with new name
-	// 2. if memberUUID, update group_users with group:user id relation
-	// 3. grab
-
-	rows, err := dbh.db.NamedQuery(
-		dbh.groupQueries[_updateGroup],
-		map[string]interface{}{
-			"group_uuid": groupUUID,
-			"name":       name,
-			"max_people": maxPeople,
-		},
-	)
-
-	if err != nil {
-		return objs, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var obj models.UserObj
-		err := rows.StructScan(&obj)
-		if err != nil {
-			log.Fatal("scan error: ", err)
-			continue
-		}
-		objs = append(objs, obj)
-	}
-	err = rows.Err()
-	return objs, err
+	log.Println(err)
+	return err
 }

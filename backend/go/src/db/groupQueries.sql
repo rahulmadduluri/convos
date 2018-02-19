@@ -20,13 +20,16 @@ where users.name like :search_text
 order by user_people.created_timestamp_server desc limit :max_people
 ;
 
--- name: updateGroup
-insert into groups (uuid, all_text, created_timestamp_server, sender_id, parent_id, conversation_id)
+-- name: updateGroupName
+update groups 
+set name = :name
+where groups.uuid = :group_uuid
+;
+
+-- name: updateGroupMembers
+insert into group_users (group_id, user_id, created_timestamp_server)
 	select 
-		:messageuuid,
-		:messagetext,
-		:messagetimestamp,
-		(select id from users where users.uuid = :senderuuid), 
-		(select id from messages where messages.uuid = :parentuuid),
-		(select id from conversations where conversations.uuid = :conversationuuid)
+		(select id from groups where groups.uuid = :group_uuid), 
+		(select id from users where users.uuid = :member_uuid),
+		:created_timestamp_server
 ;
