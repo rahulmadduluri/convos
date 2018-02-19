@@ -18,14 +18,13 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     var memberViewData: [MemberViewData] = []
 
     fileprivate var group: Group? = nil
-    fileprivate var people: [User] = []
+    fileprivate var removableMemberViewDataQueue: [MemberViewData] = []
     fileprivate var containerView: MainGroupInfoView? = nil
     fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
     fileprivate var imagePicker = UIImagePickerController()
     // group members table
     fileprivate var memberTableVC = MemberTableViewController()
     // queue of removable members *while creating a new group*
-    fileprivate var removableMemberViewDataQueue: [MemberViewData] = []
     
     var memberSearchText: String? {
         return containerView?.memberTextField.text
@@ -111,11 +110,19 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         }
     }
     
-    func groupCreated(name: String, photo: UIImage?) {
-        if isNewGroup == true {
-            let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
-            // create group w/ name, memberUUIDs, and photo
-            memberTableVC.reloadMemberViewData()
+    func groupCreated(name: String?, photo: UIImage?) {
+        memberTableVC.reloadMemberViewData()
+        let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
+        if let name = name, memberUUIDs.count > 0 && isNewGroup == true {
+            // in 2 seconds go back to main menu
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { 
+                self.groupInfoVCDelegate?.groupCreated()
+            })
+            GroupAPI.createGroup(name: name, photo: photo, memberUUIDs: memberUUIDs) { success in
+                if success == false {
+                    print("Failed to create group :( ")
+                }
+            }
         }
     }
     

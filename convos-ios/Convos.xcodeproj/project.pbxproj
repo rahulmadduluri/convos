@@ -42,6 +42,7 @@
 		B77CE836202DD7F500B6D9A2 /* SearchBottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE835202DD7F500B6D9A2 /* SearchBottomBarView.swift */; };
 		B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE837203085DE00B6D9A2 /* UserAPI.swift */; };
 		B77CE83C20384DB200B6D9A2 /* GroupAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE83B20384DB200B6D9A2 /* GroupAPI.swift */; };
+		B77CE841203ADD9C00B6D9A2 /* flag_wave_2.gif in Resources */ = {isa = PBXBuildFile; fileRef = B77CE840203ADD9C00B6D9A2 /* flag_wave_2.gif */; };
 		B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SmartTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
@@ -88,6 +89,7 @@
 		B77CE835202DD7F500B6D9A2 /* SearchBottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBottomBarView.swift; sourceTree = "<group>"; };
 		B77CE837203085DE00B6D9A2 /* UserAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		B77CE83B20384DB200B6D9A2 /* GroupAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupAPI.swift; sourceTree = "<group>"; };
+		B77CE840203ADD9C00B6D9A2 /* flag_wave_2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = flag_wave_2.gif; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SmartTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SmartTextField.swift; path = ../../Search/SmartTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -195,6 +197,14 @@
 			path = SmartTextField;
 			sourceTree = "<group>";
 		};
+		B77CE83D203AD6F100B6D9A2 /* Gifs */ = {
+			isa = PBXGroup;
+			children = (
+				B77CE840203ADD9C00B6D9A2 /* flag_wave_2.gif */,
+			);
+			path = Gifs;
+			sourceTree = "<group>";
+		};
 		B781CDA61F53BE0A0088FB3B /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -259,9 +269,10 @@
 				B78720FA1F5E85B4004F74E7 /* Conversation */,
 				B77CE827202DABDC00B6D9A2 /* GroupInfo */,
 				B781CDA61F53BE0A0088FB3B /* Search */,
-				B78810801F539D23009AC9FE /* Main.storyboard */,
+				B77CE83D203AD6F100B6D9A2 /* Gifs */,
 				B78810831F539D23009AC9FE /* Assets.xcassets */,
 				B78810851F539D23009AC9FE /* LaunchScreen.storyboard */,
+				B78810801F539D23009AC9FE /* Main.storyboard */,
 				B78810881F539D23009AC9FE /* Info.plist */,
 			);
 			path = Convos;
@@ -339,6 +350,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B77CE841203ADD9C00B6D9A2 /* flag_wave_2.gif in Resources */,
 				B78810871F539D23009AC9FE /* LaunchScreen.storyboard in Resources */,
 				B78810841F539D23009AC9FE /* Assets.xcassets in Resources */,
 				B78810821F539D23009AC9FE /* Main.storyboard in Resources */,
@@ -377,6 +389,7 @@
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftWebSocket/SwiftWebSocket.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyGif/SwiftyGif.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -385,6 +398,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftWebSocket.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyGif.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

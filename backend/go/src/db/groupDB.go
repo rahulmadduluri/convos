@@ -2,7 +2,6 @@ package db
 
 import (
 	"log"
-	"time"
 
 	"models"
 )
@@ -11,6 +10,7 @@ const (
 	_findPeopleForGroup = "findPeopleForGroup"
 	_updateGroupName    = "updateGroupName"
 	_updateGroupMembers = "updateGroupMembers"
+	_createGroup        = "createGroup"
 )
 
 func (dbh *dbHandler) GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error) {
@@ -44,9 +44,7 @@ func (dbh *dbHandler) GetPeopleForGroup(groupUUID string, searchText string, max
 	return objs, err
 }
 
-func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, newMemberUUID string) error {
-	var err error = nil
-
+func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error {
 	if name != "" {
 		_, err := dbh.db.NamedQuery(
 			dbh.groupQueries[_updateGroupName],
@@ -57,17 +55,45 @@ func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, newMemberUUID s
 		)
 		return err
 	} else if newMemberUUID != "" {
-		createdTimestampServer := int(time.Now().Unix())
 		_, err := dbh.db.NamedQuery(
 			dbh.groupQueries[_updateGroupMembers],
 			map[string]interface{}{
 				"group_uuid":               groupUUID,
 				"member_uuid":              newMemberUUID,
-				"created_timestamp_server": createdTimestampServer,
+				"created_timestamp_server": timestampServer,
 			},
 		)
 		return err
 	}
-	log.Println(err)
-	return err
+	return nil
+}
+
+func (dbh *dbHandler) CreateGroup(groupUUID string, name string, createdTimestampServer int, photoURI string, memberUUIDs []string) error {
+	_, err := dbh.db.NamedQuery(
+		dbh.groupQueries[_createGroup],
+		map[string]interface{}{
+			"group_uuid": groupUUID,
+			"name":       name,
+			"created_timestamp_server": createdTimestampServer,
+			"photo_uri":                photoURI,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	for _, memberUUID := range memberUUIDs {
+		_, err := dbh.db.NamedQuery(
+			dbh.groupQueries[_updateGroupMembers],
+			map[string]interface{}{
+				"group_uuid":               groupUUID,
+				"member_uuid":              memberUUID,
+				"created_timestamp_server": createdTimestampServer,
+			},
+		)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

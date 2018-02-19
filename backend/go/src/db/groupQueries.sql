@@ -33,3 +33,12 @@ insert into group_users (group_id, user_id, created_timestamp_server)
 		(select id from users where users.uuid = :member_uuid),
 		:created_timestamp_server
 ;
+
+-- name: createGroup
+insert into groups (uuid, name, created_timestamp_server, photo_uri)
+	select
+		:group_uuid,
+		:name,
+		:created_timestamp_server,
+		:photo_uri
+;

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, SearchVCDelegate {
+class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegate {
     var containerView: MainHomeView? = nil
 
     var searchVC = SearchViewController()
@@ -78,6 +78,12 @@ class HomeViewController: UIViewController, SearchVCDelegate {
         if let newVC = self.groupInfoVC {
             self.present(newVC, animated: false, completion: nil)
         }
+    }
+    
+    // MARK: GroupInfoVCDelegate
+    
+    func groupCreated() {
+        self.groupInfoVC?.dismiss(animated: true, completion: nil)
     }
     
     // MARK: Private

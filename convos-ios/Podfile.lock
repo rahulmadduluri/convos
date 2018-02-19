@@ -6,6 +6,7 @@ PODS:
     - SQLite.swift/standard (= 0.11.3)
   - SQLite.swift/standard (0.11.3)
   - SwiftWebSocket (2.6.5)
+  - SwiftyGif (3.1.0)
   - SwiftyJSON (3.1.4)
 
 DEPENDENCIES:
@@ -13,6 +14,7 @@ DEPENDENCIES:
   - AlamofireImage (~> 3.3)
   - SQLite.swift (~> 0.11.3)
   - SwiftWebSocket (~> 2.6.5)
+  - SwiftyGif (~> 3.1.0)
   - SwiftyJSON (~> 3.1.4)
 
 SPEC CHECKSUMS:
@@ -20,8 +22,9 @@ SPEC CHECKSUMS:
   AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
   SQLite.swift: 99b36c22084427f0abbeb957556ce1528cf10bb3
   SwiftWebSocket: 1ef8a0efb023544643bdf480c1ec4a62b204f293
+  SwiftyGif: aad44b7ef0ad1d599ba83d7aa5759e916b520c42
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: fce19818eaf8c4762ebed0dfb54afc4707d7e0b9
+PODFILE CHECKSUM: 5b47414b8287e92629f9e54fbcc604e8da722006
 
 COCOAPODS: 1.3.1

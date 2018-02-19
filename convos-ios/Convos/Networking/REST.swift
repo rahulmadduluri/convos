@@ -10,15 +10,17 @@ import UIKit
 
 class REST: NSObject {
     
+    static let baseURL = "http://localhost:8000/"
+    
     // Resources
     
     static func imageURL(imageURI: String) -> URL {
-        let urlString = "http://localhost:8000/static/" + imageURI + ".png"
+        let urlString = baseURL + "static/" + imageURI + ".png"
         return URL(string: urlString)!
     }
     
     static func getPeopleURL(userUUID: String, searchText: String?, maxPeople: Int?) -> URL {
-        let urlString = "http://localhost:8000/users/" + userUUID + "/people"
+        let urlString = baseURL + "users/" + userUUID + "/people"
         return generateSearchForPeopleURL(urlString: urlString, searchText: searchText, maxPeople: maxPeople)
     }
     
@@ -46,12 +48,12 @@ class REST: NSObject {
     // Groups
     
     static func getPeopleURL(groupUUID: String, searchText: String?, maxPeople: Int?) -> URL {
-        let urlString = "http://localhost:8000/groups/" + groupUUID + "/people"
+        let urlString = baseURL + "groups/" + groupUUID + "/people"
         return generateSearchForPeopleURL(urlString: urlString, searchText: searchText, maxPeople: maxPeople)
     }
     
     static func updateGroupURL(groupUUID: String, name: String?, newMemberUUID: String?) -> URL {
-        let urlString = "http://localhost:8000/groups/" + groupUUID
+        let urlString = baseURL + "groups/" + groupUUID
         return generateUpdateGroupMembersURL(urlString: urlString, name: name, newMemberUUID: newMemberUUID)
     }
     
@@ -75,8 +77,12 @@ class REST: NSObject {
     }
     
     static func updateGroupPhotoURL(groupUUID: String) -> URL {
-        let urlString = "http://localhost:8000/groups/" + groupUUID
+        let urlString = baseURL + "groups/" + groupUUID
         return URL(string: urlString)!
+    }
+    
+    static func createGroupURL() -> URL {
+        return URL(string: baseURL + "groups/")!
     }
     
 }

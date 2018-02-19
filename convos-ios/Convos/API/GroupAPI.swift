@@ -83,5 +83,33 @@ class GroupAPI: NSObject {
         }
         return nil
     }
+    
+    static func createGroup(
+        name: String,
+        photo: UIImage?,
+        memberUUIDs: [String],
+        completion: (@escaping (Bool) -> Void)) {
+        let url = REST.createGroupURL()
+        
+        Alamofire.upload(multipartFormData: { multipartFormData in
+            if let photo = photo, let imageData = UIImagePNGRepresentation(photo) {
+                multipartFormData.append(imageData, withName: "image.png", mimeType: "image/png")
+            }
+            multipartFormData.append(name.data(using: .utf8)!, withName: name)
+            do {
+                let memberUUIDData = try JSON(memberUUIDs).rawData(options: .prettyPrinted)
+                multipartFormData.append(memberUUIDData, withName: "memberUUIDs")
+            } catch {
+                print("Could not create array of member UUIDs")
+            }
+        }, to: url) { result in
+            switch result {
+            case .success(_, _, _):
+                completion(true)
+            case .failure:
+                completion(false)
+            }
+        }
+    }
 
 }
