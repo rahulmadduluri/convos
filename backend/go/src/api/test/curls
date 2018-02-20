@@ -6,3 +6,7 @@ curl -v 'localhost:8000/users/uuid-1/people?searchtext=rei&maxpeople=5'
 
 // Get Group's People
 curl -v 'localhost:8000/groups/uuid-1/people?searchtext=eb&maxpeople=5'
+
+// Update Group
+
+// Create Group

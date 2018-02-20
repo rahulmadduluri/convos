@@ -11,12 +11,12 @@ import SwiftyGif
 
 class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
+    fileprivate var flagIsWaving = false
     fileprivate var nameEditCancelButton = UIButton()
     fileprivate var memberEditCancelButton = UIButton()
     fileprivate var flagGifImageView = UIImageView()
     // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
     fileprivate var editAlertHasBeenPressed = false
-    fileprivate var flagIsWaving = false
     
     var groupInfoVC: GroupInfoComponentDelegate? = nil
     var nameTextField = UITextField()
@@ -49,6 +49,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         nameTextField.textAlignment = .center
         nameTextField.tag = Constants.nameTextFieldTag
         nameTextField.delegate = self
+        nameTextField.alpha = flagIsWaving ? 0 : 1
         self.addSubview(nameTextField)
         
         // NameEditCancelButton
@@ -71,6 +72,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         memberTextField.textAlignment = .center
         memberTextField.tag = Constants.memberTextFieldTag
         memberTextField.delegate = self
+        memberTextField.alpha = flagIsWaving ? 0 : 1
         self.addSubview(memberTextField)
         
         // MemberEditCancelButton
@@ -89,15 +91,19 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         
         // Member Table
         if let mTCV = memberTableContainerView {
-            if flagIsWaving == false {
-                mTCV.frame = CGRect(x: self.bounds.minX + Constants.memberTableMarginConstant, y: self.bounds.minY + Constants.memberTableOriginY, width: self.bounds.width - Constants.memberTableMarginConstant*2, height: Constants.memberTableHeight)
-            } else {
-                memberTableContainerView?.frame = CGRect(x: self.bounds.minX + Constants.memberTableMarginConstant, y: self.bounds.minY + Constants.memberTableOriginYAdjusted, width: self.bounds.width - Constants.memberTableMarginConstant*2, height: Constants.memberTableHeightAdjusted)
-            }
+            let flagIsWavingFrame = CGRect(x: self.bounds.minX + Constants.memberTableMarginConstant, y: self.bounds.minY + Constants.memberTableOriginYAdjusted, width: self.bounds.width - Constants.memberTableMarginConstant*2, height: Constants.memberTableHeightAdjusted)
+            let defaultFrame = CGRect(x: self.bounds.minX + Constants.memberTableMarginConstant, y: self.bounds.minY + Constants.memberTableOriginY, width: self.bounds.width - Constants.memberTableMarginConstant*2, height: Constants.memberTableHeight)
+            memberTableContainerView?.frame = flagIsWaving ? flagIsWavingFrame : defaultFrame
             mTCV.backgroundColor = UIColor.orange
             
             self.addSubview(mTCV)
         }
+        
+        let gif = UIImage(gifName: "flag_wave_2.gif")
+        flagGifImageView.setGifImage(gif)
+        flagGifImageView.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + groupPhotoImageView.frame.maxY, width: self.bounds.size.width, height: Constants.flagGifHeight)
+        flagGifImageView.alpha = flagIsWaving ? 1 : 0
+        self.addSubview(flagGifImageView)
     }
     
     // MARK: Gesture Recognizer functions
@@ -126,20 +132,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         memberTextField.resignFirstResponder()
     }
     
-    func tapCreateNewGroup(_ obj: Any) {
-        //rearrange and show flag gif
-        flagIsWaving = true
-        nameTextField.alpha = 0
-        memberTextField.alpha = 0
-        createNewGroupButton.alpha = 0
-        nameEditCancelButton.alpha = 0
-        memberEditCancelButton.alpha = 0
-        
-        let gif = UIImage(gifName: "flag_wave_2.gif")
-        flagGifImageView.setGifImage(gif)
-        flagGifImageView.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + groupPhotoImageView.frame.maxY, width: self.bounds.size.width, height: Constants.flagGifHeight)
-        self.addSubview(flagGifImageView)
-        
+    func tapCreateNewGroup(_ obj: Any) {        
         groupInfoVC?.groupCreated(name: nameTextField.text, photo: groupPhotoImageView.image)
     }
     
@@ -168,6 +161,25 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     }
     
     // MARK: Public
+    
+    func resetFlag() {
+        flagIsWaving = false
+        nameTextField.text = ""
+        memberTextField.text = ""
+        setNeedsLayout()
+    }
+    
+    func showFlag() {
+        flagIsWaving = true
+        
+        nameTextField.alpha = 0
+        memberTextField.alpha = 0
+        createNewGroupButton.alpha = 0
+        nameEditCancelButton.alpha = 0
+        memberEditCancelButton.alpha = 0
+        
+        setNeedsLayout()
+    }
     
     func beginEditPressed(tag: Int) {
         editAlertHasBeenPressed = true

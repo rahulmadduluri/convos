@@ -12,7 +12,9 @@ import (
 )
 
 const (
-	_paramMemberUUID = "memberuuid"
+	_paramMemberUUID  = "memberuuid"
+	_paramMemberUUIDs = "memberuuids"
+	_24K              = (1 << 10) * 24
 )
 
 func GetPeopleForGroup(w http.ResponseWriter, r *http.Request) {
@@ -53,15 +55,18 @@ func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroup(w http.ResponseWriter, r *http.Request) {
-	// read multipart form to get name, members, and image
+	err := r.ParseMultipartForm(_24K)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "failed to create group")
+	}
 	groupUUIDRaw, _ := uuid.NewV4()
 	groupUUID := groupUUIDRaw.String()
-	name := "TEST NAME"
+	name := r.FormValue(_paramName)
 	createdTimestampServer := int(time.Now().Unix())
 	photoURI := name + ".png"
-	newMemberUUIDs := []string{}
+	newMemberUUIDs := r.FormValue(_paramMemberUUIDs)
 
-	err := db.GetHandler().CreateGroup(groupUUID, name, createdTimestampServer, photoURI, newMemberUUIDs)
+	err = db.GetHandler().CreateGroup(groupUUID, name, createdTimestampServer, photoURI, newMemberUUIDs)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "failed to create group")
 	}

@@ -113,9 +113,16 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     func groupCreated(name: String?, photo: UIImage?) {
         memberTableVC.reloadMemberViewData()
         let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
-        if let name = name, memberUUIDs.count > 0 && isNewGroup == true {
-            // in 2 seconds go back to main menu
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { 
+        removableMemberViewDataQueue = []
+        
+        // wave flag for 2 seconds
+        if let name = name,
+            name.isEmpty == false,
+            memberUUIDs.count > 0,
+            isNewGroup == true {
+            containerView?.showFlag()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2,  execute: {
+                self.containerView?.resetFlag()
                 self.groupInfoVCDelegate?.groupCreated()
             })
             GroupAPI.createGroup(name: name, photo: photo, memberUUIDs: memberUUIDs) { success in
@@ -123,6 +130,10 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
                     print("Failed to create group :( ")
                 }
             }
+        } else {
+            let alert = UIAlertController(title: "Failed To Create Guild", message: "Missing Fields", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Try Again", style: .destructive))
+            present(alert, animated: true)
         }
     }
     

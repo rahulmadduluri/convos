@@ -61,6 +61,7 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
     func createGroup() {
         if self.groupInfoVC == nil {
             self.groupInfoVC = GroupInfoViewController()
+            groupInfoVC?.groupInfoVCDelegate = self
         }
         groupInfoVC?.setGroupInfo(group: nil)
         
@@ -72,6 +73,7 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
     func groupSelected(group: Group) {
         if self.groupInfoVC == nil {
             self.groupInfoVC = GroupInfoViewController()
+            groupInfoVC?.groupInfoVCDelegate = self
         }
         groupInfoVC?.setGroupInfo(group: group)
 
