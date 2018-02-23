@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS tags (
 	id 							int 			NOT NULL AUTO_INCREMENT,
 	uuid						varchar(36)		NOT NULL,
 	name 						varchar(200)	NOT NULL,
+	-- is_topic: is the tag the name of a conversation
 	is_topic					boolean			NOT NULL,
 	created_timestamp_server	int				NOT NULL,
 	UNIQUE KEY (uuid),
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 	created_timestamp_server	int				NOT NULL,
 	updated_timestamp_server	int 			NOT NULL,
 	topic_tag_id				int 			NOT NULL,
+	-- is_default: is the convo the group's default convo
 	is_default					boolean			NOT NULL,
 	group_id					int             NOT NULL,
 	photo_uri					varchar(200),
@@ -64,7 +66,7 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 -- relationship specifying users in a group
-CREATE TABLE IF NOT EXISTS group_users (
+CREATE TABLE IF NOT EXISTS members (
 	group_id					int		NOT NULL,
 	user_id 					int		NOT NULL,
 	created_timestamp_server	int		NOT NULL,
@@ -122,7 +124,7 @@ INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, 1, 1, 1, 'prafulla
 								 (NULL, 'uuid-7', 1200, 1200, 7, 0, 3, 'reia_prof'),
 								 (NULL, 'uuid-8', 1600, 1600, 8, 1, 4, '93'),
 								 (NULL, 'uuid-9', 1600, 1600, 9, 0, 4, 'plane');
-INSERT INTO group_users VALUES (1,1,1000),(2,2,1200),(3,3,1400),(4,1,1480),(4,2,1490),(4,3,1500);
+INSERT INTO members VALUES (1,1,1000),(2,2,1200),(3,3,1400),(4,1,1480),(4,2,1490),(4,3,1500);
 INSERT INTO conversations_tags VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9);
 INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1),
 							(NULL, 'uuid-2', 'Yo yo yo', 1505, 1, NULL, 1),

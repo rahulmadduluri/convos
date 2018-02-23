@@ -5,9 +5,9 @@ select
 	users.photo_uri as photouri
 from (
 	select distinct 
-		group_users.user_id as person_id,
-		group_users.created_timestamp_server as created_timestamp_server
-	from group_users
+		members.user_id as person_id,
+		members.created_timestamp_server as created_timestamp_server
+	from members
 	where group_id in (
 		select id
 		from groups
@@ -27,7 +27,7 @@ where groups.uuid = :group_uuid
 ;
 
 -- name: updateGroupMembers
-insert into group_users (group_id, user_id, created_timestamp_server)
+insert into members (group_id, user_id, created_timestamp_server)
 	select 
 		(select id from groups where groups.uuid = :group_uuid), 
 		(select id from users where users.uuid = :member_uuid),

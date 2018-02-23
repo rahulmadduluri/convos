@@ -95,10 +95,10 @@ class GroupAPI: NSObject {
             if let photo = photo, let imageData = UIImagePNGRepresentation(photo) {
                 multipartFormData.append(imageData, withName: "image.png", mimeType: "image/png")
             }
-            multipartFormData.append(name.data(using: .utf8)!, withName: name)
+            multipartFormData.append(name.data(using: .utf8)!, withName: "name")
             do {
                 let memberUUIDData = try JSON(memberUUIDs).rawData(options: .prettyPrinted)
-                multipartFormData.append(memberUUIDData, withName: "memberUUIDs")
+                multipartFormData.append(memberUUIDData, withName: Constants.memberUUIDsParam)
             } catch {
                 print("Could not create array of member UUIDs")
             }
@@ -112,4 +112,8 @@ class GroupAPI: NSObject {
         }
     }
 
+}
+
+private struct Constants {
+    static let memberUUIDsParam = "memberuuids"
 }

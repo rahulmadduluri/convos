@@ -11,6 +11,8 @@ const (
 	_updateGroupName    = "updateGroupName"
 	_updateGroupMembers = "updateGroupMembers"
 	_createGroup        = "createGroup"
+	_createConversation = "createConversation"
+	_createTag          = "createTag"
 )
 
 func (dbh *dbHandler) GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error) {
@@ -68,32 +70,55 @@ func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, timestampServer
 	return nil
 }
 
-func (dbh *dbHandler) CreateGroup(groupUUID string, name string, createdTimestampServer int, photoURI string, memberUUIDs []string) error {
-	_, err := dbh.db.NamedQuery(
-		dbh.groupQueries[_createGroup],
-		map[string]interface{}{
-			"group_uuid": groupUUID,
-			"name":       name,
+func (dbh *dbHandler) CreateGroup(
+	groupUUID string,
+	name string,
+	createdTimestampServer int,
+	photoURI string,
+	memberUUIDs []string,
+	tagUUID string,
+	conversationUUID string,
+) error {
+	tx := dbh.db.MustBegin()
+
+	q1Args := map[string]interface{}{
+		"group_uuid": groupUUID,
+		"name":       name,
+		"created_timestamp_server": createdTimestampServer,
+		"photo_uri":                photoURI,
+	}
+	tx.NamedExec(dbh.groupQueries[_createGroup], q1Args)
+
+	q2Args := map[string]interface{}{
+		"tag_uuid":                 tagUUID,
+		"name":                     name,
+		"is_topic":                 true,
+		"created_timestamp_server": createdTimestampServer,
+	}
+	tx.NamedExec(dbh.tagQueries[_createTag], q2Args)
+
+	q3Args := map[string]interface{}{
+		"conversation_uuid":        conversationUUID,
+		"tag_uuid":                 tagUUID,
+		"group_uuid":               groupUUID,
+		"created_timestamp_server": createdTimestampServer,
+		"is_default":               true,
+		"photo_uri":                photoURI,
+	}
+	tx.NamedExec(dbh.conversationQueries[_createConversation], q3Args)
+
+	for _, mUUID := range memberUUIDs {
+		q4Args := map[string]interface{}{
+			"group_uuid":               groupUUID,
+			"member_uuid":              mUUID,
 			"created_timestamp_server": createdTimestampServer,
-			"photo_uri":                photoURI,
-		},
-	)
-	if err != nil {
-		return err
+		}
+		tx.NamedExec(dbh.groupQueries[_updateGroupMembers], q4Args)
 	}
 
-	for _, memberUUID := range memberUUIDs {
-		_, err := dbh.db.NamedQuery(
-			dbh.groupQueries[_updateGroupMembers],
-			map[string]interface{}{
-				"group_uuid":               groupUUID,
-				"member_uuid":              memberUUID,
-				"created_timestamp_server": createdTimestampServer,
-			},
-		)
-		if err != nil {
-			return err
-		}
+	err := tx.Commit()
+	if err != nil {
+		return err
 	}
 	return nil
 }

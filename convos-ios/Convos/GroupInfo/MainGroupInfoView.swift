@@ -101,7 +101,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         
         let gif = UIImage(gifName: "flag_wave_2.gif")
         flagGifImageView.setGifImage(gif)
-        flagGifImageView.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + groupPhotoImageView.frame.maxY, width: self.bounds.size.width, height: Constants.flagGifHeight)
+        flagGifImageView.frame = CGRect(x: self.bounds.minX + Constants.flagGifMargin, y: self.bounds.minY + groupPhotoImageView.frame.maxY, width: self.bounds.width - Constants.flagGifMargin*2, height: Constants.flagGifHeight)
         flagGifImageView.alpha = flagIsWaving ? 1 : 0
         self.addSubview(flagGifImageView)
     }
@@ -234,6 +234,7 @@ private struct Constants {
     static let groupPhotoTag: Int = 3
     
     static let flagGifHeight: CGFloat = 300
+    static let flagGifMargin: CGFloat = 75
     static let memberTableOriginYAdjusted: CGFloat = 450
     static let memberTableHeightAdjusted: CGFloat = 200
 }

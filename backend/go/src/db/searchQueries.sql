@@ -9,7 +9,7 @@ select
 	tags.uuid as topictaguuid
 from (
 	select distinct group_id
-	from group_users
+	from members
 	where user_id in (
 		select id
 		from users

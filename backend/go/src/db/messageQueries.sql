@@ -14,10 +14,10 @@ select
 	users.uuid as uuid,
 	users.photo_uri as photouri
 from users
-join group_users
-	on group_users.user_id = users.id
+join members
+	on members.user_id = users.id
 join conversations
-	on conversations.group_id = group_users.group_id
+	on conversations.group_id = members.group_id
 where conversations.uuid = :conversationuuid
 ;
 

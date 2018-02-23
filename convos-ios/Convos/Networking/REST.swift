@@ -82,7 +82,7 @@ class REST: NSObject {
     }
     
     static func createGroupURL() -> URL {
-        return URL(string: baseURL + "groups/")!
+        return URL(string: baseURL + "groups")!
     }
     
 }

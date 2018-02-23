@@ -93,6 +93,8 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
     fileprivate func configureHome() {
         // TODO: Move this to auth controller
         UserDefaults.standard.set("uuid-1", forKey: "uuid")
+        UserDefaults.standard.set("Prafulla", forKey: "name")
+        UserDefaults.standard.set("prafulla_prof", forKey: "photo_uri")
         
         searchVC.searchVCDelegate = self
     }

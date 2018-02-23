@@ -63,7 +63,6 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         configureGroupInfo()
-        fetchGroupMembers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -113,7 +112,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     func groupCreated(name: String?, photo: UIImage?) {
         memberTableVC.reloadMemberViewData()
         let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
-        removableMemberViewDataQueue = []
+        
         
         // wave flag for 2 seconds
         if let name = name,
@@ -122,6 +121,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             isNewGroup == true {
             containerView?.showFlag()
             DispatchQueue.main.asyncAfter(deadline: .now() + 2,  execute: {
+                self.resetRemovableMemberQueue()
                 self.containerView?.resetFlag()
                 self.groupInfoVCDelegate?.groupCreated()
             })
@@ -143,7 +143,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     }
         
     func resetMembers() {
-        removableMemberViewDataQueue = []
+        resetRemovableMemberQueue()
         fetchGroupMembers()
     }
     
@@ -243,6 +243,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate func configureGroupInfo() {
         containerView?.memberTextField.smartTextFieldDelegate = self
         memberTableVC.groupInfoVC = self
+        resetMembers()
         memberTableVC.reloadMemberViewData()
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -319,6 +320,16 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         return people.map({ p -> MemberViewData in
             return MemberViewData(uuid: p.uuid, text: p.name, status: status, photoURI: p.photoURI)
         })
+    }
+    
+    fileprivate func resetRemovableMemberQueue() {
+        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String,
+            let name = UserDefaults.standard.object(forKey: "name") as? String,
+            let photoURI = UserDefaults.standard.object(forKey: "photo_uri") as? String {
+            let myData = MemberViewData(uuid: uuid, text: name, status: .memberRemovable, photoURI: photoURI)
+            self.removableMemberViewDataQueue = [myData]
+        }
+
     }
 }
 

@@ -13,11 +13,13 @@ import (
 var _dbh *dbHandler
 
 const (
-	_dbPath             = "root:webster93@tcp(127.0.0.1:3306)/convos"
-	_searchQueriesPath  = "db/searchQueries.sql"
-	_userQueriesPath    = "db/userQueries.sql"
-	_groupQueriesPath   = "db/groupQueries.sql"
-	_messageQueriesPath = "db/messageQueries.sql"
+	_dbPath                  = "root:webster93@tcp(127.0.0.1:3306)/convos"
+	_searchQueriesPath       = "db/searchQueries.sql"
+	_userQueriesPath         = "db/userQueries.sql"
+	_groupQueriesPath        = "db/groupQueries.sql"
+	_conversationQueriesPath = "db/conversationQueries.sql"
+	_tagQueriesPath          = "db/tagQueries.sql"
+	_messageQueriesPath      = "db/messageQueries.sql"
 )
 
 type DbHandler interface {
@@ -28,7 +30,7 @@ type DbHandler interface {
 	// Group
 	GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
 	UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error
-	CreateGroup(groupUUID string, name string, createdTimestampServer int, photoURI string, newMemberUUIDs []string) error
+	CreateGroup(groupUUID string, name string, createdTimestampServer int, photoURI string, newMemberUUIDs []string, tagUUID string, conversationUUID string) error
 	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
 	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
@@ -37,11 +39,13 @@ type DbHandler interface {
 }
 
 type dbHandler struct {
-	db             *sqlx.DB
-	searchQueries  goyesql.Queries
-	userQueries    goyesql.Queries
-	groupQueries   goyesql.Queries
-	messageQueries goyesql.Queries
+	db                  *sqlx.DB
+	searchQueries       goyesql.Queries
+	userQueries         goyesql.Queries
+	groupQueries        goyesql.Queries
+	messageQueries      goyesql.Queries
+	conversationQueries goyesql.Queries
+	tagQueries          goyesql.Queries
 }
 
 func newDbHandler() *dbHandler {
@@ -57,12 +61,16 @@ func newDbHandler() *dbHandler {
 	userQueries := goyesql.MustParseFile(_userQueriesPath)
 	groupQueries := goyesql.MustParseFile(_groupQueriesPath)
 	messageQueries := goyesql.MustParseFile(_messageQueriesPath)
+	conversationQueries := goyesql.MustParseFile(_conversationQueriesPath)
+	tagQueries := goyesql.MustParseFile(_tagQueriesPath)
 	dbh := &dbHandler{
-		db:             db,
-		searchQueries:  searchQueries,
-		userQueries:    userQueries,
-		groupQueries:   groupQueries,
-		messageQueries: messageQueries,
+		db:                  db,
+		searchQueries:       searchQueries,
+		userQueries:         userQueries,
+		groupQueries:        groupQueries,
+		messageQueries:      messageQueries,
+		conversationQueries: conversationQueries,
+		tagQueries:          tagQueries,
 	}
 	return dbh
 }
