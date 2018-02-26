@@ -115,7 +115,7 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     // MARK: Private
     
     private func configureCollectionView() {
-        searchCollectionView?.backgroundColor = UIColor.clear
+        searchCollectionView?.backgroundColor = UIColor.white
         searchCollectionView?.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: conversationReuseIdentifier)
         searchCollectionView?.delegate = self
         searchCollectionView?.dataSource = self

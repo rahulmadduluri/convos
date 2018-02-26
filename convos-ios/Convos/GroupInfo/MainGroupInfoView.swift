@@ -94,7 +94,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
             let flagIsWavingFrame = CGRect(x: self.bounds.minX + Constants.memberTableMarginConstant, y: self.bounds.minY + Constants.memberTableOriginYAdjusted, width: self.bounds.width - Constants.memberTableMarginConstant*2, height: Constants.memberTableHeightAdjusted)
             let defaultFrame = CGRect(x: self.bounds.minX + Constants.memberTableMarginConstant, y: self.bounds.minY + Constants.memberTableOriginY, width: self.bounds.width - Constants.memberTableMarginConstant*2, height: Constants.memberTableHeight)
             memberTableContainerView?.frame = flagIsWaving ? flagIsWavingFrame : defaultFrame
-            mTCV.backgroundColor = UIColor.orange
             
             self.addSubview(mTCV)
         }

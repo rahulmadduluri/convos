@@ -21,7 +21,6 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
-        contentView.backgroundColor = UIColor.purple
         let marginGuide = contentView.layoutMarginsGuide
         
         // configure image view

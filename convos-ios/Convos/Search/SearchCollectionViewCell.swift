@@ -17,8 +17,6 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        contentView.backgroundColor = UIColor.green
-        
         let imageHeight: CGFloat
         let imageWidth: CGFloat = self.bounds.width
         if type == .conversation {
@@ -28,7 +26,6 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
         }
         
         photoImageView.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY, width: imageWidth, height: imageHeight)
-        photoImageView.backgroundColor = UIColor.cyan
         self.addSubview(photoImageView)
         
         customTextLabel.frame = CGRect(x: self.bounds.minX, y: self.bounds.height * Constants.imageHeightRatioConversation, width: imageWidth, height: self.bounds.height * (1-Constants.imageHeightRatioConversation))
