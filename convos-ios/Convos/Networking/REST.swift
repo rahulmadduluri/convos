@@ -54,10 +54,10 @@ class REST: NSObject {
     
     static func updateGroupURL(groupUUID: String, name: String?, newMemberUUID: String?) -> URL {
         let urlString = baseURL + "groups/" + groupUUID
-        return generateUpdateGroupMembersURL(urlString: urlString, name: name, newMemberUUID: newMemberUUID)
+        return generateUpdateGroupURL(urlString: urlString, name: name, newMemberUUID: newMemberUUID)
     }
     
-    private static func generateUpdateGroupMembersURL(urlString: String, name: String?, newMemberUUID: String?) -> URL {
+    private static func generateUpdateGroupURL(urlString: String, name: String?, newMemberUUID: String?) -> URL {
         var urlstr = urlString
         let newNameParam = "name="
         let newMemberParam = "memberuuid="
@@ -83,6 +83,41 @@ class REST: NSObject {
     
     static func createGroupURL() -> URL {
         return URL(string: baseURL + "groups")!
+    }
+    
+    // Conversation
+    
+    static func updateConversationURL(conversationUUID: String, topic: String?, newTagUUID: String?) -> URL {
+        let urlString = baseURL + "conversations/" + conversationUUID
+        return generateUpdateConversationURL(urlString: urlString, topic: topic, newTagUUID: newTagUUID)
+    }
+    
+    private static func generateUpdateConversationURL(urlString: String, topic: String?, newTagUUID: String?) -> URL {
+        var urlstr = urlString
+        let newTopicParam = "topic="
+        let newTagParam = "taguuid="
+        if topic != nil || newTagUUID != nil {
+            urlstr += "?"
+            if let topic = topic, newTagUUID == nil {
+                urlstr += newTagParam + topic
+            } else if let topic = topic,
+                let newTagUUID = newTagUUID {
+                urlstr += newTopicParam + topic + "&"
+                urlstr += newTagUUID + newTagUUID
+            } else if let newTagUUID = newTagUUID {
+                urlstr += newTagUUID + newTagUUID
+            }
+        }
+        return URL(string: urlstr)!
+    }
+    
+    static func updateConversationPhotoURL(conversationUUID: String) -> URL {
+        let urlString = baseURL + "conversations/" + conversationUUID
+        return URL(string: urlString)!
+    }
+    
+    static func createConversationURL() -> URL {
+        return URL(string: baseURL + "conversations")!
     }
     
 }

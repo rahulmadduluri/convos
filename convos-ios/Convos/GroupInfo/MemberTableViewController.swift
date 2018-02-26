@@ -10,7 +10,7 @@ import UIKit
 
 private let cellReuseIdentifier = "MemberCell"
 
-class MemberTableViewController: UITableViewController, MemberTableVCProtocol {
+class MemberTableViewController: UITableViewController, MemberTableVCProtocol, GroupInfoUIComponent {
     
     var groupInfoVC: GroupInfoComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()

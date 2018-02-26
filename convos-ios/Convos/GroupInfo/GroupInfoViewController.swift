@@ -8,7 +8,6 @@
 
 import UIKit
 import SwiftyJSON
-import SwiftWebSocket
 
 class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupInfoComponentDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -18,13 +17,13 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     var memberViewData: [MemberViewData] = []
 
     fileprivate var group: Group? = nil
+    // queue of removable members *while creating a new group*
     fileprivate var removableMemberViewDataQueue: [MemberViewData] = []
     fileprivate var containerView: MainGroupInfoView? = nil
     fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
     fileprivate var imagePicker = UIImagePickerController()
     // group members table
     fileprivate var memberTableVC = MemberTableViewController()
-    // queue of removable members *while creating a new group*
     
     var memberSearchText: String? {
         return containerView?.memberTextField.text
@@ -91,7 +90,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         if isNewGroup == false{
             GroupAPI.updateGroupPhoto(groupUUID: group!.uuid, photo: image) { success in
                 if success == false {
-                    print("Failed to update group :( ")
+                    print("Failed to update group photo :( ")
                 }
             }
         }
@@ -101,7 +100,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         if isNewGroup == false {
             GroupAPI.updateGroup(groupUUID: group!.uuid, newGroupName: name, newMemberUUID: nil) { success in
                 if success == false {
-                    print("Failed to update group :( ")
+                    print("Failed to update group name :( ")
                 } else {
                     self.group?.name = name
                 }
@@ -169,9 +168,10 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         } else if mvd.status == .memberNew && isNewGroup == false {
             let alert = UIAlertController(title: "New Guild Member", message: "Add " + mvd.text + " to the guild?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
+                // update group members
                 GroupAPI.updateGroup(groupUUID: self.group!.uuid, newGroupName: nil, newMemberUUID: mvd.uuid, completion: { success in
                     if success == false {
-                        print("Failed to update group :( ")
+                        print("Failed to update group members :( ")
                     } else {
                         self.containerView?.tapMemberEditCancel("")
                     }
@@ -243,6 +243,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate func configureGroupInfo() {
         containerView?.memberTextField.smartTextFieldDelegate = self
         memberTableVC.groupInfoVC = self
+        resetTextFields()
         resetMembers()
         memberTableVC.reloadMemberViewData()
         
@@ -330,6 +331,11 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             self.removableMemberViewDataQueue = [myData]
         }
 
+    }
+    
+    fileprivate func resetTextFields() {
+        containerView?.memberTextField.text = ""
+        containerView?.nameTextField.text = ""
     }
 }
 

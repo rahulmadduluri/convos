@@ -14,7 +14,6 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     
     var section = 0
     var row = 0
-    var uuid: String?
     var searchCollectionView: UICollectionView?
     var searchVC: SearchComponentDelegate?
     
@@ -55,7 +54,12 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
         let convoIndex = indexPath.row - 1
         
         if indexPath.row == 0 {
-            
+            if let defaultConvo = searchVC?.getSearchViewData().keys[groupIndex],
+                let dcUUID = defaultConvo.uuid,
+                let g = searchVC?.getGroupForConversation(conversationUUID: dcUUID)
+                {
+                searchVC?.createConvo(groupUUID: g.uuid)
+            }
         } else {
             if let defaultConvo = searchVC?.getSearchViewData().keys[groupIndex],
                 let cs = searchVC?.getSearchViewData()[defaultConvo],

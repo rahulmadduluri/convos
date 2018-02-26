@@ -87,7 +87,18 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     func getSearchViewData() -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         return searchViewData
     }
-        
+    
+    func getGroupForConversation(conversationUUID: String) -> Group? {
+        for g in allCachedGroups {
+            for c in g.conversations {
+                if c.uuid == conversationUUID {
+                    return g
+                }
+            }
+        }
+        return nil
+    }
+    
     func createConvo(groupUUID: String) {
         for g in allCachedGroups {
             if g.uuid == groupUUID {

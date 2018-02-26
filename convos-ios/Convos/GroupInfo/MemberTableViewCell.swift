@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MemberTableViewCell: UITableViewCell {
+class MemberTableViewCell: UITableViewCell, GroupInfoUIComponent {
     
     var data: MemberViewData?
     let customTextLabel = UILabel()

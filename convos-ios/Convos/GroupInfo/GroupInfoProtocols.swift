@@ -8,11 +8,6 @@
 
 import UIKit
 
-enum MemberViewMode {
-    case viewing
-    case modifying
-}
-
 enum MemberViewStatus {
     case normal
     case memberExists

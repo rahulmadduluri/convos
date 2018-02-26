@@ -8,13 +8,14 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegate {
+class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
     var containerView: MainHomeView? = nil
 
     var searchVC = SearchViewController()
      // conversation VC to transition to
     var conversationVC: ConversationViewController?
     var groupInfoVC: GroupInfoViewController?
+    var conversationInfoVC: ConversationInfoViewController?
     
     // MARK: UIViewController
     
@@ -44,7 +45,15 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
     // MARK: SearchVCDelegate
     
     func createConvo(group: Group) {
-        // present convo created view controller
+        if self.conversationInfoVC == nil {
+            conversationInfoVC = ConversationInfoViewController()
+            conversationInfoVC?.conversationInfoVCDelegate = self
+        }
+        conversationInfoVC?.setConversationInfo(conversation: nil, groupUUID: group.uuid)
+        
+        if let newVC = self.conversationInfoVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
     }
     
     func convoSelected(conversation: Conversation) {
@@ -86,6 +95,12 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
     
     func groupCreated() {
         self.groupInfoVC?.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: ConversationInfoVCDelegate
+    
+    func conversationCreated() {
+        self.conversationInfoVC?.dismiss(animated: true, completion: nil)
     }
     
     // MARK: Private

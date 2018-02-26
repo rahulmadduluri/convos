@@ -39,6 +39,7 @@ protocol SearchComponentDelegate {
     func createConvo(groupUUID: String)
     func convoSelected(uuid: String)
     func createGroup()
+    func getGroupForConversation(conversationUUID: String) -> Group?
     func groupSelected(conversationUUID: String)
 }
 
