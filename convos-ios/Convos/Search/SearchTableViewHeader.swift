@@ -80,7 +80,7 @@ private struct Constants {
     static let textFontSize: CGFloat = 16
     static let leadingLabelAnchorConstant: CGFloat = 25
     
-    static let leadingImageAnchorConstant: CGFloat = 11
+    static let leadingImageAnchorConstant: CGFloat = -3
     static let imageRadius: CGFloat = 26
     static let imageCornerRadius: CGFloat = 13
 }
