@@ -126,7 +126,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             })
             GroupAPI.createGroup(name: name, photo: photo, memberUUIDs: memberUUIDs) { success in
                 if success == false {
-                    print("Failed to create group :( ")
+                    print("Failed to encode create group request :( ")
                 }
             }
         } else {

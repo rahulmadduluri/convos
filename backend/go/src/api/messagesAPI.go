@@ -52,11 +52,8 @@ func PullMessages(req PullMessagesRequest) (*PullMessagesResponse, error) {
 
 // PushMessage is function called by Websocket Router's performAPI
 func PushMessage(req PushMessageRequest) (*PushMessageResponse, error) {
-	originalMessageUUID, _ := uuid.NewV4()
-	messageUUID := originalMessageUUID.String()
-
 	timestampServer := int(time.Now().Unix())
-	users, err := db.GetHandler().InsertMessage(messageUUID, req.AllText, timestampServer, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
+	users, err := db.GetHandler().InsertMessage(req.AllText, timestampServer, req.SenderUUID, req.ParentUUID, req.ConversationUUID)
 
 	if err != nil {
 		return nil, err

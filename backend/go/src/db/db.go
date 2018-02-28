@@ -30,10 +30,13 @@ type DbHandler interface {
 	// Group
 	GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error)
 	UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error
-	CreateGroup(groupUUID string, name string, createdTimestampServer int, photoURI string, newMemberUUIDs []string, tagUUID string, conversationUUID string) error
+	CreateGroup(name string, createdTimestampServer int, photoURI string, newMemberUUIDs []string) error
+	// Conversation
+	UpdateConversation(conversationUUID string, topic string, timestampServer int, newTagUUID string) error
+	CreateConversation(groupUUID string, topic string, tagNames []string, createdTimestampServer int, photoURI string) error
 	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
-	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
+	InsertMessage(messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
 	// DB
 	Close()
 }

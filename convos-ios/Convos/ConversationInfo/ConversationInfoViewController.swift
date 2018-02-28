@@ -103,7 +103,7 @@ class ConversationInfoViewController: UIViewController, SmartTextFieldDelegate, 
             isNewConversation == true {
             ConversationAPI.createConversation(topic: topic, photo: photo, tagUUIDs: []) { success in
                 if success == false {
-                    print("Failed to create conversation :( ")
+                    print("Failed to encode request for conversation :( ")
                 }
                 self.conversationInfoVCDelegate?.conversationCreated()
             }

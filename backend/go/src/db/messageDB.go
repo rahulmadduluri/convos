@@ -1,9 +1,11 @@
 package db
 
 import (
-	"github.com/guregu/null"
 	"log"
 	"models"
+
+	"github.com/guregu/null"
+	"github.com/satori/go.uuid"
 )
 
 // list of queries
@@ -13,7 +15,10 @@ const (
 	_lastXMessages           = "lastXMessages"
 )
 
-func (dbh *dbHandler) InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error) {
+func (dbh *dbHandler) InsertMessage(messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error) {
+	originalMessageUUID, _ := uuid.NewV4()
+	messageUUID := originalMessageUUID.String()
+
 	// Returns users who need to be informed about message
 	var objs []models.UserObj
 

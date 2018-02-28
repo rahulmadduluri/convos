@@ -35,6 +35,8 @@ func main() {
 	r.HandleFunc("/groups/{uuid}/people", api.GetPeopleForGroup).Methods("GET")
 	r.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")
 	r.HandleFunc("/groups", api.CreateGroup).Methods("POST")
+	r.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
+	r.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
 	r.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)

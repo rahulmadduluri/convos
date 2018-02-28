@@ -11,6 +11,18 @@ const (
 	_paramSearchText = "searchtext"
 	_paramMaxPeople  = "maxpeople"
 	_paramName       = "name"
+	// Group
+	_paramGroupUUID = "groupuuid"
+	// Members
+	_paramMemberUUID  = "memberuuid"
+	_paramMemberUUIDs = "memberuuids"
+	// Tags
+	_paramTopic    = "topic"
+	_paramTagUUID  = "taguuid"
+	_paramTagUUIDs = "taguuids"
+	_paramTagNames = "tagnames"
+	// Image Size
+	_24K = (1 << 10) * 24
 )
 
 func respondWithError(w http.ResponseWriter, code int, message string) {

@@ -10,7 +10,6 @@ import (
 	"db"
 
 	"github.com/gorilla/mux"
-	"github.com/satori/go.uuid"
 )
 
 const (
@@ -25,9 +24,9 @@ func GetPeopleForGroup(w http.ResponseWriter, r *http.Request) {
 
 	searchText := r.FormValue(_paramSearchText)
 	maxPeople, _ := strconv.Atoi(r.FormValue(_paramMaxPeople))
-	// If MaxPeople, isn't given, set upper bound to 100
+	// If MaxPeople, isn't given, set upper bound to 30
 	if maxPeople == 0 {
-		maxPeople = 100
+		maxPeople = 30
 	}
 
 	people, err := db.GetHandler().GetPeopleForGroup(groupUUID, searchText, maxPeople)
@@ -57,21 +56,14 @@ func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroup(w http.ResponseWriter, r *http.Request) {
-	groupUUIDRaw, _ := uuid.NewV4()
-	groupUUID := groupUUIDRaw.String()
-	tagUUIDRaw, _ := uuid.NewV4()
-	tagUUID := tagUUIDRaw.String()
-	conversationUUIDRaw, _ := uuid.NewV4()
-	conversationUUID := conversationUUIDRaw.String()
-
 	name := r.PostFormValue(_paramName)
 	createdTimestampServer := int(time.Now().Unix())
-	photoURI := "group_" + name + ".png"
+	photoURI := "group." + name + ".png"
 
 	var newMemberUUIDs []string
 	json.Unmarshal([]byte(r.PostFormValue(_paramMemberUUIDs)), &newMemberUUIDs)
 
-	err := db.GetHandler().CreateGroup(groupUUID, name, createdTimestampServer, photoURI, newMemberUUIDs, tagUUID, conversationUUID)
+	err := db.GetHandler().CreateGroup(name, createdTimestampServer, photoURI, newMemberUUIDs)
 	if err != nil {
 		log.Println(err)
 		respondWithError(w, http.StatusInternalServerError, "failed to create group")
