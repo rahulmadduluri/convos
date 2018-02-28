@@ -12,12 +12,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const (
-	_paramMemberUUID  = "memberuuid"
-	_paramMemberUUIDs = "memberuuids"
-	_24K              = (1 << 10) * 24
-)
-
 func GetPeopleForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]

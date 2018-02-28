@@ -1,12 +1,11 @@
 -- name: findConversationsForUserWithSearch
 select
 	conversations.uuid as uuid,
+	conversations.topic as topic,
 	conversations.updated_timestamp_server as updatedtimestampserver,
 	conversations.is_default as isdefault,
 	conversations.photo_uri as photouri,
-	groups.uuid as groupuuid,
-	tags.name as topic,
-	tags.uuid as topictaguuid
+	groups.uuid as groupuuid
 from (
 	select distinct group_id
 	from members
@@ -20,9 +19,7 @@ join groups
 	on user_group_ids.group_id = groups.id
 join conversations
 	on conversations.group_id = user_group_ids.group_id
-join tags
-	on conversations.topic_tag_id = tags.id
-where (groups.name like :search_text or tags.name like :search_text)
+where (groups.name like :search_text or conversations.topic like :search_text)
 ;
 
 -- name: findGroupsWithUUIDs

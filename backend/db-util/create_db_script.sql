@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS tags (
 	name 						varchar(200)	NOT NULL,
 	created_timestamp_server	int				NOT NULL,
 	UNIQUE KEY (uuid),
+	UNIQUE KEY (name),
 	PRIMARY KEY (id)
 );
 
@@ -102,16 +103,15 @@ INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
 						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
 						  (NULL, 'uuid-3', 'Reia', 1400, 'reia_prof'),
 						  (NULL, 'uuid-4', '93Webster', 1600, '93');
-						(NULL, 'uuid-9', 'Travel', 0, 1600);
-INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, 1, 1, 'prafulla_prof'),
-								 (NULL, 'uuid-2', 1200, 1200, 1, 2, 'rahul_prof'),
-								 (NULL, 'uuid-3', 1400, 1400, 1, 3, 'reia_prof'),
-								 (NULL, 'uuid-4', 1000, 1000, 0, 1, 'prafulla_prof'),
-								 (NULL, 'uuid-5', 1200, 1200, 0, 2, 'rahul_prof'),
-								 (NULL, 'uuid-6', 1200, 1200, 0, 2, 'rahul_prof'),
-								 (NULL, 'uuid-7', 1200, 1200, 0, 3, 'reia_prof'),
-								 (NULL, 'uuid-8', 1600, 1600, 1, 4, '93'),
-								 (NULL, 'uuid-9', 1600, 1600, 0, 4, 'plane');
+INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, "Prafulla", 1, 1, 'prafulla_prof'),
+								 (NULL, 'uuid-2', 1200, 1200, "Rahul", 1, 2, 'rahul_prof'),
+								 (NULL, 'uuid-3', 1400, 1400, "Reia", 1, 3, 'reia_prof'),
+								 (NULL, 'uuid-4', 1000, 1000, "A", 0, 1, 'prafulla_prof'),
+								 (NULL, 'uuid-5', 1200, 1200, "B", 0, 2, 'rahul_prof'),
+								 (NULL, 'uuid-6', 1200, 1200, "C", 0, 2, 'rahul_prof'),
+								 (NULL, 'uuid-7', 1200, 1200, "Scrub", 0, 3, 'reia_prof'),
+								 (NULL, 'uuid-8', 1600, 1600, "93Webster", 1, 4, '93'),
+								 (NULL, 'uuid-9', 1600, 1600, "Travel", 0, 4, 'plane');
 INSERT INTO members VALUES (1,1,1000),(2,2,1200),(3,3,1400),(4,1,1480),(4,2,1490),(4,3,1500);
 INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1),
 							(NULL, 'uuid-2', 'Yo yo yo', 1505, 1, NULL, 1),

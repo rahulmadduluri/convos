@@ -1,16 +1,13 @@
 package db
 
 import (
-	"log"
-
-	"models"
-
 	"github.com/satori/go.uuid"
 )
 
 const (
-	_updateConversationTopic    = "updateConversationTopic"
-	_updateTags = "updateTags"
+	_updateConversationTopic = "updateConversationTopic"
+	_updateTags              = "updateTags"
+	_createTag               = "createTag"
 )
 
 func (dbh *dbHandler) UpdateConversation(conversationUUID string, topic string, timestampServer int, newTagUUID string) error {
@@ -19,7 +16,7 @@ func (dbh *dbHandler) UpdateConversation(conversationUUID string, topic string, 
 			dbh.conversationQueries[_updateConversationTopic],
 			map[string]interface{}{
 				"conversation_uuid": conversationUUID,
-				"topic":       topic,
+				"topic":             topic,
 			},
 		)
 		return err
@@ -27,8 +24,8 @@ func (dbh *dbHandler) UpdateConversation(conversationUUID string, topic string, 
 		_, err := dbh.db.NamedQuery(
 			dbh.conversationQueries[_updateTags],
 			map[string]interface{}{
-				"conversation_uuid":               conversationUUID,
-				"tag_uuid":              newTagUUID,
+				"conversation_uuid":        conversationUUID,
+				"tag_uuid":                 newTagUUID,
 				"created_timestamp_server": timestampServer,
 			},
 		)
@@ -38,43 +35,41 @@ func (dbh *dbHandler) UpdateConversation(conversationUUID string, topic string, 
 }
 
 func (dbh *dbHandler) CreateConversation(
-	topic string, 
-	tagNames []string, 
-	createdTimestampServer int, 
+	groupUUID string,
+	topic string,
+	tagNames []string,
+	createdTimestampServer int,
 	photoURI string,
 ) error {
-	groupUUIDRaw, _ := uuid.NewV4()
-	groupUUID := groupUUIDRaw.String()
 	conversationUUIDRaw, _ := uuid.NewV4()
 	conversationUUID := conversationUUIDRaw.String()
+
+	var tagUUIDs []string
+	for _, _ = range tagNames {
+		tRaw, _ := uuid.NewV4()
+		tUUID := tRaw.String()
+		tagUUIDs = append(tagUUIDs, tUUID)
+	}
 
 	tx := dbh.db.MustBegin()
 
 	q1Args := map[string]interface{}{
-		"group_uuid": groupUUID,
-		"name":       name,
-		"created_timestamp_server": createdTimestampServer,
-		"photo_uri":                photoURI,
-	}
-	tx.NamedExec(dbh.groupQueries[_createGroup], q1Args)
-
-	q2Args := map[string]interface{}{
 		"conversation_uuid":        conversationUUID,
 		"group_uuid":               groupUUID,
-		"topic":                    name,
+		"topic":                    topic,
 		"created_timestamp_server": createdTimestampServer,
-		"is_default":               true,
+		"is_default":               false,
 		"photo_uri":                photoURI,
 	}
-	tx.NamedExec(dbh.conversationQueries[_createConversation], q2Args)
+	tx.NamedExec(dbh.conversationQueries[_createConversation], q1Args)
 
-	for _, mUUID := range memberUUIDs {
-		q3Args := map[string]interface{}{
-			"group_uuid":               groupUUID,
-			"member_uuid":              mUUID,
+	for _, tUUID := range tagUUIDs {
+		q2Args := map[string]interface{}{
+			"conversation_uuid":        conversationUUID,
+			"tag_uuid":                 tUUID,
 			"created_timestamp_server": createdTimestampServer,
 		}
-		tx.NamedExec(dbh.groupQueries[_updateGroupMembers], q3Args)
+		tx.NamedExec(dbh.tagQueries[_createTag], q2Args)
 	}
 
 	err := tx.Commit()
@@ -83,11 +78,3 @@ func (dbh *dbHandler) CreateConversation(
 	}
 	return nil
 }
-
-
-	var tagUUIDs []string
-	for _, t := range tagNames {
-		tRaw, _ := uuid.NewV4()
-		tUUID := tRaw.String()
-		tagUUIDs = append(tagUUIDs, tUUID)
-	}

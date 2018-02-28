@@ -18,7 +18,6 @@ type ConversationObj struct {
 	UpdatedTimestampServer int
 	Topic                  string
 	IsDefault              bool
-	TopicTagUUID           string
 	GroupUUID              string
 	PhotoURI               null.String
 }

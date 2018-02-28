@@ -4,32 +4,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"db"
 
 	"github.com/gorilla/mux"
 )
-
-func GetTagsForConversation(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	conversationUUID, _ := vars[_paramUUID]
-
-	searchText := r.FormValue(_paramSearchText)
-	maxTags, _ := strconv.Atoi(r.FormValue(_paramMaxTags))
-	// If MaxTags, isn't given, set upper bound to 20
-	if maxTags == 0 {
-		maxTags = 20
-	}
-
-	tags, err := db.GetHandler().GetTagsForConversation(conversationUUID, searchText, maxTags)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "failed to get tags")
-		return
-	}
-	respondWithJSON(w, http.StatusOK, tags)
-}
 
 func UpdateConversation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

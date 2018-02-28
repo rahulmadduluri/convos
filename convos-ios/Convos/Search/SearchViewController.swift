@@ -156,6 +156,9 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     fileprivate func received(response: SearchResponse) {
         if let groups = response.groups {
             for g in groups {
+                if allCachedGroups.contains(g) {
+                    allCachedGroups.remove(g)
+                }
                 allCachedGroups.insert(g)
             }
         }

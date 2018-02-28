@@ -58,9 +58,10 @@ class ConversationAPI: NSObject {
     }
     
     static func createConversation(
+        groupUUID: String,
         topic: String,
         photo: UIImage?,
-        tagUUIDs: [String],
+        tagNames: [String],
         completion: (@escaping (Bool) -> Void)) {
         let url = REST.createConversationURL()
         
@@ -68,10 +69,11 @@ class ConversationAPI: NSObject {
             if let photo = photo, let imageData = UIImagePNGRepresentation(photo) {
                 multipartFormData.append(imageData, withName: "image.png", mimeType: "image/png")
             }
-            multipartFormData.append(topic.data(using: .utf8)!, withName: "topic")
+            multipartFormData.append(groupUUID.data(using: .utf8)!, withName: Constants.groupUUIDParam)
+            multipartFormData.append(topic.data(using: .utf8)!, withName: Constants.topicParam)
             do {
-                let tagUUIDData = try JSON(tagUUIDs).rawData(options: .prettyPrinted)
-                multipartFormData.append(tagUUIDData, withName: Constants.tagUUIDsParam)
+                let tagNameData = try JSON(tagNames).rawData(options: .prettyPrinted)
+                multipartFormData.append(tagNameData, withName: Constants.tagNamesParam)
             } catch {
                 print("Could not create array of tags UUIDs")
             }
@@ -88,5 +90,7 @@ class ConversationAPI: NSObject {
 }
 
 private struct Constants {
-    static let tagUUIDsParam = "taguuids"
+    static let topicParam = "topic"
+    static let groupUUIDParam = "groupuuid"
+    static let tagNamesParam = "tagnames"
 }
