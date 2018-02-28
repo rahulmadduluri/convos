@@ -22,6 +22,7 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
         super.init(reuseIdentifier: reuseIdentifier)
         
         let marginGuide = contentView.layoutMarginsGuide
+        contentView.backgroundColor = UIColor.white
         
         // configure image view
         contentView.addSubview(photoImageView)

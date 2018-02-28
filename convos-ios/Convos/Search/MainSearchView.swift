@@ -42,7 +42,7 @@ class MainSearchView: UIView, SearchUIComponent {
             height: Constants.searchTextFieldHeight)
         searchTextField.textAlignment = .center
         self.addSubview(searchTextField)
-        
+        // searchTextField.backgroundColor = UIColor.blue
         // Search Table
         if let sCTV = searchTableContainerView {
             sCTV.frame = CGRect(
@@ -81,14 +81,14 @@ class MainSearchView: UIView, SearchUIComponent {
 }
 
 private struct Constants {
-    static let searchTextFieldOriginYOffset: CGFloat = 50
+    static let searchTextFieldOriginYOffset: CGFloat = 20
     static let searchTextFieldWidth: CGFloat = 200
     static let searchTextFieldHeight: CGFloat = 40
     
-    static let searchTextTableViewBuffer: CGFloat = 10
+    static let searchTextTableViewBuffer: CGFloat = 0
     
-    static let newGroupButtonTopBuffer: CGFloat = 40
-    static let newGroupButtonTrailingBuffer: CGFloat = 10
+    static let newGroupButtonTopBuffer: CGFloat = 25
+    static let newGroupButtonTrailingBuffer: CGFloat = 0
     static let newGroupButtonSize: CGFloat = 30
     
     static let bottomBarHeight: CGFloat = 50

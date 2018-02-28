@@ -32,7 +32,13 @@ class MainConversationView: UIView {
         super.layoutSubviews()
         
         // Conversation Top Bar View
-        topBarView.frame = CGRect(x: self.bounds.origin.x, y: self.bounds.origin.y, width: self.bounds.width, height: Constants.topBarHeight)
+        
+        topBarView.frame = CGRect(
+            x: self.bounds.minX,
+            y: self.bounds.minY + Constants.topBarBuffer,
+            width: self.bounds.width,
+            height: Constants.topBarHeight)
+        // topBarView.backgroundColor = UIColor.blue
         self.addSubview(topBarView)
         
         // Bottom Message Entry Bar
@@ -41,7 +47,7 @@ class MainConversationView: UIView {
         
         // Messages Table
         if let mTCV = messagesTableContainerView {
-            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.topBarHeight, width: self.bounds.width, height: self.bounds.maxY - Constants.bottomBarHeight - Constants.topBarHeight)
+            mTCV.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY + Constants.topBarBuffer + Constants.topBarHeight, width: self.bounds.width, height: self.bounds.maxY - Constants.topBarBuffer - Constants.bottomBarHeight - Constants.topBarHeight)
             
             self.addSubview(mTCV)
         }
@@ -49,6 +55,7 @@ class MainConversationView: UIView {
 }
 
 private struct Constants {
-    static let topBarHeight: CGFloat = 75
-    static let bottomBarHeight: CGFloat = 75
+    static let topBarBuffer: CGFloat = 20
+    static let topBarHeight: CGFloat = 40
+    static let bottomBarHeight: CGFloat = 50
 }

@@ -19,11 +19,8 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
         
         let imageHeight: CGFloat
         let imageWidth: CGFloat = self.bounds.width
-        if type == .conversation {
-            imageHeight = self.bounds.height * Constants.imageHeightRatioConversation
-        }else {
-            imageHeight = self.bounds.height
-        }
+        
+        imageHeight = self.bounds.height * Constants.imageHeightRatioConversation
         
         photoImageView.frame = CGRect(x: self.bounds.minX, y: self.bounds.minY, width: imageWidth, height: imageHeight)
         self.addSubview(photoImageView)
@@ -38,7 +35,7 @@ class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
 }
 
 private struct Constants {
-    static let textFontSize: CGFloat = 17
+    static let textFontSize: CGFloat = 12
     static let imageHeightRatioConversation: CGFloat = 0.75
 }
 
