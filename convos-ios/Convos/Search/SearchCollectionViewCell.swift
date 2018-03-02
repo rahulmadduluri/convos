@@ -8,7 +8,11 @@
 
 import UIKit
 
-class SearchCollectionViewCell: CustomCollectionViewCell, SearchUIComponent {
+class SearchCollectionViewCell: UICollectionViewCell, SearchUIComponent {
+    let customTextLabel = UILabel()
+    let photoImageView = UIImageView()
+    var row = 0
+    
     var searchVC: SearchComponentDelegate?
     var type: SearchViewType?
     

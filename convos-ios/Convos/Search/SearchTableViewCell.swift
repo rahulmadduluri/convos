@@ -100,6 +100,7 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
             if let svd = searchVC?.getSearchViewData() {
                 let defaultConvo = svd.keys[groupIndex]
                 cell.customTextLabel.text = svd[defaultConvo]?[convoIndex].text
+                cell.photoImageView.image = nil
                 if let uri = svd[defaultConvo]?[convoIndex].photoURI {
                     cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
                 }

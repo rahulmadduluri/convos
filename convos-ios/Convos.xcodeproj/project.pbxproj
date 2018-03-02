@@ -27,7 +27,6 @@
 		B77BB159200638F2005FB88C /* SearchTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */; };
 		B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */; };
 		B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15C20079974005FB88C /* GeneralUtilities.swift */; };
-		B77BB15F200DF593005FB88C /* CustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15E200DF593005FB88C /* CustomCollectionViewCell.swift */; };
 		B77BB161200DF697005FB88C /* SearchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */; };
 		B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */; };
 		B77CE81E2020B0CA00B6D9A2 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */; };
@@ -48,6 +47,9 @@
 		B77CE848204394A100B6D9A2 /* MainConversationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE847204394A100B6D9A2 /* MainConversationInfoView.swift */; };
 		B77CE84A2043975E00B6D9A2 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE8492043975E00B6D9A2 /* APIModels.swift */; };
 		B77CE84C2043FF3600B6D9A2 /* ConversationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE84B2043FF3600B6D9A2 /* ConversationAPI.swift */; };
+		B77CE84F2047F72400B6D9A2 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE84E2047F72400B6D9A2 /* TagListView.swift */; };
+		B77CE8512047F73800B6D9A2 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE8502047F73800B6D9A2 /* TagView.swift */; };
+		B77CE8532047F7CB00B6D9A2 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE8522047F7CB00B6D9A2 /* CloseButton.swift */; };
 		B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SmartTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
@@ -79,7 +81,6 @@
 		B77BB158200638F2005FB88C /* SearchTableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewHeader.swift; sourceTree = "<group>"; };
 		B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTimeUtilities.swift; sourceTree = "<group>"; };
 		B77BB15C20079974005FB88C /* GeneralUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralUtilities.swift; sourceTree = "<group>"; };
-		B77BB15E200DF593005FB88C /* CustomCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewCell.swift; sourceTree = "<group>"; };
 		B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchCollectionViewCell.swift; sourceTree = "<group>"; };
 		B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageAPI.swift; sourceTree = "<group>"; };
 		B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
@@ -100,6 +101,9 @@
 		B77CE847204394A100B6D9A2 /* MainConversationInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainConversationInfoView.swift; sourceTree = "<group>"; };
 		B77CE8492043975E00B6D9A2 /* APIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
 		B77CE84B2043FF3600B6D9A2 /* ConversationAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationAPI.swift; sourceTree = "<group>"; };
+		B77CE84E2047F72400B6D9A2 /* TagListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
+		B77CE8502047F73800B6D9A2 /* TagView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
+		B77CE8522047F7CB00B6D9A2 /* CloseButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SmartTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SmartTextField.swift; path = ../../Search/SmartTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,8 +149,8 @@
 		B748CF7D1F7B492800735F5D /* CustomUI */ = {
 			isa = PBXGroup;
 			children = (
+				B77CE84D2047F6E100B6D9A2 /* TagListView */,
 				B77CE832202DC8B200B6D9A2 /* SmartTextField */,
-				B77BB14B1FFCED9B005FB88C /* CustomCollection */,
 			);
 			path = CustomUI;
 			sourceTree = "<group>";
@@ -158,14 +162,6 @@
 				B748CF8F1F7D03B300735F5D /* MainHomeView.swift */,
 			);
 			path = Home;
-			sourceTree = "<group>";
-		};
-		B77BB14B1FFCED9B005FB88C /* CustomCollection */ = {
-			isa = PBXGroup;
-			children = (
-				B77BB15E200DF593005FB88C /* CustomCollectionViewCell.swift */,
-			);
-			path = CustomCollection;
 			sourceTree = "<group>";
 		};
 		B77CE8192020B09700B6D9A2 /* API */ = {
@@ -225,6 +221,16 @@
 				B77CE847204394A100B6D9A2 /* MainConversationInfoView.swift */,
 			);
 			path = ConversationInfo;
+			sourceTree = "<group>";
+		};
+		B77CE84D2047F6E100B6D9A2 /* TagListView */ = {
+			isa = PBXGroup;
+			children = (
+				B77CE84E2047F72400B6D9A2 /* TagListView.swift */,
+				B77CE8502047F73800B6D9A2 /* TagView.swift */,
+				B77CE8522047F7CB00B6D9A2 /* CloseButton.swift */,
+			);
+			path = TagListView;
 			sourceTree = "<group>";
 		};
 		B781CDA61F53BE0A0088FB3B /* Search */ = {
@@ -458,6 +464,7 @@
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
 				B77CE824202744D100B6D9A2 /* SocketManager.swift in Sources */,
 				B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */,
+				B77CE84F2047F72400B6D9A2 /* TagListView.swift in Sources */,
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
 				B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */,
 				B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */,
@@ -476,13 +483,14 @@
 				B77CE84C2043FF3600B6D9A2 /* ConversationAPI.swift in Sources */,
 				B77CE82D202DADDE00B6D9A2 /* GroupInfoProtocols.swift in Sources */,
 				B748CF761F743EBC00735F5D /* ConversationTopBarView.swift in Sources */,
+				B77CE8512047F73800B6D9A2 /* TagView.swift in Sources */,
 				B77CE84A2043975E00B6D9A2 /* APIModels.swift in Sources */,
 				B77CE848204394A100B6D9A2 /* MainConversationInfoView.swift in Sources */,
 				B748CF781F7B2B1700735F5D /* Models.swift in Sources */,
 				B77CE82F202DB38D00B6D9A2 /* MainGroupInfoView.swift in Sources */,
 				B77CE836202DD7F500B6D9A2 /* SearchBottomBarView.swift in Sources */,
-				B77BB15F200DF593005FB88C /* CustomCollectionViewCell.swift in Sources */,
 				B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */,
+				B77CE8532047F7CB00B6D9A2 /* CloseButton.swift in Sources */,
 				B77CE8462043948600B6D9A2 /* ConversationInfoViewController.swift in Sources */,
 				B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */,
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,

@@ -53,21 +53,9 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         super.didMove(toParentViewController: parent)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         configureGroupInfo()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: SmartTextFieldDelegate
@@ -199,15 +187,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
         present(alert, animated: true)
     }
-    
-    // MARK: Handle keyboard events
-    
-    func keyboardWillShow(_ notification: Notification) {
-    }
-    
-    func keyboardWillHide(_ notification: Notification) {
-    }
-    
+        
     // MARK: - UIImagePickerControllerDelegate
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {

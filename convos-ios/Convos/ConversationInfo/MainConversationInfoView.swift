@@ -8,8 +8,9 @@
 
 import UIKit
 
-class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextFieldDelegate {
+class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextFieldDelegate, TagListViewDelegate {
     
+    fileprivate var tagListView = TagListView()
     fileprivate var topicEditCancelButton = UIButton()
     fileprivate var tagEditCancelButton = UIButton()
     // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
@@ -84,6 +85,22 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
         createNewConversationButton.alpha = 0
         createNewConversationButton.addTarget(self, action: #selector(MainConversationInfoView.tapCreateNewConversation(_:)), for: .touchUpInside)
         self.addSubview(createNewConversationButton)
+        
+        // Tag List View
+        tagListView.frame = CGRect(x: Constants.tagListMargin, y: Constants.tagListViewOriginY, width: self.bounds.maxX-Constants.tagListMargin*2, height: Constants.tagListViewHeight)
+        tagListView.tagBackgroundColor = UIColor.darkGray
+        tagListView.textFont = UIFont.systemFont(ofSize: 16)
+        tagListView.delegate = self
+        tagListView.addTag("TagListView")
+        tagListView.addTag("TEAChart")
+        tagListView.addTag("To Be Removed")
+        tagListView.addTag("To Be Removed")
+        tagListView.addTag("Quark Shell")
+        tagListView.removeTag("To Be Removed")
+        tagListView.addTag("On tap will be removed").onTap = { [weak self] tagView in
+            self?.tagListView.removeTagView(tagView)
+        }
+        self.addSubview(tagListView)
     }
     
     // MARK: Gesture Recognizer functions
@@ -180,6 +197,10 @@ private struct Constants {
     
     static let createConversationButtonOriginY: CGFloat = 600
     static let createConversationButtonRadius: CGFloat = 40
+    
+    static let tagListViewOriginY: CGFloat = 300
+    static let tagListViewHeight: CGFloat = 275
+    static let tagListMargin: CGFloat = 25
     
     static let topicTextFieldTag: Int = 1
     static let tagTextFieldTag: Int = 2

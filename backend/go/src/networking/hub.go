@@ -38,6 +38,7 @@ func NewHub() Hub {
 
 // run Hub
 func (h *hub) Run() {
+	// TODO: Remove (i) and place user-uuid (from header) in uuid
 	i := 1
 	for {
 		select {
