@@ -57,19 +57,14 @@ class SearchTableViewHeader: UITableViewHeaderFooterView, SearchUIComponent {
     // Gesture Recognizer
     
     func tapHeader(_ gestureRecognizer: UITapGestureRecognizer) {
-        if let defaultConvo = searchVC?.getSearchViewData().keys[section] {
-            if let uuid = defaultConvo.uuid,
-                defaultConvo.type == SearchViewType.defaultConversation.rawValue {
-                searchVC?.convoSelected(uuid: uuid)
-            }
-        }
+        // Present Group Feed View Controller
     }
     
     func tapGroupInfo(_ gestureRecognizer: UITapGestureRecognizer) {
-        if let defaultConvo = searchVC?.getSearchViewData().keys[section] {
-            if let uuid = defaultConvo.uuid,
-                defaultConvo.type == SearchViewType.defaultConversation.rawValue {
-                searchVC?.groupSelected(conversationUUID: uuid)
+        if let groupViewData = searchVC?.getSearchViewData().keys[section] {
+            if let uuid = groupViewData.uuid,
+                groupViewData.type == SearchViewType.group.rawValue {
+                searchVC?.groupSelected(groupUUID: uuid)
             }
         }
     }

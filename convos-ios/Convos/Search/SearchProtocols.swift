@@ -12,7 +12,6 @@ enum SearchViewType: Int {
     case group
     case newConversation
     case conversation
-    case defaultConversation
 }
 
 // Search VC / Table VC
@@ -39,8 +38,8 @@ protocol SearchComponentDelegate {
     func createConvo(groupUUID: String)
     func convoSelected(uuid: String)
     func createGroup()
-    func getGroupForConversation(conversationUUID: String) -> Group?
-    func groupSelected(conversationUUID: String)
+    func getGroupForUUID(groupUUID: String) -> Group?
+    func groupSelected(groupUUID: String)
 }
 
 struct SearchViewData: Hashable, Comparable {

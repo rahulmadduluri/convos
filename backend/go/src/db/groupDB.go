@@ -97,7 +97,6 @@ func (dbh *dbHandler) CreateGroup(
 		"group_uuid":               groupUUID,
 		"topic":                    name,
 		"created_timestamp_server": createdTimestampServer,
-		"is_default":               true,
 		"photo_uri":                photoURI,
 	}
 	tx.NamedExec(dbh.conversationQueries[_createConversation], q2Args)

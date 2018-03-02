@@ -18,7 +18,7 @@ protocol ConversationInfoComponentDelegate {
     func getConversation() -> Conversation?
     func conversationPhotoEdited(image: UIImage)
     func conversationTopicEdited(topic: String)
-    func conversationCreated(topic: String?, photo: UIImage?)
+    func conversationCreated(topic: String?, photo: UIImage?, tagNames: [String])
     func presentAlertOption(tag: Int)
 }
 

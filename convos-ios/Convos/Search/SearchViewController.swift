@@ -20,7 +20,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     // all group/conversations stored
     fileprivate var allCachedGroups = Set<Group>()
     // map of search view data
-    // key: group's default conversation
+    // key: group
     // value: list of group's conversations
     fileprivate var searchViewData = OrderedDictionary<SearchViewData, [SearchViewData]>()
     fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
@@ -88,12 +88,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         return searchViewData
     }
     
-    func getGroupForConversation(conversationUUID: String) -> Group? {
+    func getGroupForUUID(groupUUID: String) -> Group? {
         for g in allCachedGroups {
-            for c in g.conversations {
-                if c.uuid == conversationUUID {
-                    return g
-                }
+            if g.uuid == groupUUID {
+                return g
             }
         }
         return nil
@@ -121,12 +119,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         searchVCDelegate?.createGroup()
     }
     
-    func groupSelected(conversationUUID: String) {
+    func groupSelected(groupUUID: String) {
         for g in allCachedGroups {
-            for c in g.conversations {
-                if c.uuid == conversationUUID {
-                    searchVCDelegate?.groupSelected(group: g)
-                }
+            if g.uuid == groupUUID {
+                searchVCDelegate?.groupSelected(group: g)
             }
         }
     }
@@ -171,13 +167,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         var viewDataMap = OrderedDictionary<SearchViewData, [SearchViewData]>()
         viewDataMap.isIncreasing = false
         for g in groups {
-            let defaultConvo = g.conversations.filter { $0.isDefault == true }.first
-            let cs = g.conversations.sorted(by: >).filter { $0.isDefault == false }
-            if let defaultConvo = defaultConvo {
-                // see comment at top to understand data structure
-                viewDataMap[SearchViewData(uuid: defaultConvo.uuid, text: defaultConvo.topic, photoURI: defaultConvo.photoURI, updatedTimestamp: defaultConvo.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: defaultConvo.updatedTimestampServer), type: SearchViewType.defaultConversation.rawValue)] =
-                    cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photoURI: $0.photoURI, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
-            }
+            let cs = g.conversations.sorted(by: >)
+            // see comment at top to understand data structure
+            viewDataMap[SearchViewData(uuid: g.uuid, text: g.name, photoURI: g.photoURI, updatedTimestamp: 0, updatedTimeText: "", type: SearchViewType.group.rawValue)] =
+                cs.map { SearchViewData(uuid: $0.uuid, text: $0.topic, photoURI: $0.photoURI, updatedTimestamp: $0.updatedTimestampServer, updatedTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: $0.updatedTimestampServer), type: SearchViewType.conversation.rawValue) }
         }
         return viewDataMap
     }
@@ -220,13 +213,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
                 var cs: [Conversation] = []
                 for c in g.conversations {
                     let topicFilterRange = (c.topic as NSString).range(of: text, options: [.caseInsensitive])
-                    // if conversation is matched or is default, add to list
-                    if (topicFilterRange.location != NSNotFound) || c.isDefault == true {
+                    // if conversation is matched add to list
+                    if (topicFilterRange.location != NSNotFound) {
                         cs.append(c)
                     }
                 }
-                // if there's > 1 convo match (default is always added), then the group needs to be added to results
-                if cs.count > 1 {
+                // if there's a convo match then the group needs to be added to results
+                if cs.count > 0 {
                     gCopy.conversations = cs
                     filteredGroups.insert(gCopy)
                 }

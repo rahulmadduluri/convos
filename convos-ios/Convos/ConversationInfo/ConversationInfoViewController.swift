@@ -85,11 +85,11 @@ class ConversationInfoViewController: UIViewController, SmartTextFieldDelegate, 
         }
     }
     
-    func conversationCreated(topic: String?, photo: UIImage?) {
+    func conversationCreated(topic: String?, photo: UIImage?, tagNames: [String]) {
         if let topic = topic,
             topic.isEmpty == false,
             isNewConversation == true {
-            ConversationAPI.createConversation(groupUUID: groupUUID, topic: topic, photo: photo, tagNames: []) { success in
+            ConversationAPI.createConversation(groupUUID: groupUUID, topic: topic, photo: photo, tagNames: tagNames) { success in
                 if success == false {
                     print("Failed to encode request for conversation :( ")
                 }

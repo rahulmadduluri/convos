@@ -409,6 +409,10 @@ open class TagListView: UIView {
         return tagViews.filter() { $0.isSelected == true }
     }
     
+    open func tagNames() -> [String] {
+        return tagViews.map{ $0.titleLabel?.text ?? "" }.filter{ $0 != "" }
+    }
+    
     // MARK: - Events
     
     func tagPressed(_ sender: TagView!) {

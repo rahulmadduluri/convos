@@ -64,6 +64,10 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         groupPhotoImageView.layer.cornerRadius = Constants.groupImageCornerRadius
         groupPhotoImageView.layer.masksToBounds = true
         groupPhotoImageView.tag = Constants.groupPhotoTag
+        groupPhotoImageView.isUserInteractionEnabled = true
+        let singleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MainGroupInfoView.tapGroupPhoto(_:)))
+        singleTap.numberOfTapsRequired = 1
+        groupPhotoImageView.addGestureRecognizer(singleTap)
         self.addSubview(groupPhotoImageView)
         
         // MemberTextField
@@ -129,6 +133,10 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         }
         
         memberTextField.resignFirstResponder()
+    }
+    
+    func tapGroupPhoto(_ obj: Any) {
+        groupInfoVC?.presentAlertOption(tag: groupPhotoImageView.tag)
     }
     
     func tapCreateNewGroup(_ obj: Any) {        
@@ -204,7 +212,7 @@ private struct Constants {
     static let groupPhotoRadius: CGFloat = 80
     static let groupImageCornerRadius: CGFloat = 40
     
-    static let nameTextFieldPlaceholder: String = "Guild Name"
+    static let nameTextFieldPlaceholder: String = "Name Your Guild"
     static let nameTextFieldOriginY: CGFloat = 175
     static let nameTextFieldWidth: CGFloat = 150
     static let nameTextFieldHeight: CGFloat = 60
@@ -214,7 +222,7 @@ private struct Constants {
     static let editButtonWidth: CGFloat = 20
     static let editButtonHeight: CGFloat = 20
     
-    static let memberTextFieldPlaceholder: String = "Members"
+    static let memberTextFieldPlaceholder: String = "Add Members"
     static let memberTextFieldOriginY: CGFloat = 250
     static let memberTextFieldWidth: CGFloat = 150
     static let memberTextFieldHeight: CGFloat = 40

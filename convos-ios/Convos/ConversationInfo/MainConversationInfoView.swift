@@ -12,7 +12,6 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
     
     fileprivate var tagListView = TagListView()
     fileprivate var topicEditCancelButton = UIButton()
-    fileprivate var tagEditCancelButton = UIButton()
     // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
     fileprivate var editAlertHasBeenPressed = false
     
@@ -60,6 +59,10 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
         conversationPhotoImageView.frame = CGRect(x: self.bounds.midX - Constants.conversationPhotoRadius/2, y: self.bounds.minY + Constants.conversationPhotoOriginY, width: Constants.conversationPhotoRadius, height: Constants.conversationPhotoRadius)
         conversationPhotoImageView.layer.cornerRadius = Constants.conversationImageCornerRadius
         conversationPhotoImageView.layer.masksToBounds = true
+        conversationPhotoImageView.isUserInteractionEnabled = true
+        let singleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MainConversationInfoView.tapConversationPhoto(_:)))
+        singleTap.numberOfTapsRequired = 1
+        conversationPhotoImageView.addGestureRecognizer(singleTap)
         conversationPhotoImageView.tag = Constants.conversationPhotoTag
         self.addSubview(conversationPhotoImageView)
         
@@ -71,13 +74,6 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
         tagTextField.delegate = self
         tagTextField.alpha = 1
         self.addSubview(tagTextField)
-        
-        // TagEditCancelButton
-        tagEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.tagTextFieldWidth/2, y: self.bounds.minY + Constants.tagEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
-        tagEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
-        tagEditCancelButton.alpha = 0
-        tagEditCancelButton.addTarget(self, action: #selector(MainConversationInfoView.tapTagEditCancel(_:)), for: .touchUpInside)
-        self.addSubview(tagEditCancelButton)
         
         // CreateNewConversationButton
         createNewConversationButton.frame = CGRect(x: self.bounds.midX - Constants.createConversationButtonRadius/2, y: self.bounds.minY + Constants.createConversationButtonOriginY, width: Constants.createConversationButtonRadius, height: Constants.createConversationButtonRadius)
@@ -91,15 +87,6 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
         tagListView.tagBackgroundColor = UIColor.darkGray
         tagListView.textFont = UIFont.systemFont(ofSize: 16)
         tagListView.delegate = self
-        tagListView.addTag("TagListView")
-        tagListView.addTag("TEAChart")
-        tagListView.addTag("To Be Removed")
-        tagListView.addTag("To Be Removed")
-        tagListView.addTag("Quark Shell")
-        tagListView.removeTag("To Be Removed")
-        tagListView.addTag("On tap will be removed").onTap = { [weak self] tagView in
-            self?.tagListView.removeTagView(tagView)
-        }
         self.addSubview(tagListView)
     }
     
@@ -117,15 +104,16 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
         topicTextField.resignFirstResponder()
     }
     
-    func tapTagEditCancel(_ obj: Any) {
-        tagEditCancelButton.alpha = 0
-        
-        tagTextField.text = ""
-        tagTextField.resignFirstResponder()
+    func tapConversationPhoto(_ obj: Any) {
+        conversationInfoVC?.presentAlertOption(tag: conversationPhotoImageView.tag)
     }
     
     func tapCreateNewConversation(_ obj: Any) {
-        conversationInfoVC?.conversationCreated(topic: topicTextField.text, photo: conversationPhotoImageView.image)
+        conversationInfoVC?.conversationCreated(
+            topic: topicTextField.text,
+            photo: conversationPhotoImageView.image,
+            tagNames: tagListView.tagNames()
+        )
     }
     
     // MARK: UITextFieldDelegate
@@ -146,7 +134,7 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
             conversationInfoVC?.conversationTopicEdited(topic: text)
             topicEditCancelButton.alpha = 0
         } else if textField.tag == Constants.tagTextFieldTag {
-            //conversationInfoVC?.memberSearchUpdated()
+            addTag(name: text)
         }
         textField.resignFirstResponder()
         return true
@@ -160,15 +148,18 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
             topicEditCancelButton.alpha = 1
             topicTextField.becomeFirstResponder()
         } else if tag == Constants.tagTextFieldTag {
-            tagEditCancelButton.alpha = 1
             tagTextField.becomeFirstResponder()
         } else if tag == Constants.conversationPhotoTag {
             
         }
     }
     
-    func hideTagsCancel() {
-        tagEditCancelButton.alpha = 0
+    // MARK: Private
+    
+    fileprivate func addTag(name: String) {
+        tagListView.addTag(name).onTap = { [weak self] tagView in
+            self?.tagListView.removeTagView(tagView)
+        }
     }
     
 }
@@ -178,7 +169,7 @@ private struct Constants {
     static let conversationPhotoRadius: CGFloat = 80
     static let conversationImageCornerRadius: CGFloat = 40
     
-    static let topicTextFieldPlaceholder: String = "New Topic"
+    static let topicTextFieldPlaceholder: String = "Name Topic"
     static let topicTextFieldOriginY: CGFloat = 175
     static let topicTextFieldWidth: CGFloat = 150
     static let topicTextFieldHeight: CGFloat = 60
@@ -188,7 +179,7 @@ private struct Constants {
     static let editButtonWidth: CGFloat = 20
     static let editButtonHeight: CGFloat = 20
     
-    static let tagTextFieldPlaceholder: String = "Tags"
+    static let tagTextFieldPlaceholder: String = "New Tag"
     static let tagTextFieldOriginY: CGFloat = 250
     static let tagTextFieldWidth: CGFloat = 150
     static let tagTextFieldHeight: CGFloat = 40

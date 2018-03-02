@@ -3,7 +3,6 @@ select
 	conversations.uuid as uuid,
 	conversations.topic as topic,
 	conversations.updated_timestamp_server as updatedtimestampserver,
-	conversations.is_default as isdefault,
 	conversations.photo_uri as photouri,
 	groups.uuid as groupuuid
 from (

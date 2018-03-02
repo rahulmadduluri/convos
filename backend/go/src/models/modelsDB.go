@@ -35,7 +35,6 @@ type Conversation struct {
 	UUID                   string
 	CreatedTimestampServer int
 	UpdatedTimestampServer int
-	IsDefault              bool
 	TopicTagUUID           int
 	GroupID                int
 }

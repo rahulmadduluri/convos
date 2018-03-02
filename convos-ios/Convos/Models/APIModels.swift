@@ -151,7 +151,6 @@ class Conversation: NSObject, APIModel {
     let groupUUID: String
     let updatedTimestampServer: Int
     var topic: String
-    let isDefault: Bool
     var photoURI: String?
     
     override var hashValue: Int {
@@ -159,12 +158,11 @@ class Conversation: NSObject, APIModel {
     }
     
     // init
-    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topic: String, isDefault: Bool, photoURI: String? = nil) {
+    init(uuid: String, groupUUID: String, updatedTimestampServer: Int, topic: String, photoURI: String? = nil) {
         self.uuid = uuid
         self.groupUUID = groupUUID
         self.updatedTimestampServer = updatedTimestampServer
         self.topic = topic
-        self.isDefault = isDefault
         self.photoURI = photoURI
     }
     
@@ -174,21 +172,19 @@ class Conversation: NSObject, APIModel {
             let uuidJSON = dictionary["UUID"],
             let groupUUIDJSON = dictionary["GroupUUID"],
             let updatedTimestampServerJSON = dictionary["UpdatedTimestampServer"],
-            let topicJSON = dictionary["Topic"],
-            let isDefaultJSON = dictionary["IsDefault"] else {
+            let topicJSON = dictionary["Topic"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         groupUUID = groupUUIDJSON.stringValue
         updatedTimestampServer = updatedTimestampServerJSON.intValue
         topic = topicJSON.stringValue
-        isDefault = isDefaultJSON.boolValue
         photoURI = dictionary["PhotoURI"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["UUID": JSON(uuid), "GroupUUID": JSON(groupUUID), "UpdatedTimestampServer": JSON(updatedTimestampServer), "Topic": JSON(topic), "IsDefault": JSON(isDefault)]
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "GroupUUID": JSON(groupUUID), "UpdatedTimestampServer": JSON(updatedTimestampServer), "Topic": JSON(topic)]
         if let url = photoURI {
             dict["PhotoURI"] = JSON(url)
         }
@@ -196,7 +192,7 @@ class Conversation: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return Conversation(uuid: uuid, groupUUID: groupUUID, updatedTimestampServer: updatedTimestampServer, topic: topic, isDefault: isDefault)
+        return Conversation(uuid: uuid, groupUUID: groupUUID, updatedTimestampServer: updatedTimestampServer, topic: topic)
     }
 }
 

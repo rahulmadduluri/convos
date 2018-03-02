@@ -51,18 +51,19 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let groupIndex = collectionView.tag
+        // Index - 1 because 0th index is for new conversation
         let convoIndex = indexPath.row - 1
         
         if indexPath.row == 0 {
-            if let defaultConvo = searchVC?.getSearchViewData().keys[groupIndex],
-                let dcUUID = defaultConvo.uuid,
-                let g = searchVC?.getGroupForConversation(conversationUUID: dcUUID)
+            if let groupViewData = searchVC?.getSearchViewData().keys[groupIndex],
+                let gUUID = groupViewData.uuid,
+                let g = searchVC?.getGroupForUUID(groupUUID: gUUID)
                 {
                 searchVC?.createConvo(groupUUID: g.uuid)
             }
         } else {
-            if let defaultConvo = searchVC?.getSearchViewData().keys[groupIndex],
-                let cs = searchVC?.getSearchViewData()[defaultConvo],
+            if let groupViewData = searchVC?.getSearchViewData().keys[groupIndex],
+                let cs = searchVC?.getSearchViewData()[groupViewData],
                 let uuid = cs[convoIndex].uuid {
                 searchVC?.convoSelected(uuid: uuid)
             }
@@ -76,11 +77,11 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
     // MARK: UICollectionViewDataSource
             
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let defaultConvo = searchVC?.getSearchViewData().keys[collectionView.tag],
-            let nonDefaultConvos = searchVC?.getSearchViewData()[defaultConvo] {
-            return nonDefaultConvos.count + 1
+        if let groupViewData = searchVC?.getSearchViewData().keys[collectionView.tag],
+            let convosViewData = searchVC?.getSearchViewData()[groupViewData] {
+            return convosViewData.count + 1
         }
-        return 0
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -98,10 +99,10 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
             cell.searchVC = self.searchVC
             cell.type = SearchViewType.conversation
             if let svd = searchVC?.getSearchViewData() {
-                let defaultConvo = svd.keys[groupIndex]
-                cell.customTextLabel.text = svd[defaultConvo]?[convoIndex].text
+                let groupViewData = svd.keys[groupIndex]
+                cell.customTextLabel.text = svd[groupViewData]?[convoIndex].text
                 cell.photoImageView.image = nil
-                if let uri = svd[defaultConvo]?[convoIndex].photoURI {
+                if let uri = svd[groupViewData]?[convoIndex].photoURI {
                     cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
                 }
             }
