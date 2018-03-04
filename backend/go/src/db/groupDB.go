@@ -90,7 +90,11 @@ func (dbh *dbHandler) CreateGroup(
 		"created_timestamp_server": createdTimestampServer,
 		"photo_uri":                photoURI,
 	}
-	tx.NamedExec(dbh.groupQueries[_createGroup], q1Args)
+	_, err := tx.NamedExec(dbh.groupQueries[_createGroup], q1Args)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
 	q2Args := map[string]interface{}{
 		"conversation_uuid":        conversationUUID,
@@ -99,7 +103,11 @@ func (dbh *dbHandler) CreateGroup(
 		"created_timestamp_server": createdTimestampServer,
 		"photo_uri":                photoURI,
 	}
-	tx.NamedExec(dbh.conversationQueries[_createConversation], q2Args)
+	_, err = tx.NamedExec(dbh.conversationQueries[_createConversation], q2Args)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
 	for _, mUUID := range memberUUIDs {
 		q3Args := map[string]interface{}{
@@ -107,10 +115,14 @@ func (dbh *dbHandler) CreateGroup(
 			"member_uuid":              mUUID,
 			"created_timestamp_server": createdTimestampServer,
 		}
-		tx.NamedExec(dbh.groupQueries[_updateGroupMembers], q3Args)
+		_, err = tx.NamedExec(dbh.groupQueries[_updateGroupMembers], q3Args)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
-	err := tx.Commit()
+	err = tx.Commit()
 	if err != nil {
 		return err
 	}

@@ -21,6 +21,7 @@ const (
 	_paramTagUUID  = "taguuid"
 	_paramTagUUIDs = "taguuids"
 	_paramTagNames = "tagnames"
+	_paramTagName  = "tagname"
 	_paramMaxTags  = "maxtags"
 	// Image Size
 	_24K = (1 << 10) * 24

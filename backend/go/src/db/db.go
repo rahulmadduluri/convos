@@ -32,7 +32,7 @@ type DbHandler interface {
 	UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error
 	CreateGroup(name string, createdTimestampServer int, photoURI string, newMemberUUIDs []string) error
 	// Conversation
-	UpdateConversation(conversationUUID string, topic string, timestampServer int, newTagUUID string) error
+	UpdateConversation(conversationUUID string, topic string, timestampServer int, tagName string, newTagUUID string) error
 	CreateConversation(groupUUID string, topic string, tagNames []string, createdTimestampServer int, photoURI string) error
 	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)

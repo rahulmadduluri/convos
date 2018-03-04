@@ -15,10 +15,11 @@ func UpdateConversation(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	conversationUUID, _ := vars[_paramUUID]
 	topic := r.FormValue(_paramTopic)
+	tagName := r.FormValue(_paramTagName)
 	newTagUUID := r.FormValue(_paramTagUUID)
 	timestampServer := int(time.Now().Unix())
 
-	err := db.GetHandler().UpdateConversation(conversationUUID, topic, timestampServer, newTagUUID)
+	err := db.GetHandler().UpdateConversation(conversationUUID, topic, timestampServer, tagName, newTagUUID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "failed to update conversation")
 	}

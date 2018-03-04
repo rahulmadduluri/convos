@@ -73,8 +73,9 @@ CREATE TABLE IF NOT EXISTS members (
 
 -- relationship mapping conversations to tags
 CREATE TABLE IF NOT EXISTS conversations_tags (
-	conversation_id	int			NOT NULL,
-	tag_id 			int			NOT NULL,
+	conversation_id				int		NOT NULL,
+	tag_id 						int		NOT NULL,
+	created_timestamp_server	int		NOT NULL,
 	UNIQUE KEY (conversation_id, tag_id),
 	FOREIGN KEY (conversation_id) REFERENCES conversations (id),
 	FOREIGN KEY (tag_id) REFERENCES tags (id)

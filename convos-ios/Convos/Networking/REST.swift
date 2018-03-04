@@ -12,11 +12,16 @@ class REST: NSObject {
     
     static let baseURL = "http://localhost:8000/"
     
+    static func validateString(rawString: String) -> String {
+        return rawString.replacingOccurrences(of: " ", with: "")
+    }
+    
     // Resources
     
     static func imageURL(imageURI: String) -> URL {
         let urlString = baseURL + "static/" + imageURI + ".png"
-        return URL(string: urlString)!
+        let validatedURL = validateString(rawString: urlString)
+        return URL(string: validatedURL)!
     }
     
     static func getPeopleURL(userUUID: String, searchText: String?, maxPeople: Int?) -> URL {
@@ -42,7 +47,8 @@ class REST: NSObject {
                 urlstr += maxPeopleParameter + String(maxPeople)
             }
         }
-        return URL(string: urlstr)!
+        let validatedURL = validateString(rawString: urlstr)
+        return URL(string: validatedURL)!
     }
     
     // Groups
@@ -73,7 +79,8 @@ class REST: NSObject {
                 urlstr += newMemberParam + newMemberUUID
             }
         }
-        return URL(string: urlstr)!
+        let validatedURL = validateString(rawString: urlstr)
+        return URL(string: validatedURL)!
     }
     
     static func updateGroupPhotoURL(groupUUID: String) -> URL {
@@ -108,7 +115,8 @@ class REST: NSObject {
                 urlstr += newTagUUID + newTagUUID
             }
         }
-        return URL(string: urlstr)!
+        let validatedURL = validateString(rawString: urlstr)
+        return URL(string: validatedURL)!
     }
     
     static func updateConversationPhotoURL(conversationUUID: String) -> URL {

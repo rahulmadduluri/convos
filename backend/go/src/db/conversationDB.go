@@ -1,34 +1,52 @@
 package db
 
 import (
+	"errors"
+
 	"github.com/satori/go.uuid"
 )
 
 const (
 	_updateConversationTopic = "updateConversationTopic"
-	_updateTags              = "updateTags"
 	_createTag               = "createTag"
+	_updateConversationTags  = "updateConversationTags"
 )
 
-func (dbh *dbHandler) UpdateConversation(conversationUUID string, topic string, timestampServer int, newTagUUID string) error {
+func (dbh *dbHandler) UpdateConversation(
+	conversationUUID string,
+	topic string,
+	timestampServer int,
+	tagName string,
+	newTagUUID string,
+) error {
 	if topic != "" {
 		_, err := dbh.db.NamedQuery(
 			dbh.conversationQueries[_updateConversationTopic],
 			map[string]interface{}{
 				"conversation_uuid": conversationUUID,
 				"topic":             topic,
+				"timestamp_server":  timestampServer,
 			},
 		)
 		return err
 	} else if newTagUUID != "" {
-		_, err := dbh.db.NamedQuery(
-			dbh.conversationQueries[_updateTags],
-			map[string]interface{}{
-				"conversation_uuid":        conversationUUID,
-				"tag_uuid":                 newTagUUID,
-				"created_timestamp_server": timestampServer,
-			},
-		)
+		tx := dbh.db.MustBegin()
+
+		q1Args := map[string]interface{}{
+			"tag_uuid": newTagUUID,
+			"name":     tagName,
+			"created_timestamp_server": timestampServer,
+		}
+		tx.NamedExec(dbh.tagQueries[_createTag], q1Args)
+
+		q2Args := map[string]interface{}{
+			"conversation_uuid":        conversationUUID,
+			"tag_uuid":                 newTagUUID,
+			"created_timestamp_server": timestampServer,
+		}
+		tx.NamedExec(dbh.tagQueries[_updateConversationTags], q2Args)
+
+		err := tx.Commit()
 		return err
 	}
 	return nil
@@ -50,6 +68,9 @@ func (dbh *dbHandler) CreateConversation(
 		tUUID := tRaw.String()
 		tagUUIDs = append(tagUUIDs, tUUID)
 	}
+	if len(tagUUIDs) != len(tagNames) {
+		return errors.New("CreateConversation: Tag name count != tag UUIDs")
+	}
 
 	tx := dbh.db.MustBegin()
 
@@ -58,21 +79,39 @@ func (dbh *dbHandler) CreateConversation(
 		"group_uuid":               groupUUID,
 		"topic":                    topic,
 		"created_timestamp_server": createdTimestampServer,
-		"is_default":               false,
 		"photo_uri":                photoURI,
 	}
-	tx.NamedExec(dbh.conversationQueries[_createConversation], q1Args)
+	_, err := tx.NamedExec(dbh.conversationQueries[_createConversation], q1Args)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
-	for _, tUUID := range tagUUIDs {
+	for i, tUUID := range tagUUIDs {
 		q2Args := map[string]interface{}{
+			"tag_uuid": tUUID,
+			"name":     tagNames[i],
+			"created_timestamp_server": createdTimestampServer,
+		}
+		_, err := tx.NamedExec(dbh.tagQueries[_createTag], q2Args)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		q3Args := map[string]interface{}{
 			"conversation_uuid":        conversationUUID,
 			"tag_uuid":                 tUUID,
 			"created_timestamp_server": createdTimestampServer,
 		}
-		tx.NamedExec(dbh.tagQueries[_createTag], q2Args)
+		tx.NamedExec(dbh.tagQueries[_updateConversationTags], q3Args)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
-	err := tx.Commit()
+	err = tx.Commit()
 	if err != nil {
 		return err
 	}
