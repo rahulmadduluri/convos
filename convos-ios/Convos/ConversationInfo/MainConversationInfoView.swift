@@ -134,6 +134,7 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
             conversationInfoVC?.conversationTopicEdited(topic: text)
             topicEditCancelButton.alpha = 0
         } else if textField.tag == Constants.tagTextFieldTag {
+            tagTextField.text = ""
             addTag(name: text)
         }
         textField.resignFirstResponder()

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS tags (
 	id 							int 			NOT NULL AUTO_INCREMENT,
 	uuid						varchar(36)		NOT NULL,
 	name 						varchar(200)	NOT NULL,
+	count                       int             NOT NULL,
 	created_timestamp_server	int				NOT NULL,
 	UNIQUE KEY (uuid),
 	UNIQUE KEY (name),

@@ -1,14 +1,13 @@
 package db
 
 import (
-	"errors"
-
 	"github.com/satori/go.uuid"
 )
 
 const (
 	_updateConversationTopic = "updateConversationTopic"
 	_createTag               = "createTag"
+	_updateTagCount          = "updateTagCount"
 	_updateConversationTags  = "updateConversationTags"
 )
 
@@ -17,7 +16,6 @@ func (dbh *dbHandler) UpdateConversation(
 	topic string,
 	timestampServer int,
 	tagName string,
-	newTagUUID string,
 ) error {
 	if topic != "" {
 		_, err := dbh.db.NamedQuery(
@@ -29,24 +27,40 @@ func (dbh *dbHandler) UpdateConversation(
 			},
 		)
 		return err
-	} else if newTagUUID != "" {
+	} else if tagName != "" {
 		tx := dbh.db.MustBegin()
 
+		// create new tag
+		tRaw, _ := uuid.NewV4()
+		tUUID := tRaw.String()
 		q1Args := map[string]interface{}{
-			"tag_uuid": newTagUUID,
-			"name":     tagName,
+			"tag_uuid":                 tUUID,
+			"name":                     tagName,
+			"count":                    1,
 			"created_timestamp_server": timestampServer,
 		}
-		tx.NamedExec(dbh.tagQueries[_createTag], q1Args)
-
-		q2Args := map[string]interface{}{
-			"conversation_uuid":        conversationUUID,
-			"tag_uuid":                 newTagUUID,
+		_, err := tx.NamedExec(dbh.tagQueries[_createTag], q1Args)
+		// if tag already exists, update tag count
+		if err != nil {
+			q2Args := map[string]interface{}{
+				"name": tagName,
+			}
+			_, err = tx.NamedExec(dbh.tagQueries[_updateTagCount], q2Args)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+		// create relationship btw tag & conversation
+		q3Args := map[string]interface{}{
+			"conversation_uuid": conversationUUID,
+			"tag_uuid":          tUUID,
+			"name":              tagName,
 			"created_timestamp_server": timestampServer,
 		}
-		tx.NamedExec(dbh.tagQueries[_updateConversationTags], q2Args)
+		tx.NamedExec(dbh.tagQueries[_updateConversationTags], q3Args)
 
-		err := tx.Commit()
+		err = tx.Commit()
 		return err
 	}
 	return nil
@@ -61,16 +75,6 @@ func (dbh *dbHandler) CreateConversation(
 ) error {
 	conversationUUIDRaw, _ := uuid.NewV4()
 	conversationUUID := conversationUUIDRaw.String()
-
-	var tagUUIDs []string
-	for _, _ = range tagNames {
-		tRaw, _ := uuid.NewV4()
-		tUUID := tRaw.String()
-		tagUUIDs = append(tagUUIDs, tUUID)
-	}
-	if len(tagUUIDs) != len(tagNames) {
-		return errors.New("CreateConversation: Tag name count != tag UUIDs")
-	}
 
 	tx := dbh.db.MustBegin()
 
@@ -87,28 +91,40 @@ func (dbh *dbHandler) CreateConversation(
 		return err
 	}
 
-	for i, tUUID := range tagUUIDs {
+	for _, name := range tagNames {
+		// create new tag
+		tRaw, _ := uuid.NewV4()
+		tUUID := tRaw.String()
 		q2Args := map[string]interface{}{
-			"tag_uuid": tUUID,
-			"name":     tagNames[i],
+			"tag_uuid":                 tUUID,
+			"name":                     name,
+			"count":                    1,
 			"created_timestamp_server": createdTimestampServer,
 		}
 		_, err := tx.NamedExec(dbh.tagQueries[_createTag], q2Args)
+		// if tag already exists, update tag count
 		if err != nil {
-			tx.Rollback()
-			return err
+			q3Args := map[string]interface{}{
+				"name": name,
+			}
+			_, err = tx.NamedExec(dbh.tagQueries[_updateTagCount], q3Args)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
 		}
-
-		q3Args := map[string]interface{}{
-			"conversation_uuid":        conversationUUID,
-			"tag_uuid":                 tUUID,
+		// create relationship btw tag & conversation
+		q4Args := map[string]interface{}{
+			"conversation_uuid": conversationUUID,
+			"tag_uuid":          tUUID,
+			"name":              name,
 			"created_timestamp_server": createdTimestampServer,
 		}
-		tx.NamedExec(dbh.tagQueries[_updateConversationTags], q3Args)
+		_, err = tx.NamedExec(dbh.tagQueries[_updateConversationTags], q4Args)
 		if err != nil {
-			tx.Rollback()
-			return err
+			// conversation tag relationship already exists
 		}
+
 	}
 
 	err = tx.Commit()
