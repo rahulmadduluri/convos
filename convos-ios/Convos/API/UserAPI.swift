@@ -11,36 +11,36 @@ import SwiftyJSON
 import Alamofire
 
 class UserAPI: NSObject {
-    static func getPeople(
+    static func getContacts(
         userUUID: String,
         searchText: String?,
-        maxPeople: Int?,
+        maxContacts: Int?,
         completion: (@escaping ([User]?) -> Void)) {
-        let url = REST.getPeopleURL(userUUID: userUUID, searchText: searchText, maxPeople: maxPeople)
+        let url = REST.getContactsURL(userUUID: userUUID, searchText: searchText, maxContacts: maxContacts)
         Alamofire.request(
             url,
             method: .get)
         .validate()
         .responseJSON { response in
-            completion(convertResponseToPeople(res: response))
+            completion(convertResponseToContacts(res: response))
         }
     }
     
-    private static func convertResponseToPeople(res: Alamofire.DataResponse<Any>) -> [User]? {
+    private static func convertResponseToContacts(res: Alamofire.DataResponse<Any>) -> [User]? {
         guard res.result.isSuccess else {
-            print("Error while fetching people: \(res.result.error)")
+            print("Error while fetching contacts: \(res.result.error)")
             return nil
         }
         
         if res.data != nil {
             let jsonArray = JSON(data: res.data!)
-            var people: [User] = []
-            for (_, p) in jsonArray {
-                if let u = User(json: p) {
-                    people.append(u)
+            var contacts: [User] = []
+            for (_, c) in jsonArray {
+                if let u = User(json: c) {
+                    contacts.append(u)
                 }
             }
-            return people
+            return contacts
         }
         return nil
     }

@@ -1,4 +1,4 @@
--- name: findPeopleForGroup
+-- name: findMembersForGroup
 select
 	users.uuid as uuid,
 	users.name as name,
@@ -13,11 +13,11 @@ from (
 		from groups
 		where groups.uuid = :group_uuid
 	)
-) as user_people
+) as group_members
 join users
-	on user_people.person_id = users.id
+	on group_members.person_id = users.id
 where users.name like :search_text
-order by user_people.created_timestamp_server desc limit :max_people
+order by group_members.created_timestamp_server desc limit :max_members
 ;
 
 -- name: updateGroupName

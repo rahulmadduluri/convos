@@ -9,23 +9,23 @@ import (
 )
 
 const (
-	_findPeopleForGroup = "findPeopleForGroup"
-	_updateGroupName    = "updateGroupName"
-	_updateGroupMembers = "updateGroupMembers"
-	_createGroup        = "createGroup"
-	_createConversation = "createConversation"
+	_findMembersForGroup = "findMembersForGroup"
+	_updateGroupName     = "updateGroupName"
+	_updateGroupMembers  = "updateGroupMembers"
+	_createGroup         = "createGroup"
+	_createConversation  = "createConversation"
 )
 
-func (dbh *dbHandler) GetPeopleForGroup(groupUUID string, searchText string, maxPeople int) ([]models.UserObj, error) {
+func (dbh *dbHandler) GetMembersForGroup(groupUUID string, searchText string, maxMembers int) ([]models.UserObj, error) {
 	var objs []models.UserObj
 
 	wildcardSearch := "%" + searchText + "%"
 	rows, err := dbh.db.NamedQuery(
-		dbh.groupQueries[_findPeopleForGroup],
+		dbh.groupQueries[_findMembersForGroup],
 		map[string]interface{}{
 			"group_uuid":  groupUUID,
 			"search_text": wildcardSearch,
-			"max_people":  maxPeople,
+			"max_members": maxMembers,
 		},
 	)
 

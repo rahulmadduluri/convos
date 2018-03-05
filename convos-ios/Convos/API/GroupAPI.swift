@@ -50,36 +50,36 @@ class GroupAPI: NSObject {
         }
     }
     
-    static func getPeople(
+    static func getMembers(
         groupUUID: String,
         searchText: String?,
-        maxPeople: Int?,
+        maxMembers: Int?,
         completion: (@escaping ([User]?) -> Void)) {
-        let url = REST.getPeopleURL(groupUUID: groupUUID, searchText: searchText, maxPeople: maxPeople)
+        let url = REST.getMembersURL(groupUUID: groupUUID, searchText: searchText, maxMembers: maxMembers)
         Alamofire.request(
             url,
             method: .get)
             .validate()
             .responseJSON { response in
-                completion(convertResponseToPeople(res: response))
+                completion(convertResponseToMembers(res: response))
         }
     }
     
-    private static func convertResponseToPeople(res: Alamofire.DataResponse<Any>) -> [User]? {
+    private static func convertResponseToMembers(res: Alamofire.DataResponse<Any>) -> [User]? {
         guard res.result.isSuccess else {
-            print("Error while fetching people: \(res.result.error)")
+            print("Error while fetching members: \(res.result.error)")
             return nil
         }
         
         if res.data != nil {
             let jsonArray = JSON(data: res.data!)
-            var people: [User] = []
-            for (_, p) in jsonArray {
-                if let u = User(json: p) {
-                    people.append(u)
+            var members: [User] = []
+            for (_, m) in jsonArray {
+                if let u = User(json: m) {
+                    members.append(u)
                 }
             }
-            return people
+            return members
         }
         return nil
     }

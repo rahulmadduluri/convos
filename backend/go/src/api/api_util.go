@@ -9,8 +9,10 @@ import (
 const (
 	_paramUUID       = "uuid"
 	_paramSearchText = "searchtext"
-	_paramMaxPeople  = "maxpeople"
+	_paramMaxMembers = "maxmembers"
 	_paramName       = "name"
+	// User
+	_paramMaxContacts = "maxcontacts"
 	// Group
 	_paramGroupUUID = "groupuuid"
 	// Members

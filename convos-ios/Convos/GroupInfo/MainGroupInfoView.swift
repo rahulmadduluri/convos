@@ -214,7 +214,7 @@ private struct Constants {
     
     static let nameTextFieldPlaceholder: String = "Name Your Guild"
     static let nameTextFieldOriginY: CGFloat = 175
-    static let nameTextFieldWidth: CGFloat = 150
+    static let nameTextFieldWidth: CGFloat = 200
     static let nameTextFieldHeight: CGFloat = 60
     static let nameTextFieldFontSize: CGFloat = 24
     
@@ -224,7 +224,7 @@ private struct Constants {
     
     static let memberTextFieldPlaceholder: String = "Add Members"
     static let memberTextFieldOriginY: CGFloat = 250
-    static let memberTextFieldWidth: CGFloat = 150
+    static let memberTextFieldWidth: CGFloat = 200
     static let memberTextFieldHeight: CGFloat = 40
     
     static let memberEditButtonOriginY: CGFloat = 261

@@ -7,19 +7,19 @@ import (
 )
 
 const (
-	_findPeopleForUser = "findPeopleForUser"
+	_findContactsForUser = "findContactsForUser"
 )
 
-func (dbh *dbHandler) GetPeopleForUser(userUUID string, searchText string, maxPeople int) ([]models.UserObj, error) {
+func (dbh *dbHandler) GetContactsForUser(userUUID string, searchText string, maxContacts int) ([]models.UserObj, error) {
 	var objs []models.UserObj
 
 	wildcardSearch := "%" + searchText + "%"
 	rows, err := dbh.db.NamedQuery(
-		dbh.userQueries[_findPeopleForUser],
+		dbh.userQueries[_findContactsForUser],
 		map[string]interface{}{
-			"user_uuid":   userUUID,
-			"search_text": wildcardSearch,
-			"max_people":  maxPeople,
+			"user_uuid":    userUUID,
+			"search_text":  wildcardSearch,
+			"max_contacts": maxContacts,
 		},
 	)
 

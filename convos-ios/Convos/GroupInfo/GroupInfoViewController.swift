@@ -249,20 +249,20 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     
     fileprivate func fetchGroupMembers() {
         if isNewGroup == false {
-            GroupAPI.getPeople(groupUUID: group!.uuid, searchText: "", maxPeople: nil, completion: { people in
-                if let p = people {
-                    self.receivedCurrentMembers(people: p)
+            GroupAPI.getMembers(groupUUID: group!.uuid, searchText: "", maxMembers: nil, completion: { members in
+                if let m = members {
+                    self.receivedCurrentMembers(members: m)
                 }
             })
         } else {
-            self.receivedCurrentMembers(people: [])
+            self.receivedCurrentMembers(members: [])
         }
     }
     
     fileprivate func fetchPotentialMembers() {
         if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = memberSearchText ?? ""
-            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxPeople: nil, completion: { allUsers in
+            UserAPI.getContacts(userUUID: userUUID, searchText: searchText, maxContacts: nil, completion: { allUsers in
                 if let allUsers = allUsers {
                     self.receivedPotentialMembers(potentialMembers: allUsers)
                 }
@@ -270,8 +270,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         }
     }
     
-    fileprivate func receivedCurrentMembers(people: [User]) {
-        memberViewData = createMemberViewData(people: people)
+    fileprivate func receivedCurrentMembers(members: [User]) {
+        memberViewData = createMemberViewData(people: members)
         memberTableVC.reloadMemberViewData()
         containerView?.memberTextField.stopLoadingIndicator()
     }

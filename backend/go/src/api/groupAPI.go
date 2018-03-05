@@ -12,23 +12,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetPeopleForGroup(w http.ResponseWriter, r *http.Request) {
+func GetMembersForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
 
 	searchText := r.FormValue(_paramSearchText)
-	maxPeople, _ := strconv.Atoi(r.FormValue(_paramMaxPeople))
-	// If MaxPeople, isn't given, set upper bound to 30
-	if maxPeople == 0 {
-		maxPeople = 30
+	maxMembers, _ := strconv.Atoi(r.FormValue(_paramMaxMembers))
+	// If maxMembers, isn't given, set upper bound to 30
+	if maxMembers == 0 {
+		maxMembers = 30
 	}
 
-	people, err := db.GetHandler().GetPeopleForGroup(groupUUID, searchText, maxPeople)
+	members, err := db.GetHandler().GetMembersForGroup(groupUUID, searchText, maxMembers)
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "failed to get people")
+		respondWithError(w, http.StatusInternalServerError, "failed to get members")
 		return
 	}
-	respondWithJSON(w, http.StatusOK, people)
+	respondWithJSON(w, http.StatusOK, members)
 }
 
 func UpdateGroup(w http.ResponseWriter, r *http.Request) {

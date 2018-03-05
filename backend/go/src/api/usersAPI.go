@@ -9,23 +9,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetPeopleForUser(w http.ResponseWriter, r *http.Request) {
+func GetContactsForUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userUUID, _ := vars[_paramUUID]
 
 	searchText := r.FormValue(_paramSearchText)
-	maxPeople, _ := strconv.Atoi(r.FormValue(_paramMaxPeople))
-	// If MaxPeople, isn't given, set upper bound to 100
-	if maxPeople == 0 {
-		maxPeople = 100
+	maxContacts, _ := strconv.Atoi(r.FormValue(_paramMaxContacts))
+	// If maxContacts, isn't given, set upper bound to 100
+	if maxContacts == 0 {
+		maxContacts = 100
 	}
 
-	people, err := db.GetHandler().GetPeopleForUser(userUUID, searchText, maxPeople)
+	contacts, err := db.GetHandler().GetContactsForUser(userUUID, searchText, maxContacts)
 
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "failed to get people")
+		respondWithError(w, http.StatusInternalServerError, "failed to get contacts")
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, people)
+	respondWithJSON(w, http.StatusOK, contacts)
 }
