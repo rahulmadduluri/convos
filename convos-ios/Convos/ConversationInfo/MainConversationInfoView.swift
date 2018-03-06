@@ -158,7 +158,8 @@ class MainConversationInfoView: UIView, ConversationInfoUIComponent, UITextField
     // MARK: Private
     
     fileprivate func addTag(name: String) {
-        tagListView.addTag(name).onTap = { [weak self] tagView in
+        let editedName = name.replacingOccurrences(of: " ", with: "")
+        tagListView.addTag(editedName).onTap = { [weak self] tagView in
             self?.tagListView.removeTagView(tagView)
         }
     }

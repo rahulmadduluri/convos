@@ -131,7 +131,11 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         
     func resetMembers() {
         resetRemovableMemberQueue()
-        fetchGroupMembers()
+        if isNewGroup == true {
+            memberViewData = removableMemberViewDataQueue
+        } else {
+            fetchGroupMembers()
+        }
     }
     
     func memberStatusSelected(mvd: MemberViewData) {
@@ -168,6 +172,10 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             alert.addAction(UIAlertAction(title: "No", style: .destructive))
             present(alert, animated: true)
         }
+    }
+    
+    func reloadTable() {
+        memberTableVC.reloadMemberViewData()
     }
     
     func presentAlertOption(tag: Int) {

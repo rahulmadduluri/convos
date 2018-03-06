@@ -14,6 +14,8 @@ const (
 	_updateGroupMembers  = "updateGroupMembers"
 	_createGroup         = "createGroup"
 	_createConversation  = "createConversation"
+
+	_newConversationName = "Hall"
 )
 
 func (dbh *dbHandler) GetMembersForGroup(groupUUID string, searchText string, maxMembers int) ([]models.UserObj, error) {
@@ -99,7 +101,7 @@ func (dbh *dbHandler) CreateGroup(
 	q2Args := map[string]interface{}{
 		"conversation_uuid":        conversationUUID,
 		"group_uuid":               groupUUID,
-		"topic":                    name,
+		"topic":                    _newConversationName,
 		"created_timestamp_server": createdTimestampServer,
 		"photo_uri":                photoURI,
 	}

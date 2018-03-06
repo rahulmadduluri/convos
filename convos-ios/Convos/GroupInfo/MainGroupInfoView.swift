@@ -126,11 +126,9 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     func tapMemberEditCancel(_ obj: Any) {
         memberEditCancelButton.alpha = 0
         
-        // if group exists, go back to original name
         memberTextField.text = ""
-        if (groupInfoVC?.isNewGroup ?? false) == false {
-            groupInfoVC?.resetMembers()
-        }
+        groupInfoVC?.resetMembers()
+        groupInfoVC?.reloadTable()
         
         memberTextField.resignFirstResponder()
     }
@@ -162,6 +160,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
             nameEditCancelButton.alpha = 0
         } else if textField.tag == Constants.memberTextFieldTag {
             groupInfoVC?.memberSearchUpdated()
+            memberTextField.text = ""
         }
         textField.resignFirstResponder()
         return true

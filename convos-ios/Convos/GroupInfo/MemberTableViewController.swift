@@ -75,7 +75,12 @@ extension MemberTableViewController {
             case .memberNew:
                 cell.statusButton.setImage(UIImage(named: "pending_user"), for: .normal)
             case .memberRemovable:
-                cell.statusButton.setImage(UIImage(named: "cancel"), for: .normal)
+                // don't show cancel next to this user
+                if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
+                    if myUUID != mvd.uuid {
+                        cell.statusButton.setImage(UIImage(named: "cancel"), for: .normal)
+                    }
+                }
             default:
                 break
             }
