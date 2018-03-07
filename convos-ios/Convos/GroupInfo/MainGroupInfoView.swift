@@ -128,7 +128,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         
         memberTextField.text = ""
         groupInfoVC?.resetMembers()
-        groupInfoVC?.reloadTable()
         
         memberTextField.resignFirstResponder()
     }

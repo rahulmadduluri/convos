@@ -34,7 +34,6 @@ protocol GroupInfoComponentDelegate {
     func resetMembers()
     func memberStatusSelected(mvd: MemberViewData)
     func groupCreated(name: String?, photo: UIImage?)
-    func reloadTable()
     func presentAlertOption(tag: Int)
 }
 

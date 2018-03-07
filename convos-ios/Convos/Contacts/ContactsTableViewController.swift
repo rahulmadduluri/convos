@@ -1,18 +1,17 @@
 //
-//  MemberTableViewController.swift
+//  ContactsTableViewController.swift
 //  Convos
 //
-//  Created by Rahul Madduluri on 2/9/18.
+//  Created by Rahul Madduluri on 3/7/18.
 //  Copyright © 2018 rahulm. All rights reserved.
 //
 
 import UIKit
 
-private let cellReuseIdentifier = "MemberCell"
+private let cellReuseIdentifier = "ContactCell"
 
-class MemberTableViewController: UITableViewController, MemberTableVCProtocol, GroupInfoUIComponent {
-    
-    var groupInfoVC: GroupInfoComponentDelegate? = nil
+class ContactsTableViewController: UITableViewController, ContactsTableVCProtocol, ContactsUIComponent {
+    var contactsVC: ContactsComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
@@ -21,7 +20,7 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol, G
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        reloadMemberViewData()
+        reloadContactsViewData()
     }
     
     override func viewDidLoad() {
@@ -31,9 +30,9 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol, G
         tableView.separatorStyle = .none
     }
     
-    // MARK: MemberTableVCProtocol
+    // MARK: ContactsTableVCProtocol
     
-    func reloadMemberViewData() {
+    func reloadContactsViewData() {
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
     }
@@ -41,9 +40,9 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol, G
     // UITableViewController
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupInfoVC?.getMemberViewData().count ?? 0
+        return contactsVC?.getContactsViewData().count ?? 0
     }
-        
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
             MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
@@ -51,18 +50,17 @@ class MemberTableViewController: UITableViewController, MemberTableVCProtocol, G
         return max(cell.frame.size.height, Constants.cellHeight)
         
     }
-
 }
 
 // MARK: - UITableViewController
 
-extension MemberTableViewController {
+extension ContactsTableViewController {
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
             MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
         cell.groupInfoVC = groupInfoVC
-                
+        
         if let mvd = groupInfoVC?.getMemberViewData()[indexPath.row] {
             cell.customTextLabel.text = mvd.text
             if let uri = mvd.photoURI {
@@ -96,3 +94,4 @@ extension MemberTableViewController {
 private struct Constants {
     static let cellHeight: CGFloat = 30
 }
+

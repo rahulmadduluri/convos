@@ -136,6 +136,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         } else {
             fetchGroupMembers()
         }
+        memberTableVC.reloadMemberViewData()
     }
     
     func memberStatusSelected(mvd: MemberViewData) {
@@ -173,11 +174,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             present(alert, animated: true)
         }
     }
-    
-    func reloadTable() {
-        memberTableVC.reloadMemberViewData()
-    }
-    
+        
     func presentAlertOption(tag: Int) {
         var editActionTitle: String = ""
         let groupName = group?.name ?? "New Guild"
@@ -233,7 +230,6 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         memberTableVC.groupInfoVC = self
         resetTextFields()
         resetMembers()
-        memberTableVC.reloadMemberViewData()
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             imagePicker.delegate = self

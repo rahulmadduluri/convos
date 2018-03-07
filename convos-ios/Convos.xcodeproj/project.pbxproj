@@ -50,6 +50,9 @@
 		B77CE84F2047F72400B6D9A2 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE84E2047F72400B6D9A2 /* TagListView.swift */; };
 		B77CE8512047F73800B6D9A2 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE8502047F73800B6D9A2 /* TagView.swift */; };
 		B77CE8532047F7CB00B6D9A2 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE8522047F7CB00B6D9A2 /* CloseButton.swift */; };
+		B77CE857204E9B0C00B6D9A2 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE856204E9B0C00B6D9A2 /* ContactsViewController.swift */; };
+		B77CE859204E9BB700B6D9A2 /* ContactsProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE858204E9BB700B6D9A2 /* ContactsProtocols.swift */; };
+		B77CE85B204FCBDB00B6D9A2 /* MainContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE85A204FCBDB00B6D9A2 /* MainContactsView.swift */; };
 		B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B781CDA71F53BE920088FB3B /* SmartTextField.swift */; };
 		B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */; };
 		B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B788107C1F539D23009AC9FE /* AppDelegate.swift */; };
@@ -57,6 +60,8 @@
 		B78810821F539D23009AC9FE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B78810801F539D23009AC9FE /* Main.storyboard */; };
 		B78810841F539D23009AC9FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B78810831F539D23009AC9FE /* Assets.xcassets */; };
 		B78810871F539D23009AC9FE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B78810851F539D23009AC9FE /* LaunchScreen.storyboard */; };
+		B7DED5B8204FEB630002BF2F /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */; };
+		B7DED5BA204FECF10002BF2F /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -104,6 +109,9 @@
 		B77CE84E2047F72400B6D9A2 /* TagListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		B77CE8502047F73800B6D9A2 /* TagView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		B77CE8522047F7CB00B6D9A2 /* CloseButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
+		B77CE856204E9B0C00B6D9A2 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
+		B77CE858204E9BB700B6D9A2 /* ContactsProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsProtocols.swift; sourceTree = "<group>"; };
+		B77CE85A204FCBDB00B6D9A2 /* MainContactsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainContactsView.swift; sourceTree = "<group>"; };
 		B781CDA71F53BE920088FB3B /* SmartTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SmartTextField.swift; path = ../../Search/SmartTextField.swift; sourceTree = "<group>"; };
 		B78720F81F5E85AE004F74E7 /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		B78810791F539D23009AC9FE /* Convos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Convos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,6 +121,8 @@
 		B78810831F539D23009AC9FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B78810861F539D23009AC9FE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B78810881F539D23009AC9FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
+		B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -233,6 +243,25 @@
 			path = TagListView;
 			sourceTree = "<group>";
 		};
+		B77CE854204E9AC700B6D9A2 /* UserInfo */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UserInfo;
+			sourceTree = "<group>";
+		};
+		B77CE855204E9AD600B6D9A2 /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				B77CE858204E9BB700B6D9A2 /* ContactsProtocols.swift */,
+				B77CE856204E9B0C00B6D9A2 /* ContactsViewController.swift */,
+				B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */,
+				B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */,
+				B77CE85A204FCBDB00B6D9A2 /* MainContactsView.swift */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
 		B781CDA61F53BE0A0088FB3B /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,19 +313,21 @@
 		B788107B1F539D23009AC9FE /* Convos */ = {
 			isa = PBXGroup;
 			children = (
-				B77CE822202744C000B6D9A2 /* Networking */,
-				B77CE8192020B09700B6D9A2 /* API */,
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
 				B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */,
 				B77BB150200268EF005FB88C /* OrderedDictionary.swift */,
 				B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */,
 				B77BB15C20079974005FB88C /* GeneralUtilities.swift */,
+				B77CE8192020B09700B6D9A2 /* API */,
+				B77CE822202744C000B6D9A2 /* Networking */,
 				B748CF8E1F7D037F00735F5D /* Home */,
 				B748CF7D1F7B492800735F5D /* CustomUI */,
 				B748CF681F728F7D00735F5D /* Models */,
 				B78720FA1F5E85B4004F74E7 /* Conversation */,
 				B77CE8422043944F00B6D9A2 /* ConversationInfo */,
+				B77CE855204E9AD600B6D9A2 /* Contacts */,
 				B77CE827202DABDC00B6D9A2 /* GroupInfo */,
+				B77CE854204E9AC700B6D9A2 /* UserInfo */,
 				B781CDA61F53BE0A0088FB3B /* Search */,
 				B77CE83D203AD6F100B6D9A2 /* Gifs */,
 				B78810831F539D23009AC9FE /* Assets.xcassets */,
@@ -458,10 +489,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B77CE8262027450600B6D9A2 /* REST.swift in Sources */,
+				B77CE857204E9B0C00B6D9A2 /* ContactsViewController.swift in Sources */,
 				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
 				B77CE83C20384DB200B6D9A2 /* GroupAPI.swift in Sources */,
 				B77CE829202DAC5200B6D9A2 /* GroupInfoViewController.swift in Sources */,
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
+				B7DED5B8204FEB630002BF2F /* ContactsTableViewController.swift in Sources */,
 				B77CE824202744D100B6D9A2 /* SocketManager.swift in Sources */,
 				B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */,
 				B77CE84F2047F72400B6D9A2 /* TagListView.swift in Sources */,
@@ -472,6 +505,7 @@
 				B77CE8442043947A00B6D9A2 /* ConversationInfoProtocols.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
 				B77BB159200638F2005FB88C /* SearchTableViewHeader.swift in Sources */,
+				B77CE85B204FCBDB00B6D9A2 /* MainContactsView.swift in Sources */,
 				B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */,
 				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
 				B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */,
@@ -490,6 +524,7 @@
 				B77CE82F202DB38D00B6D9A2 /* MainGroupInfoView.swift in Sources */,
 				B77CE836202DD7F500B6D9A2 /* SearchBottomBarView.swift in Sources */,
 				B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */,
+				B7DED5BA204FECF10002BF2F /* ContactTableViewCell.swift in Sources */,
 				B77CE8532047F7CB00B6D9A2 /* CloseButton.swift in Sources */,
 				B77CE8462043948600B6D9A2 /* ConversationInfoViewController.swift in Sources */,
 				B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */,
@@ -498,6 +533,7 @@
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
 				B77BB157200638DE005FB88C /* SearchTableViewCell.swift in Sources */,
 				B77CE81E2020B0CA00B6D9A2 /* SearchAPI.swift in Sources */,
+				B77CE859204E9BB700B6D9A2 /* ContactsProtocols.swift in Sources */,
 				B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
