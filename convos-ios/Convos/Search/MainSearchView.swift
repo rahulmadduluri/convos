@@ -93,6 +93,3 @@ private struct Constants {
     
     static let bottomBarHeight: CGFloat = 50
 }
-
-
-

@@ -20,7 +20,7 @@ protocol ContactsTableVCProtocol {
 
 protocol ContactsComponentDelegate {
     func getContactsViewData() -> [ContactViewData]
-    func contactsSearchUpdated()
+    func contactSearchUpdated()
     func resetContacts()
     func contactStatusSelected(cvd: ContactViewData)
 }

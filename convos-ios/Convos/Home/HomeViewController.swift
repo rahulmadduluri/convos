@@ -16,6 +16,7 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
     var conversationVC: ConversationViewController?
     var groupInfoVC: GroupInfoViewController?
     var conversationInfoVC: ConversationInfoViewController?
+    var contactsVC: ContactsViewController?
     
     // MARK: UIViewController
     
@@ -87,6 +88,16 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
         groupInfoVC?.setGroupInfo(group: group)
 
         if let newVC = self.groupInfoVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
+    }
+    
+    func showContacts() {
+        if self.contactsVC == nil {
+            self.contactsVC = ContactsViewController()
+        }
+        
+        if let newVC = self.contactsVC {
             self.present(newVC, animated: false, completion: nil)
         }
     }

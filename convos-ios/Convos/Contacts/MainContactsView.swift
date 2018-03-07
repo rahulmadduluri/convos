@@ -42,7 +42,7 @@ class MainContactsView: UIView, ContactsUIComponent, UITextFieldDelegate {
         self.addSubview(contactTextField)
         
         // ContactEditCancelButton
-        contactEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
+        contactEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.contactTextFieldWidth/2, y: self.bounds.minY + Constants.contactEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
         contactEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
         contactEditCancelButton.alpha = 0
         contactEditCancelButton.addTarget(self, action: #selector(MainGroupInfoView.tapMemberEditCancel(_:)), for: .touchUpInside)
@@ -71,7 +71,6 @@ class MainContactsView: UIView, ContactsUIComponent, UITextFieldDelegate {
     // MARK: UITextFieldDelegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let text = textField.text ?? ""
         if textField.tag == Constants.contactTextFieldTag {
             contactsVC?.contactSearchUpdated()
             contactTextField.text = ""
@@ -81,7 +80,6 @@ class MainContactsView: UIView, ContactsUIComponent, UITextFieldDelegate {
     }
     
     // MARK: Public
-    
     
 }
 
@@ -96,10 +94,9 @@ private struct Constants {
     
     static let contactEditButtonOriginY: CGFloat = 261
     
-    static let contactTableMarginConstant: CGFloat = 25
-    static let contactTableOriginY: CGFloat = 300
-    static let contactTableHeight: CGFloat = 275
+    static let contactsTableMarginConstant: CGFloat = 25
+    static let contactsTableOriginY: CGFloat = 300
+    static let contactsTableHeight: CGFloat = 275
     
     static let contactTextFieldTag: Int = 1
 }
-

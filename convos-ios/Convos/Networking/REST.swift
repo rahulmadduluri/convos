@@ -31,6 +31,11 @@ class REST: NSObject {
         return generateSearchForContactsURL(urlString: urlString, searchText: searchText, maxContacts: maxContacts)
     }
     
+    static func getPeopleURL(userUUID: String, searchText: String?, maxUsers: Int?) -> URL {
+        let urlString = baseURL + "users"
+        return generateSearchForPeopleURL(urlString: urlString, searchText: searchText, maxUsers: maxUsers)
+    }
+    
     private static func generateSearchForContactsURL(urlString: String, searchText: String?, maxContacts: Int?) -> URL {
         var urlstr = urlString
         let searchTextParameter = "searchtext="
@@ -45,6 +50,27 @@ class REST: NSObject {
                 urlstr += maxContactsParameter + String(maxContacts)
             } else if let maxContacts = maxContacts {
                 urlstr += maxContactsParameter + String(maxContacts)
+            }
+        }
+        let validatedURL = validateString(rawString: urlstr)
+        return URL(string: validatedURL)!
+    }
+    
+    
+    private static func generateSearchForPeopleURL(urlString: String, searchText: String?, maxUsers: Int?) -> URL {
+        var urlstr = urlString
+        let searchTextParameter = "searchtext="
+        let maxUsersParameter = "maxusers="
+        if searchText != nil || maxUsers != nil {
+            urlstr += "?"
+            if let searchText = searchText, maxUsers == nil {
+                urlstr += searchTextParameter + searchText
+            } else if let searchText = searchText,
+                let maxUsers = maxUsers {
+                urlstr += searchTextParameter + searchText + "&"
+                urlstr += maxUsersParameter + String(maxUsers)
+            } else if let maxUsers = maxUsers {
+                urlstr += maxUsersParameter + String(maxUsers)
             }
         }
         let validatedURL = validateString(rawString: urlstr)

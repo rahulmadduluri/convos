@@ -127,6 +127,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         }
     }
     
+    func contactsSelected() {
+        searchVCDelegate?.showContacts()
+    }
+    
     // MARK: SmartTextFieldDelegate
     
     func smartTextUpdated(smartText: String) {
@@ -178,6 +182,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     fileprivate func configureSearch() {
         searchTableVC.searchVC = self
         containerView?.searchTextField.smartTextFieldDelegate = self
+        containerView?.bottomBarView.searchVC = self
         socketManager.delegates.add(delegate: self)
         
         searchTableVC.reloadSearchViewData()

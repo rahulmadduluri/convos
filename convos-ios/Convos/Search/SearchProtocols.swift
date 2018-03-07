@@ -21,6 +21,7 @@ protocol SearchVCDelegate {
     func convoSelected(conversation: Conversation)
     func createGroup()
     func groupSelected(group: Group)
+    func showContacts()
 }
 
 protocol SearchTableVCProtocol {
@@ -40,6 +41,7 @@ protocol SearchComponentDelegate {
     func createGroup()
     func getGroupForUUID(groupUUID: String) -> Group?
     func groupSelected(groupUUID: String)
+    func contactsSelected()
 }
 
 struct SearchViewData: Hashable, Comparable {

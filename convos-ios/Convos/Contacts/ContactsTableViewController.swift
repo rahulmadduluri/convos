@@ -57,28 +57,21 @@ class ContactsTableViewController: UITableViewController, ContactsTableVCProtoco
 extension ContactsTableViewController {
     // Cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: MemberTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? MemberTableViewCell ??
-            MemberTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
-        cell.groupInfoVC = groupInfoVC
+        let cell: ContactTableViewCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as? ContactTableViewCell ??
+            ContactTableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
+        cell.contactsVC = contactsVC
         
-        if let mvd = groupInfoVC?.getMemberViewData()[indexPath.row] {
-            cell.customTextLabel.text = mvd.text
-            if let uri = mvd.photoURI {
+        if let cvd = contactsVC?.getContactsViewData()[indexPath.row] {
+            cell.customTextLabel.text = cvd.text
+            if let uri = cvd.photoURI {
                 cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
             }
-            cell.data = mvd
-            switch mvd.status {
-            case .memberExists:
+            cell.data = cvd
+            switch cvd.status {
+            case .contactExists:
                 cell.statusButton.setImage(UIImage(named: "done"), for: .normal)
-            case .memberNew:
+            case .contactNew:
                 cell.statusButton.setImage(UIImage(named: "pending_user"), for: .normal)
-            case .memberRemovable:
-                // don't show cancel next to this user
-                if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
-                    if myUUID != mvd.uuid {
-                        cell.statusButton.setImage(UIImage(named: "cancel"), for: .normal)
-                    }
-                }
             default:
                 break
             }
@@ -94,4 +87,3 @@ extension ContactsTableViewController {
 private struct Constants {
     static let cellHeight: CGFloat = 30
 }
-

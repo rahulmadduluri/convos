@@ -12,8 +12,6 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     
     var contactsViewData: [ContactViewData] = []
     
-    // queue of removable members *while creating a new group*
-    fileprivate var removableContactViewDataQueue: [ContactViewData] = []
     fileprivate var containerView: MainContactsView? = nil
     fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
     // contact table
@@ -32,7 +30,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
         
         containerView?.addGestureRecognizer(panGestureRecognizer)
         containerView?.contactsVC = self
-        containerView?.memberTableContainerView = contactsTableVC.view
+        containerView?.contactsTableContainerView = contactsTableVC.view
         self.view = containerView
     }
     
@@ -46,7 +44,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        configureGroupInfo()
+        configureContacts()
     }
     
     // MARK: SmartTextFieldDelegate
@@ -57,6 +55,10 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     
     // MARK: ContactsComponentDelegate
     
+    func getContactsViewData() -> [ContactViewData] {
+        return contactsViewData
+    }
+    
     func contactSearchUpdated() {
         self.containerView?.contactTextField.showLoadingIndicator()
         fetchPotentialContacts()
@@ -64,7 +66,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     
     func resetContacts() {
         fetchContacts()
-        contactTableVC.reloadMemberViewData()
+        contactsTableVC.reloadContactsViewData()
     }
     
     func contactStatusSelected(cvd: ContactViewData) {
@@ -86,7 +88,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     // MARK: Private
     
     fileprivate func configureContacts() {
-        containerView?.memberTextField.smartTextFieldDelegate = self
+        containerView?.contactTextField.smartTextFieldDelegate = self
         contactsTableVC.contactsVC = self
         resetTextFields()
         resetContacts()
@@ -108,7 +110,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     fileprivate func fetchPotentialContacts() {
         if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = contactSearchText ?? ""
-            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxContacts: nil, completion: { allUsers in
+            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxUsers: nil, completion: { allUsers in
                 if let allUsers = allUsers {
                     self.receivedPotentialContacts(potentialContacts: allUsers)
                 }
@@ -123,20 +125,20 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     }
     
     // Get all potential contacts, and separate them into old & new
-    fileprivate func receivedPotentialContactsMembers(potentialContacts: [User]) {
+    fileprivate func receivedPotentialContacts(potentialContacts: [User]) {
         var allContactsViewData = createContactsViewData(contacts: potentialContacts, status: .contactNew)
         for cvd in allContactsViewData {
             // if existing memberViewData matches (current group overlaps w/ potential member)
-            if var matchingContact = contactViewData.filter({ $0.uuid == mvd.uuid }).first {
+            if var matchingContact = contactsViewData.filter({ $0.uuid == cvd.uuid }).first {
                 // update status of view data to contactExists
-                allContactsViewData = allContactsViewData.filter{ $0.uuid != mvd.uuid }
+                allContactsViewData = allContactsViewData.filter{ $0.uuid != cvd.uuid }
                 matchingContact.status = .contactExists
                 allContactsViewData.append(matchingContact)
             }
         }
         contactsViewData = allContactsViewData
         contactsTableVC.reloadContactsViewData()
-        containerView?.memberTextField.stopLoadingIndicator()
+        containerView?.contactTextField.stopLoadingIndicator()
     }
     
     fileprivate func createContactsViewData(contacts: [User], status: ContactViewStatus = .normal) -> [ContactViewData] {

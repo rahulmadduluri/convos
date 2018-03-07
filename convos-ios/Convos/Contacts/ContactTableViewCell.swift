@@ -76,7 +76,7 @@ class ContactTableViewCell: UITableViewCell, ContactsUIComponent {
     
     func tapStatus(_ gestureRecognizer: UITapGestureRecognizer) {
         if let d = data {
-            groupInfoVC?.memberStatusSelected(mvd: d)
+            contactsVC?.contactStatusSelected(cvd: d)
         }
     }
 }

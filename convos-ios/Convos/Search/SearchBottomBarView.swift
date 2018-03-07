@@ -8,8 +8,9 @@
 
 import UIKit
 
-class SearchBottomBarView: UIView {
+class SearchBottomBarView: UIView, SearchUIComponent {
     
+    var searchVC: SearchComponentDelegate?
     var searchTextField: SmartTextField?
     var searchButton = UIButton()
     var contactsButton = UIButton()
@@ -38,6 +39,7 @@ class SearchBottomBarView: UIView {
         contactsButton.imageView?.contentMode = .scaleAspectFit
         contactsButton.setImage(UIImage(named: "contacts"), for: .normal)
         contactsButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonImageEdgeInset, left: Constants.buttonImageEdgeInset, bottom: Constants.buttonImageEdgeInset, right: Constants.buttonImageEdgeInset)
+        contactsButton.addTarget(self, action: #selector(SearchBottomBarView.tapContacts(_:)), for: .touchUpInside)
         self.addSubview(contactsButton)
 
         profileButton.frame = CGRect(x: self.bounds.minX + self.bounds.size.width*2/3, y: self.bounds.minY, width: self.bounds.size.width / 3, height: self.bounds.height)
@@ -54,6 +56,10 @@ class SearchBottomBarView: UIView {
     
     func tapSearch(_ gestureRecognizer: UITapGestureRecognizer) {
         searchTextField?.becomeFirstResponder()
+    }
+    
+    func tapContacts(_ gestureRecognizer: UITapGestureRecognizer) {
+        searchVC?.contactsSelected()
     }
 }
 

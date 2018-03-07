@@ -26,6 +26,21 @@ class UserAPI: NSObject {
         }
     }
     
+    static func getPeople(
+        userUUID: String,
+        searchText: String?,
+        maxUsers: Int?,
+        completion: (@escaping ([User]?) -> Void)) {
+        let url = REST.getPeopleURL(userUUID: userUUID, searchText: searchText, maxUsers: maxUsers)
+        Alamofire.request(
+            url,
+            method: .get)
+            .validate()
+            .responseJSON { response in
+                completion(convertResponseToContacts(res: response))
+        }
+    }
+    
     private static func convertResponseToContacts(res: Alamofire.DataResponse<Any>) -> [User]? {
         guard res.result.isSuccess else {
             print("Error while fetching contacts: \(res.result.error)")
