@@ -13,7 +13,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     fileprivate var flagIsWaving = false
     fileprivate var nameEditCancelButton = UIButton()
-    fileprivate var memberEditCancelButton = UIButton()
     fileprivate var flagGifImageView = UIImageView()
     // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
     fileprivate var editAlertHasBeenPressed = false
@@ -79,13 +78,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         memberTextField.alpha = flagIsWaving ? 0 : 1
         self.addSubview(memberTextField)
         
-        // MemberEditCancelButton
-        memberEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.memberTextFieldWidth/2, y: self.bounds.minY + Constants.memberEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
-        memberEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
-        memberEditCancelButton.alpha = 0
-        memberEditCancelButton.addTarget(self, action: #selector(MainGroupInfoView.tapMemberEditCancel(_:)), for: .touchUpInside)
-        self.addSubview(memberEditCancelButton)
-        
         // CreateNewGroupButton
         createNewGroupButton.frame = CGRect(x: self.bounds.midX - Constants.createGroupButtonRadius/2, y: self.bounds.minY + Constants.createGroupButtonOriginY, width: Constants.createGroupButtonRadius, height: Constants.createGroupButtonRadius)
         createNewGroupButton.setImage(UIImage(named: "rocket_launch"), for: .normal)
@@ -122,15 +114,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         
         nameTextField.resignFirstResponder()
     }
-
-    func tapMemberEditCancel(_ obj: Any) {
-        memberEditCancelButton.alpha = 0
-        
-        memberTextField.text = ""
-        groupInfoVC?.resetMembers()
-        
-        memberTextField.resignFirstResponder()
-    }
     
     func tapGroupPhoto(_ obj: Any) {
         groupInfoVC?.presentAlertOption(tag: groupPhotoImageView.tag)
@@ -142,6 +125,11 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     // MARK: UITextFieldDelegate
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         if editAlertHasBeenPressed == true {
             editAlertHasBeenPressed = false
@@ -150,19 +138,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
             groupInfoVC?.presentAlertOption(tag: textField.tag)
             return false
         }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let text = textField.text ?? ""
-        if textField.tag == Constants.nameTextFieldTag {
-            groupInfoVC?.groupNameEdited(name: text)
-            nameEditCancelButton.alpha = 0
-        } else if textField.tag == Constants.memberTextFieldTag {
-            groupInfoVC?.memberSearchUpdated()
-            memberTextField.text = ""
-        }
-        textField.resignFirstResponder()
-        return true
     }
     
     // MARK: Public
@@ -181,7 +156,6 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         memberTextField.alpha = 0
         createNewGroupButton.alpha = 0
         nameEditCancelButton.alpha = 0
-        memberEditCancelButton.alpha = 0
         
         setNeedsLayout()
     }
@@ -192,15 +166,10 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
             nameEditCancelButton.alpha = 1
             nameTextField.becomeFirstResponder()
         } else if tag == Constants.memberTextFieldTag {
-            memberEditCancelButton.alpha = 1
             memberTextField.becomeFirstResponder()
         } else if tag == Constants.groupPhotoTag {
             
         }
-    }
-    
-    func hideMemberCancel() {
-        memberEditCancelButton.alpha = 0
     }
     
 }
@@ -224,8 +193,6 @@ private struct Constants {
     static let memberTextFieldOriginY: CGFloat = 250
     static let memberTextFieldWidth: CGFloat = 200
     static let memberTextFieldHeight: CGFloat = 40
-    
-    static let memberEditButtonOriginY: CGFloat = 261
     
     static let memberTableMarginConstant: CGFloat = 25
     static let memberTableOriginY: CGFloat = 300

@@ -10,7 +10,7 @@ import UIKit
 
 private let cellReuseIdentifier = "ContactCell"
 
-class ContactsTableViewController: UITableViewController, ContactsTableVCProtocol, ContactsUIComponent {
+class ContactsTableViewController: UITableViewController, ContactsTableVCProtocol, ContactsUIComponent, UITextFieldDelegate {
     var contactsVC: ContactsComponentDelegate? = nil
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()

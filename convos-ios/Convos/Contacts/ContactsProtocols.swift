@@ -18,9 +18,8 @@ protocol ContactsTableVCProtocol {
     func reloadContactsViewData()
 }
 
-protocol ContactsComponentDelegate {
+protocol ContactsComponentDelegate: SmartTextFieldDelegate, UITextFieldDelegate {
     func getContactsViewData() -> [ContactViewData]
-    func contactSearchUpdated()
     func resetContacts()
     func contactStatusSelected(cvd: ContactViewData)
 }

@@ -124,19 +124,9 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         }
     }
     
-    func memberSearchUpdated() {
-        self.containerView?.memberTextField.showLoadingIndicator()
-        fetchPotentialMembers()
-    }
-        
     func resetMembers() {
         resetRemovableMemberQueue()
-        if isNewGroup == true {
-            memberViewData = removableMemberViewDataQueue
-        } else {
-            fetchGroupMembers()
-        }
-        memberTableVC.reloadMemberViewData()
+        updateMembers()
     }
     
     func memberStatusSelected(mvd: MemberViewData) {
@@ -155,7 +145,6 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             }
             memberViewData = removableMemberViewDataQueue
             containerView?.memberTextField.text = ""
-            containerView?.hideMemberCancel()
             memberTableVC.reloadMemberViewData()
         // If existing group (and is a new member, add to group)
         } else if mvd.status == .memberNew && isNewGroup == false {
@@ -166,7 +155,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
                     if success == false {
                         print("Failed to update group members :( ")
                     } else {
-                        self.containerView?.tapMemberEditCancel("")
+                        self.containerView?.memberTextField.text = ""
+                        self.resetMembers()
                     }
                 })
             })
@@ -248,12 +238,35 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             containerView?.createNewGroupButton.alpha = 1
         }
         
+        containerView?.memberTextField.userStoppedTypingHandler = {
+            if let memberText = self.memberSearchText {
+                if memberText.characters.count > 0 {
+                    self.containerView?.memberTextField.showLoadingIndicator()
+                    self.fetchPotentialMembers()
+                } else {
+                    self.containerView?.memberTextField.showLoadingIndicator()
+                    self.updateMembers()
+                }
+            }
+        }
+        
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
+    }
+    
+    fileprivate func updateMembers() {
+        if isNewGroup == true {
+            memberViewData = removableMemberViewDataQueue
+            self.containerView?.memberTextField.stopLoadingIndicator()
+        } else {
+            fetchGroupMembers()
+        }
+        memberTableVC.reloadMemberViewData()
     }
     
     fileprivate func fetchGroupMembers() {
         if isNewGroup == false {
             GroupAPI.getMembers(groupUUID: group!.uuid, searchText: "", maxMembers: nil, completion: { members in
+                self.containerView?.memberTextField.stopLoadingIndicator()
                 if let m = members {
                     self.receivedCurrentMembers(members: m)
                 }
@@ -267,6 +280,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = memberSearchText ?? ""
             UserAPI.getContacts(userUUID: userUUID, searchText: searchText, maxContacts: nil, completion: { allUsers in
+                self.containerView?.memberTextField.stopLoadingIndicator()
                 if let allUsers = allUsers {
                     self.receivedPotentialMembers(potentialMembers: allUsers)
                 }
@@ -298,7 +312,6 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             memberViewData = allMemberViewData
         }
         memberTableVC.reloadMemberViewData()
-        containerView?.memberTextField.stopLoadingIndicator()
     }
     
     fileprivate func createMemberViewData(people: [User], status: MemberViewStatus = .normal) -> [MemberViewData] {
@@ -314,7 +327,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             let myData = MemberViewData(uuid: uuid, text: name, status: .memberRemovable, photoURI: photoURI)
             self.removableMemberViewDataQueue = [myData]
         }
-
+        self.containerView?.memberTextField.stopLoadingIndicator()
     }
     
     fileprivate func resetTextFields() {

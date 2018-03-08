@@ -62,6 +62,7 @@
 		B78810871F539D23009AC9FE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B78810851F539D23009AC9FE /* LaunchScreen.storyboard */; };
 		B7DED5B8204FEB630002BF2F /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */; };
 		B7DED5BA204FECF10002BF2F /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */; };
+		B7DED5BC20511AE30002BF2F /* ContactsTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5BB20511AE30002BF2F /* ContactsTopBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -123,6 +124,7 @@
 		B78810881F539D23009AC9FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
 		B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
+		B7DED5BB20511AE30002BF2F /* ContactsTopBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTopBarView.swift; sourceTree = "<group>"; };
 		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -257,6 +259,7 @@
 				B77CE856204E9B0C00B6D9A2 /* ContactsViewController.swift */,
 				B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */,
 				B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */,
+				B7DED5BB20511AE30002BF2F /* ContactsTopBarView.swift */,
 				B77CE85A204FCBDB00B6D9A2 /* MainContactsView.swift */,
 			);
 			path = Contacts;
@@ -500,6 +503,7 @@
 				B77CE84F2047F72400B6D9A2 /* TagListView.swift in Sources */,
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
 				B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */,
+				B7DED5BC20511AE30002BF2F /* ContactsTopBarView.swift in Sources */,
 				B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */,
 				B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */,
 				B77CE8442043947A00B6D9A2 /* ConversationInfoProtocols.swift in Sources */,

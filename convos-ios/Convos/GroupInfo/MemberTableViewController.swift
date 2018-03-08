@@ -79,6 +79,8 @@ extension MemberTableViewController {
                 if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
                     if myUUID != mvd.uuid {
                         cell.statusButton.setImage(UIImage(named: "cancel"), for: .normal)
+                    } else {
+                        cell.statusButton.setImage(nil, for: .normal)
                     }
                 }
             default:

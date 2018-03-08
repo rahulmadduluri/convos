@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContactsViewController: UIViewController, SmartTextFieldDelegate, ContactsComponentDelegate {
+class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFieldDelegate, ContactsComponentDelegate {
     
     var contactsViewData: [ContactViewData] = []
     
@@ -18,7 +18,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     fileprivate var contactsTableVC = ContactsTableViewController()
     
     var contactSearchText: String? {
-        return containerView?.contactTextField.text
+        return containerView?.topBarView.contactTextField.text
     }
     
     // MARK: UIViewController
@@ -50,18 +50,26 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     // MARK: SmartTextFieldDelegate
     
     func smartTextUpdated(smartText: String) {
+        containerView?.topBarView.contactEditCancelButton.alpha = smartText == "" ? 0 : 1
     }
     
+    // UITextFieldDelegate
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let text = textField.text ?? ""
+        if text != "" {
+            fetchPotentialContacts()
+        } else {
+            fetchContacts()
+        }
+        textField.resignFirstResponder()
+        return true
+    }
     
     // MARK: ContactsComponentDelegate
     
     func getContactsViewData() -> [ContactViewData] {
         return contactsViewData
-    }
-    
-    func contactSearchUpdated() {
-        self.containerView?.contactTextField.showLoadingIndicator()
-        fetchPotentialContacts()
     }
     
     func resetContacts() {
@@ -88,10 +96,19 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     // MARK: Private
     
     fileprivate func configureContacts() {
-        containerView?.contactTextField.smartTextFieldDelegate = self
+        containerView?.topBarView.contactTextField.smartTextFieldDelegate = self
         contactsTableVC.contactsVC = self
         resetTextFields()
         resetContacts()
+        
+        containerView?.topBarView.contactTextField.userStoppedTypingHandler = {
+            if let contactText = self.contactSearchText {
+                if contactText.characters.count > 0 {
+                    self.containerView?.topBarView.contactTextField.showLoadingIndicator()
+                    self.fetchPotentialContacts()
+                }
+            }
+        }
         
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
@@ -121,7 +138,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     fileprivate func receivedCurrentContacts(contacts: [User]) {
         contactsViewData = createContactsViewData(contacts: contacts)
         contactsTableVC.reloadContactsViewData()
-        containerView?.contactTextField.stopLoadingIndicator()
+        containerView?.topBarView.contactTextField.stopLoadingIndicator()
     }
     
     // Get all potential contacts, and separate them into old & new
@@ -138,7 +155,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
         }
         contactsViewData = allContactsViewData
         contactsTableVC.reloadContactsViewData()
-        containerView?.contactTextField.stopLoadingIndicator()
+        containerView?.topBarView.contactTextField.stopLoadingIndicator()
     }
     
     fileprivate func createContactsViewData(contacts: [User], status: ContactViewStatus = .normal) -> [ContactViewData] {
@@ -148,6 +165,6 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, Contacts
     }
     
     fileprivate func resetTextFields() {
-        containerView?.contactTextField.text = ""
+        containerView?.topBarView.contactTextField.text = ""
     }
 }

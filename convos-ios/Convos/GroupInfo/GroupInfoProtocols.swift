@@ -30,7 +30,6 @@ protocol GroupInfoComponentDelegate {
     func getGroup() -> Group?
     func groupPhotoEdited(image: UIImage)
     func groupNameEdited(name: String)
-    func memberSearchUpdated()
     func resetMembers()
     func memberStatusSelected(mvd: MemberViewData)
     func groupCreated(name: String?, photo: UIImage?)

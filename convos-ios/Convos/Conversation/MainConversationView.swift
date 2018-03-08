@@ -38,7 +38,6 @@ class MainConversationView: UIView {
             y: self.bounds.minY + Constants.topBarBuffer,
             width: self.bounds.width,
             height: Constants.topBarHeight)
-        // topBarView.backgroundColor = UIColor.blue
         self.addSubview(topBarView)
         
         // Bottom Message Entry Bar
