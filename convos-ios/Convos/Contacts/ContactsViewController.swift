@@ -79,6 +79,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
     
     func contactStatusSelected(cvd: ContactViewData) {
         if cvd.status == .contactNew {
+            presentAlertOption(cvd: cvd)
         }
     }
     
@@ -114,7 +115,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
         resetContacts()
         
         containerView?.topBarView.contactTextField.userStoppedTypingHandler = {
-            if let contactText = self.contactSearchText {
+            if let _ = self.contactSearchText {
                 self.containerView?.topBarView.contactTextField.showLoadingIndicator()
                 if self.searchMode == .exists {
                     self.fetchContacts()
@@ -125,6 +126,23 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
         }
         
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
+    }
+    
+    fileprivate func presentAlertOption(cvd: ContactViewData) {
+        let addContactTitle = "Add " + cvd.text + " as a contact?"
+        let alert = UIAlertController(title: addContactTitle, message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default) { action in
+            if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
+                UserAPI.addContact(userUUID: myUUID, contactUUID: cvd.uuid, completion: { success in
+                    if success == false {
+                        print("Failed to encode create add contact request")
+                    }
+                    self.resetContacts()
+                })
+            }
+        })
+        alert.addAction(UIAlertAction(title: "No", style: .destructive))
+        present(alert, animated: true)
     }
     
     fileprivate func fetchContacts() {

@@ -31,11 +31,15 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/ws", websocketHandler)
+	// User
 	r.HandleFunc("/users", api.GetUsers).Methods("GET")
 	r.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
+	r.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
+	// Group
 	r.HandleFunc("/groups/{uuid}/members", api.GetMembersForGroup).Methods("GET")
 	r.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")
 	r.HandleFunc("/groups", api.CreateGroup).Methods("POST")
+	// Conversation
 	r.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
 	r.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
 	r.Handle("/static/{s3_uri}",

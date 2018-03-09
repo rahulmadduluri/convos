@@ -47,6 +47,7 @@ class SearchBottomBarView: UIView, SearchUIComponent {
         profileButton.imageView?.contentMode = .scaleAspectFit
         profileButton.setImage(UIImage(named: "profile"), for: .normal)
         profileButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonImageEdgeInset, left: Constants.buttonImageEdgeInset, bottom: Constants.buttonImageEdgeInset, right: Constants.buttonImageEdgeInset)
+        profileButton.addTarget(self, action: #selector(SearchBottomBarView.tapProfile(_:)), for: .touchUpInside)
         self.addSubview(profileButton)
     }
     
@@ -60,6 +61,10 @@ class SearchBottomBarView: UIView, SearchUIComponent {
     
     func tapContacts(_ gestureRecognizer: UITapGestureRecognizer) {
         searchVC?.contactsSelected()
+    }
+    
+    func tapProfile(_ gestureRecognizer: UITapGestureRecognizer) {
+        searchVC?.profileSelected()
     }
 }
 

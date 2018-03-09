@@ -77,6 +77,21 @@ class REST: NSObject {
         return URL(string: validatedURL)!
     }
     
+    static func addContactURL(userUUID: String) -> URL {
+        let urlString = baseURL + "users/" + userUUID
+        return URL(string: urlString)!
+    }
+    
+    static func updateUserNameURL(userUUID: String) -> URL {
+        let urlString = baseURL + "users/" + userUUID
+        return URL(string: urlString)!
+    }
+    
+    static func updateUserPhotoURL(userUUID: String) -> URL {
+        let urlString = baseURL + "users/" + userUUID
+        return URL(string: urlString)!
+    }
+    
     // Groups
     
     static func getMembersURL(groupUUID: String, searchText: String?, maxMembers: Int?) -> URL {

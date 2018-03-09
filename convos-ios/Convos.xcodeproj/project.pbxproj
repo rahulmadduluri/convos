@@ -63,6 +63,9 @@
 		B7DED5B8204FEB630002BF2F /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */; };
 		B7DED5BA204FECF10002BF2F /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */; };
 		B7DED5BC20511AE30002BF2F /* ContactsTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5BB20511AE30002BF2F /* ContactsTopBarView.swift */; };
+		B7DED5BE2052B5C00002BF2F /* UserInfoProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5BD2052B5C00002BF2F /* UserInfoProtocols.swift */; };
+		B7DED5C02052B5CD0002BF2F /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5BF2052B5CD0002BF2F /* UserInfoViewController.swift */; };
+		B7DED5C22052B5E50002BF2F /* MainUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5C12052B5E50002BF2F /* MainUserInfoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -125,6 +128,9 @@
 		B7DED5B7204FEB630002BF2F /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
 		B7DED5B9204FECF10002BF2F /* ContactTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		B7DED5BB20511AE30002BF2F /* ContactsTopBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTopBarView.swift; sourceTree = "<group>"; };
+		B7DED5BD2052B5C00002BF2F /* UserInfoProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoProtocols.swift; sourceTree = "<group>"; };
+		B7DED5BF2052B5CD0002BF2F /* UserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
+		B7DED5C12052B5E50002BF2F /* MainUserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainUserInfoView.swift; sourceTree = "<group>"; };
 		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -248,6 +254,9 @@
 		B77CE854204E9AC700B6D9A2 /* UserInfo */ = {
 			isa = PBXGroup;
 			children = (
+				B7DED5BD2052B5C00002BF2F /* UserInfoProtocols.swift */,
+				B7DED5BF2052B5CD0002BF2F /* UserInfoViewController.swift */,
+				B7DED5C12052B5E50002BF2F /* MainUserInfoView.swift */,
 			);
 			path = UserInfo;
 			sourceTree = "<group>";
@@ -501,6 +510,7 @@
 				B77CE824202744D100B6D9A2 /* SocketManager.swift in Sources */,
 				B77CE831202DC1F200B6D9A2 /* MemberTableViewController.swift in Sources */,
 				B77CE84F2047F72400B6D9A2 /* TagListView.swift in Sources */,
+				B7DED5C02052B5CD0002BF2F /* UserInfoViewController.swift in Sources */,
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
 				B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */,
 				B7DED5BC20511AE30002BF2F /* ContactsTopBarView.swift in Sources */,
@@ -513,6 +523,7 @@
 				B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */,
 				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
 				B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */,
+				B7DED5BE2052B5C00002BF2F /* UserInfoProtocols.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */,
 				B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */,
 				B708F99F1FAC75CD00757721 /* ConversationBottomBarView.swift in Sources */,
@@ -533,6 +544,7 @@
 				B77CE8462043948600B6D9A2 /* ConversationInfoViewController.swift in Sources */,
 				B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */,
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
+				B7DED5C22052B5E50002BF2F /* MainUserInfoView.swift in Sources */,
 				B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
 				B77BB157200638DE005FB88C /* SearchTableViewCell.swift in Sources */,

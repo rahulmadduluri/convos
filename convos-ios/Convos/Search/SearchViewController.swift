@@ -131,6 +131,10 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         searchVCDelegate?.showContacts()
     }
     
+    func profileSelected() {
+        searchVCDelegate?.showProfile()
+    }
+    
     // MARK: SmartTextFieldDelegate
     
     func smartTextUpdated(smartText: String) {
