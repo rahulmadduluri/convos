@@ -11,6 +11,7 @@ import UIKit
 class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFieldDelegate, ContactsComponentDelegate {
     
     var contactsViewData: [ContactViewData] = []
+    var searchMode: ContactSearchMode = .exists
     
     fileprivate var containerView: MainContactsView? = nil
     fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
@@ -50,7 +51,6 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
     // MARK: SmartTextFieldDelegate
     
     func smartTextUpdated(smartText: String) {
-        containerView?.topBarView.contactEditCancelButton.alpha = smartText == "" ? 0 : 1
     }
     
     // UITextFieldDelegate
@@ -82,6 +82,18 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
         }
     }
     
+    func addContactSelected() {
+        if searchMode == .exists {
+            searchMode = .new
+            fetchPotentialContacts()
+            containerView?.topBarView.contactTextField.becomeFirstResponder()
+        } else {
+            searchMode = .exists
+            fetchContacts()
+            containerView?.topBarView.contactTextField.becomeFirstResponder()
+        }
+    }
+    
     // MARK: Public
     
     func respondToPanGesture(gesture: UIGestureRecognizer) {
@@ -103,8 +115,10 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
         
         containerView?.topBarView.contactTextField.userStoppedTypingHandler = {
             if let contactText = self.contactSearchText {
-                if contactText.characters.count > 0 {
-                    self.containerView?.topBarView.contactTextField.showLoadingIndicator()
+                self.containerView?.topBarView.contactTextField.showLoadingIndicator()
+                if self.searchMode == .exists {
+                    self.fetchContacts()
+                } else if self.searchMode == .new {
                     self.fetchPotentialContacts()
                 }
             }
@@ -114,9 +128,9 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
     }
     
     fileprivate func fetchContacts() {
-        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
+        if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = contactSearchText ?? ""
-            UserAPI.getContacts(userUUID: userUUID, searchText: searchText, maxContacts: nil, completion: { contacts in
+            UserAPI.getContacts(userUUID: myUUID, searchText: searchText, maxContacts: nil, completion: { contacts in
                 if let c = contacts {
                     self.receivedCurrentContacts(contacts: c)
                 }
@@ -125,14 +139,15 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
     }
     
     fileprivate func fetchPotentialContacts() {
-        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
+        if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = contactSearchText ?? ""
-            UserAPI.getPeople(userUUID: userUUID, searchText: searchText, maxUsers: nil, completion: { allUsers in
+            UserAPI.getPeople(searchText: searchText, maxUsers: nil, completion: { allUsers in
                 if let allUsers = allUsers {
-                    self.receivedPotentialContacts(potentialContacts: allUsers)
+                    self.receivedPotentialContacts(potentialContacts: allUsers.filter{ $0.uuid != myUUID})
                 }
             })
         }
+
     }
     
     fileprivate func receivedCurrentContacts(contacts: [User]) {
@@ -145,7 +160,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
     fileprivate func receivedPotentialContacts(potentialContacts: [User]) {
         var allContactsViewData = createContactsViewData(contacts: potentialContacts, status: .contactNew)
         for cvd in allContactsViewData {
-            // if existing memberViewData matches (current group overlaps w/ potential member)
+            // if existing contactViewData matches (current group overlaps w/ potential member)
             if var matchingContact = contactsViewData.filter({ $0.uuid == cvd.uuid }).first {
                 // update status of view data to contactExists
                 allContactsViewData = allContactsViewData.filter{ $0.uuid != cvd.uuid }

@@ -14,6 +14,12 @@ enum ContactViewStatus {
     case contactNew
 }
 
+enum ContactSearchMode {
+    case new
+    case exists
+}
+
+
 protocol ContactsTableVCProtocol {
     func reloadContactsViewData()
 }
@@ -21,6 +27,7 @@ protocol ContactsTableVCProtocol {
 protocol ContactsComponentDelegate: SmartTextFieldDelegate, UITextFieldDelegate {
     func getContactsViewData() -> [ContactViewData]
     func resetContacts()
+    func addContactSelected()
     func contactStatusSelected(cvd: ContactViewData)
 }
 

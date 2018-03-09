@@ -13,6 +13,8 @@ const (
 	_paramName       = "name"
 	// User
 	_paramMaxContacts = "maxcontacts"
+	_paramMaxUsers    = "maxusers"
+	_paramContactUUID = "contactuuid"
 	// Group
 	_paramGroupUUID = "groupuuid"
 	// Members

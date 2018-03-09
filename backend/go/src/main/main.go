@@ -31,6 +31,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/ws", websocketHandler)
+	r.HandleFunc("/users", api.GetUsers).Methods("GET")
 	r.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
 	r.HandleFunc("/groups/{uuid}/members", api.GetMembersForGroup).Methods("GET")
 	r.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")

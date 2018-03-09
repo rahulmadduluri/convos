@@ -26,7 +26,9 @@ type DbHandler interface {
 	//Search
 	GetGroups(userUUID string, searchText string) ([]models.GroupObj, error)
 	// User
+	GetUsers(searchText string, maxUsers int) ([]models.UserObj, error)
 	GetContactsForUser(userUUID string, searchText string, maxContacts int) ([]models.UserObj, error)
+	CreateContact(userUUID string, contactUUID string, createdTimestampServer int) error
 	// Group
 	GetMembersForGroup(groupUUID string, searchText string, maxMembers int) ([]models.UserObj, error)
 	UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error

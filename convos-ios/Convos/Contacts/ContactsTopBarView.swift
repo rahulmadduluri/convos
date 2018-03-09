@@ -10,7 +10,7 @@ import UIKit
 
 class ContactsTopBarView: UIView, ContactsUIComponent {
     var contactsVC: ContactsComponentDelegate?
-    var contactEditCancelButton = UIButton()
+    var addNewContactButton = UIButton()
     var contactTextField: SmartTextField = SmartTextField()
     
     // MARK: UIView
@@ -36,23 +36,20 @@ class ContactsTopBarView: UIView, ContactsUIComponent {
         contactTextField.delegate = contactsVC
         self.addSubview(contactTextField)
         
-        // ContactEditCancelButton
-        contactEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.contactTextFieldWidth/2, y: self.bounds.minY + Constants.contactEditButtonOriginY, width: Constants.editButtonRadius, height: Constants.editButtonRadius)
-        contactEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
-        contactEditCancelButton.alpha = 0
-        contactEditCancelButton.addTarget(self, action: #selector(ContactsTopBarView.tapContactEditCancel(_:)), for: .touchUpInside)
-        self.addSubview(contactEditCancelButton)
+        // AddNewContactsButton
+        addNewContactButton.frame = CGRect(x: self.bounds.maxX - Constants.addContactButtonTrailingMargin - Constants.addContactButtonRadius, y: self.bounds.minY + Constants.addContactButtonOriginY, width: Constants.addContactButtonRadius, height: Constants.addContactButtonRadius)
+        addNewContactButton.setImage(UIImage(named: "new_group"), for: .normal)
+        addNewContactButton.setImage(UIImage(named: "cancel"), for: .selected)
+        addNewContactButton.addTarget(self, action: #selector(ContactsTopBarView.tapAddContact(_:)), for: .touchUpInside)
+        self.addSubview(addNewContactButton)
     }
         
     // MARK: Gesture Recognizer functions
     
-    func tapContactEditCancel(_ obj: Any) {
-        contactEditCancelButton.alpha = 0
-        
+    func tapAddContact(_ obj: Any) {
+        addNewContactButton.isSelected = !addNewContactButton.isSelected
         contactTextField.text = ""
-        contactsVC?.resetContacts()
-        
-        contactTextField.resignFirstResponder()
+        contactsVC?.addContactSelected()
     }
 
 }
@@ -62,8 +59,12 @@ private struct Constants {
     
     static let contactTextFieldPlaceholder: String = "Search Contacts"
     static let contactTextFieldOriginY: CGFloat = 0
-    static let contactTextFieldWidth: CGFloat = 150
+    static let contactTextFieldWidth: CGFloat = 200
     static let contactTextFieldHeight: CGFloat = 40
+    
+    static let addContactButtonOriginY: CGFloat = 5
+    static let addContactButtonTrailingMargin: CGFloat = 10
+    static let addContactButtonRadius: CGFloat = 30
     
     static let contactEditButtonOriginY: CGFloat = 5
 }
