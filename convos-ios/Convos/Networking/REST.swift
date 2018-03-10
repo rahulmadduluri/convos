@@ -155,29 +155,9 @@ class REST: NSObject {
     
     // Conversation
     
-    static func updateConversationURL(conversationUUID: String, topic: String?, newTagUUID: String?) -> URL {
+    static func updateConversationURL(conversationUUID: String) -> URL {
         let urlString = baseURL + "conversations/" + conversationUUID
-        return generateUpdateConversationURL(urlString: urlString, topic: topic, newTagUUID: newTagUUID)
-    }
-    
-    private static func generateUpdateConversationURL(urlString: String, topic: String?, newTagUUID: String?) -> URL {
-        var urlstr = urlString
-        let newTopicParam = "topic="
-        let newTagParam = "taguuid="
-        if topic != nil || newTagUUID != nil {
-            urlstr += "?"
-            if let topic = topic, newTagUUID == nil {
-                urlstr += newTagParam + topic
-            } else if let topic = topic,
-                let newTagUUID = newTagUUID {
-                urlstr += newTopicParam + topic + "&"
-                urlstr += newTagUUID + newTagUUID
-            } else if let newTagUUID = newTagUUID {
-                urlstr += newTagUUID + newTagUUID
-            }
-        }
-        let validatedURL = validateString(rawString: urlstr)
-        return URL(string: validatedURL)!
+        return URL(string: urlString)!
     }
     
     static func updateConversationPhotoURL(conversationUUID: String) -> URL {

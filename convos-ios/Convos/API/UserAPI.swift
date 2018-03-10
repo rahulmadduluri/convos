@@ -58,15 +58,19 @@ class UserAPI: NSObject {
         }
     }
     
-    static func updateUserName(
+    static func updateUser(
         userUUID: String,
-        name: String,
+        name: String?,
         completion: (@escaping (Bool) -> Void)) {
         let url = REST.updateUserNameURL(userUUID: userUUID)
+        var params: [String: Any] = [:]
+        if let name = name {
+            params["name"] = name
+        }
         Alamofire.request(
             url,
             method: .put,
-            parameters: ["name": name])
+            parameters: params)
             .validate()
             .response { res in
                 if res.error == nil {

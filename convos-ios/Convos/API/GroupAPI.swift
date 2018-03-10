@@ -17,9 +17,17 @@ class GroupAPI: NSObject {
         newMemberUUID: String?,
         completion: (@escaping (Bool) -> Void)) {
         let url = REST.updateGroupURL(groupUUID: groupUUID, name: newGroupName, newMemberUUID: newMemberUUID)
+        var params: [String: Any] = [:]
+        if let name = newGroupName {
+            params["name"] = name
+        }
+        if let newMemberUUID = newMemberUUID {
+            params["memberuuid"] = newMemberUUID
+        }
         Alamofire.request(
             url,
-            method: .put)
+            method: .put,
+            parameters: params)
             .validate()
             .response { res in
                 if res.error == nil {

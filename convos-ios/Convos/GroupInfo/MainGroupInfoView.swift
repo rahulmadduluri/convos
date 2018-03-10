@@ -126,6 +126,10 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     // MARK: UITextFieldDelegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let t = textField.text, textField.tag == Constants.nameTextFieldTag {
+            groupInfoVC?.groupNameEdited(name: t)
+        }
+        nameEditCancelButton.alpha = 0
         textField.resignFirstResponder()
         return true
     }

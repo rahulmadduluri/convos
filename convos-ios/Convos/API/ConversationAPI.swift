@@ -16,10 +16,18 @@ class ConversationAPI: NSObject {
         newConversationTopic: String?,
         newTagUUID: String?,
         completion: (@escaping (Bool) -> Void)) {
-        let url = REST.updateConversationURL(conversationUUID: conversationUUID, topic: newConversationTopic, newTagUUID: newTagUUID)
+        let url = REST.updateConversationURL(conversationUUID: conversationUUID)
+        var params: [String: Any] = [:]
+        if let topic = newConversationTopic {
+            params["topic"] = topic
+        }
+        if let tagUUID = newTagUUID {
+            params["taguuid"] = tagUUID
+        }
         Alamofire.request(
             url,
-            method: .put)
+            method: .put,
+            parameters: params)
             .validate()
             .response { res in
                 if res.error == nil {

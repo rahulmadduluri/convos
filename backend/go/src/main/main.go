@@ -33,6 +33,7 @@ func main() {
 	r.HandleFunc("/ws", websocketHandler)
 	// User
 	r.HandleFunc("/users", api.GetUsers).Methods("GET")
+	r.HandleFunc("/users/{uuid}", api.UpdateUser).Methods("PUT")
 	r.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
 	r.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
 	// Group

@@ -36,3 +36,9 @@ insert into contacts (user_id, contact_id, created_timestamp_server)
 		(select id from users where users.uuid = :contact_uuid),
 		:created_timestamp_server
 ;
+
+-- name: updateUserName
+update users
+set name = :name
+where users.uuid = :user_uuid
+;

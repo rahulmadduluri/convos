@@ -11,6 +11,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userUUID, _ := vars[_paramUUID]
+	name := r.FormValue(_paramName)
+
+	err := db.GetHandler().UpdateUser(userUUID, name)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "failed to update user")
+	}
+	respondWithJSON(w, http.StatusOK, nil)
+}
+
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	searchText := r.FormValue(_paramSearchText)
 	maxUsers, _ := strconv.Atoi(r.FormValue(_paramMaxUsers))

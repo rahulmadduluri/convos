@@ -8,3 +8,9 @@ insert into conversations (uuid, created_timestamp_server, updated_timestamp_ser
 		(select id from groups where groups.uuid = :group_uuid), 
 		:photo_uri
 ;
+
+-- name: updateConversationTopic
+update conversations 
+set topic = :topic
+where conversations.uuid = :conversation_uuid
+;

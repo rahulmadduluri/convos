@@ -10,7 +10,19 @@ const (
 	_findUsers           = "findUsers"
 	_findContactsForUser = "findContactsForUser"
 	_updateContacts      = "updateContacts"
+	_updateUserName      = "updateUserName"
 )
+
+func (dbh *dbHandler) UpdateUser(userUUID string, name string) error {
+	_, err := dbh.db.NamedQuery(
+		dbh.userQueries[_updateUserName],
+		map[string]interface{}{
+			"user_uuid": userUUID,
+			"name":      name,
+		},
+	)
+	return err
+}
 
 func (dbh *dbHandler) GetUsers(searchText string, maxUsers int) ([]models.UserObj, error) {
 	var objs []models.UserObj

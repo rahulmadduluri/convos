@@ -71,7 +71,7 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     
     func userNameEdited(name: String) {
         if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String, isMe == true{
-            UserAPI.updateUserName(userUUID: myUUID, name: name) { success in
+            UserAPI.updateUser(userUUID: myUUID, name: name) { success in
                 if success == false {
                     print("Failed to update name :( ")
                 }
