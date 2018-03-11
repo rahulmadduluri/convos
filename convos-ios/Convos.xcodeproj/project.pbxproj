@@ -66,6 +66,12 @@
 		B7DED5BE2052B5C00002BF2F /* UserInfoProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5BD2052B5C00002BF2F /* UserInfoProtocols.swift */; };
 		B7DED5C02052B5CD0002BF2F /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5BF2052B5CD0002BF2F /* UserInfoViewController.swift */; };
 		B7DED5C22052B5E50002BF2F /* MainUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5C12052B5E50002BF2F /* MainUserInfoView.swift */; };
+		B7DED5C42054BBB00002BF2F /* SwitchConversationCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5C32054BBB00002BF2F /* SwitchConversationCollectionView.swift */; };
+		B7DED5C6205548580002BF2F /* Auth0.plist in Resources */ = {isa = PBXBuildFile; fileRef = B7DED5C5205548580002BF2F /* Auth0.plist */; };
+		B7DED5C92055541E0002BF2F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5C82055541E0002BF2F /* LoginViewController.swift */; };
+		B7DED5CB205556090002BF2F /* LoginProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CA205556090002BF2F /* LoginProtocols.swift */; };
+		B7DED5CD2055587D0002BF2F /* MainLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CC2055587D0002BF2F /* MainLoginView.swift */; };
+		B7DED5D0205567770002BF2F /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CF205567770002BF2F /* Credentials.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,6 +137,12 @@
 		B7DED5BD2052B5C00002BF2F /* UserInfoProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoProtocols.swift; sourceTree = "<group>"; };
 		B7DED5BF2052B5CD0002BF2F /* UserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		B7DED5C12052B5E50002BF2F /* MainUserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainUserInfoView.swift; sourceTree = "<group>"; };
+		B7DED5C32054BBB00002BF2F /* SwitchConversationCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchConversationCollectionView.swift; sourceTree = "<group>"; };
+		B7DED5C5205548580002BF2F /* Auth0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0.plist; sourceTree = "<group>"; };
+		B7DED5C82055541E0002BF2F /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		B7DED5CA205556090002BF2F /* LoginProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginProtocols.swift; sourceTree = "<group>"; };
+		B7DED5CC2055587D0002BF2F /* MainLoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainLoginView.swift; sourceTree = "<group>"; };
+		B7DED5CF205567770002BF2F /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -300,6 +312,7 @@
 				B748CF641F728D1600735F5D /* MainConversationView.swift */,
 				B708F99E1FAC75CD00757721 /* ConversationBottomBarView.swift */,
 				B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */,
+				B7DED5C32054BBB00002BF2F /* SwitchConversationCollectionView.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -330,11 +343,13 @@
 				B77BB150200268EF005FB88C /* OrderedDictionary.swift */,
 				B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */,
 				B77BB15C20079974005FB88C /* GeneralUtilities.swift */,
+				B7DED5CE205567640002BF2F /* Auth */,
 				B77CE8192020B09700B6D9A2 /* API */,
 				B77CE822202744C000B6D9A2 /* Networking */,
 				B748CF8E1F7D037F00735F5D /* Home */,
 				B748CF7D1F7B492800735F5D /* CustomUI */,
 				B748CF681F728F7D00735F5D /* Models */,
+				B7DED5C7205553CD0002BF2F /* Login */,
 				B78720FA1F5E85B4004F74E7 /* Conversation */,
 				B77CE8422043944F00B6D9A2 /* ConversationInfo */,
 				B77CE855204E9AD600B6D9A2 /* Contacts */,
@@ -346,8 +361,27 @@
 				B78810851F539D23009AC9FE /* LaunchScreen.storyboard */,
 				B78810801F539D23009AC9FE /* Main.storyboard */,
 				B78810881F539D23009AC9FE /* Info.plist */,
+				B7DED5C5205548580002BF2F /* Auth0.plist */,
 			);
 			path = Convos;
+			sourceTree = "<group>";
+		};
+		B7DED5C7205553CD0002BF2F /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				B7DED5CA205556090002BF2F /* LoginProtocols.swift */,
+				B7DED5C82055541E0002BF2F /* LoginViewController.swift */,
+				B7DED5CC2055587D0002BF2F /* MainLoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		B7DED5CE205567640002BF2F /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				B7DED5CF205567770002BF2F /* Credentials.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		EC94CA43C8E4709E320DB4AC /* Pods */ = {
@@ -422,6 +456,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7DED5C6205548580002BF2F /* Auth0.plist in Resources */,
 				B77CE841203ADD9C00B6D9A2 /* flag_wave_2.gif in Resources */,
 				B78810871F539D23009AC9FE /* LaunchScreen.storyboard in Resources */,
 				B78810841F539D23009AC9FE /* Assets.xcassets in Resources */,
@@ -459,7 +494,9 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Convos/Pods-Convos-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Auth0/Auth0.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
+				"${BUILT_PRODUCTS_DIR}/SimpleKeychain/SimpleKeychain.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftWebSocket/SwiftWebSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyGif/SwiftyGif.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
@@ -468,7 +505,9 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Auth0.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimpleKeychain.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftWebSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyGif.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -504,6 +543,7 @@
 				B77CE857204E9B0C00B6D9A2 /* ContactsViewController.swift in Sources */,
 				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
 				B77CE83C20384DB200B6D9A2 /* GroupAPI.swift in Sources */,
+				B7DED5D0205567770002BF2F /* Credentials.swift in Sources */,
 				B77CE829202DAC5200B6D9A2 /* GroupInfoViewController.swift in Sources */,
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
 				B7DED5B8204FEB630002BF2F /* ContactsTableViewController.swift in Sources */,
@@ -524,9 +564,12 @@
 				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
 				B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */,
 				B7DED5BE2052B5C00002BF2F /* UserInfoProtocols.swift in Sources */,
+				B7DED5CB205556090002BF2F /* LoginProtocols.swift in Sources */,
 				B781CDA81F53BE920088FB3B /* SmartTextField.swift in Sources */,
 				B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */,
 				B708F99F1FAC75CD00757721 /* ConversationBottomBarView.swift in Sources */,
+				B7DED5C42054BBB00002BF2F /* SwitchConversationCollectionView.swift in Sources */,
+				B7DED5C92055541E0002BF2F /* LoginViewController.swift in Sources */,
 				B77CE834202DCBE400B6D9A2 /* MemberTableViewCell.swift in Sources */,
 				B77CE82B202DAD3000B6D9A2 /* ModelExtensions.swift in Sources */,
 				B77CE84C2043FF3600B6D9A2 /* ConversationAPI.swift in Sources */,
@@ -544,6 +587,7 @@
 				B77CE8462043948600B6D9A2 /* ConversationInfoViewController.swift in Sources */,
 				B77BB15520039434005FB88C /* SearchProtocols.swift in Sources */,
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
+				B7DED5CD2055587D0002BF2F /* MainLoginView.swift in Sources */,
 				B7DED5C22052B5E50002BF2F /* MainUserInfoView.swift in Sources */,
 				B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,

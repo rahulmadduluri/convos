@@ -8,31 +8,43 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
+class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
     var containerView: MainHomeView? = nil
 
-    var searchVC = SearchViewController()
-     // conversation VC to transition to
+    var loginVC: LoginViewController?
+    var searchVC: SearchViewController?
     var conversationVC: ConversationViewController?
     var groupInfoVC: GroupInfoViewController?
     var conversationInfoVC: ConversationInfoViewController?
     var contactsVC: ContactsViewController?
     var userInfoVC: UserInfoViewController?
     
+    var isLoggedIn: Bool {
+        return Credentials.credentialsManager.hasValid()
+    }
+        
     // MARK: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureHome()
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isLoggedIn == true {
+            presentSearch()
+        } else {
+            presentLogin()
+        }
     }
         
     override func loadView() {
-        self.addChildViewController(searchVC)
-        
         containerView = MainHomeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         
-        containerView?.searchContainerView = searchVC.view
         self.view = containerView
     }
     
@@ -42,6 +54,12 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
         }
         
         super.didMove(toParentViewController: parent)
+    }
+    
+    // MARK: LoginVCDelegate
+    
+    func loggedIn() {
+        
     }
     
     // MARK: SearchVCDelegate
@@ -132,8 +150,28 @@ class HomeViewController: UIViewController, SearchVCDelegate, GroupInfoVCDelegat
         UserDefaults.standard.set("uuid-1", forKey: "uuid")
         UserDefaults.standard.set("Prafulla", forKey: "name")
         UserDefaults.standard.set("prafulla_prof", forKey: "photo_uri")
+    }
+    
+    fileprivate func presentSearch() {
+        if self.searchVC == nil {
+            searchVC = SearchViewController()
+            searchVC?.searchVCDelegate = self
+        }
         
-        searchVC.searchVCDelegate = self
+        if let newVC = self.searchVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
+    }
+    
+    fileprivate func presentLogin() {
+        if self.loginVC == nil {
+            loginVC = LoginViewController()
+            loginVC?.loginVCDelegate = self
+        }
+        
+        if let newVC = self.loginVC {
+            self.present(newVC, animated: false, completion: nil)
+        }
     }
     
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MessageTableViewHeader: UITableViewHeaderFooterView, MessageUIComponent {
+class MessageTableViewHeader: UITableViewHeaderFooterView {
     
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()

@@ -2,6 +2,9 @@ PODS:
   - Alamofire (4.5.1)
   - AlamofireImage (3.3.0):
     - Alamofire (~> 4.5)
+  - Auth0 (1.8.0):
+    - SimpleKeychain
+  - SimpleKeychain (0.8.0)
   - SQLite.swift (0.11.3):
     - SQLite.swift/standard (= 0.11.3)
   - SQLite.swift/standard (0.11.3)
@@ -12,6 +15,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.5.1)
   - AlamofireImage (~> 3.3)
+  - Auth0 (~> 1.0)
   - SQLite.swift (~> 0.11.3)
   - SwiftWebSocket (~> 2.6.5)
   - SwiftyGif (~> 3.1.0)
@@ -20,11 +24,13 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
+  Auth0: deb3b9e4c4d283c092bc7a74e5eb558ac8852330
+  SimpleKeychain: 84c748463eec601dfee5e7990f55cc82edc5488d
   SQLite.swift: 99b36c22084427f0abbeb957556ce1528cf10bb3
   SwiftWebSocket: 1ef8a0efb023544643bdf480c1ec4a62b204f293
   SwiftyGif: aad44b7ef0ad1d599ba83d7aa5759e916b520c42
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: 5b47414b8287e92629f9e54fbcc604e8da722006
+PODFILE CHECKSUM: e9b132f61a31f04fee58663f613e70ef41503672
 
 COCOAPODS: 1.4.0

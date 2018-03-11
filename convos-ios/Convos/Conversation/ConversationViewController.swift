@@ -186,7 +186,6 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     fileprivate func received(response: PullMessagesResponse) {
         // sort messages so that messages with no parent are first
-        // reason (I know, hacky): we don't want to insert child before parent
         for m in (response.messages.sorted { $0.parentUUID == nil && $1.parentUUID != nil }) {
             addMessageToCache(m: m)
         }

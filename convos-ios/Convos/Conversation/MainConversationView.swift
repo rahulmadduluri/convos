@@ -11,6 +11,7 @@ import UIKit
 class MainConversationView: UIView {
     
     var topBarView: ConversationTopBarView = ConversationTopBarView()
+    var switchConversationCollection = SwitchConversationCollectionView()
     var bottomBarView: ConversationBottomBarView = ConversationBottomBarView()
     var messagesTableContainerView: UIView? = nil
     

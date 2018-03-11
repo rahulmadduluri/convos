@@ -8,4 +8,5 @@ target 'Convos' do
   pod 'SQLite.swift', '~> 0.11.3'
   pod 'SwiftyJSON', '~> 3.1.4'
   pod 'SwiftyGif', '~> 3.1.0'
+  pod 'Auth0', '~> 1.0'
 end

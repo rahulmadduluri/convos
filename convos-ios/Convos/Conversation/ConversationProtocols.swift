@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol MessageUIDelegate {
+protocol ConversationComponentDelegate {
     func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]>
     func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData?
 }
 
-protocol MessageTableVCDelegate: MessageUIDelegate {
+protocol MessageTableVCDelegate: ConversationComponentDelegate {
     func setMessageViewData(parent: MessageViewData?, mvd: MessageViewData)
     func goBack()
 }
@@ -22,8 +22,8 @@ protocol MessageTableVCProtocol {
     func reloadMessageViewData()
 }
 
-protocol MessageUIComponent {
-    var delegate: MessageTableCellDelegate? { get set }
+protocol ConversationUIComponent {
+    var delegate: ConversationComponentDelegate? { get set }
 }
 
 protocol MessageTableCellDelegate {

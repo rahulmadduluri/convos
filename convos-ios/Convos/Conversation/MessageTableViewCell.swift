@@ -8,7 +8,7 @@
 import UIKit
 
 
-class MessageTableViewCell: UITableViewCell, MessageUIComponent {
+class MessageTableViewCell: UITableViewCell {
     
     let customTextLabel = UILabel()
     let photoImageView = UIImageView()
