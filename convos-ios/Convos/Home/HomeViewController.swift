@@ -19,6 +19,8 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
     var contactsVC: ContactsViewController?
     var userInfoVC: UserInfoViewController?
     
+    private var hasBeenDisplayed = false
+    
     var isLoggedIn: Bool {
         return Credentials.credentialsManager.hasValid()
     }
@@ -35,25 +37,18 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if isLoggedIn == true {
-            presentSearch()
-        } else {
-            presentLogin()
+        if hasBeenDisplayed == false {
+            hasBeenDisplayed = true
+            if isLoggedIn == true {
+                presentSearch()
+            } else {
+                presentLogin()
+            }
         }
-    }
-        
-    override func loadView() {
-        containerView = MainHomeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-        
-        self.view = containerView
     }
     
-    override func didMove(toParentViewController parent: UIViewController?) {
-        for childVC in self.childViewControllers {
-            childVC.removeFromParentViewController()
-        }
-        
-        super.didMove(toParentViewController: parent)
+    override func loadView() {
+        self.view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
     }
     
     // MARK: LoginVCDelegate

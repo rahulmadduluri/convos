@@ -10,8 +10,6 @@ import UIKit
 
 class MainHomeView: UIView {
     
-    var searchContainerView: UIView? = nil
-    
     // MARK: Init
     
     override init(frame: CGRect) {
@@ -24,17 +22,4 @@ class MainHomeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: UIView
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Search Container
-        if let sCV = searchContainerView {
-            sCV.bounds = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
-            
-            self.addSubview(sCV)
-        }
-    }
-
 }

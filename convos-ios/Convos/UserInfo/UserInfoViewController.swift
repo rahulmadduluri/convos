@@ -26,6 +26,12 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     
     // MARK: UIViewController
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configureUserInfo()
+    }
+    
     override func loadView() {
         containerView = MainUserInfoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         
@@ -40,11 +46,6 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
         }
         
         super.didMove(toParentViewController: parent)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureUserInfo()
     }
     
     // MARK: SmartTextFieldDelegate

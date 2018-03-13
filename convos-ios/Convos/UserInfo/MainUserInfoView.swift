@@ -17,6 +17,7 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
     var userInfoVC: UserInfoComponentDelegate? = nil
     var nameTextField = UITextField()
     var userPhotoImageView = UIImageView()
+    var mobileNumberTextField = UITextField()
     
     // MARK: Init
     
@@ -62,6 +63,13 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
         userPhotoImageView.addGestureRecognizer(singleTap)
         userPhotoImageView.tag = Constants.userPhotoTag
         self.addSubview(userPhotoImageView)
+        
+        // MobileNumberTextField
+        mobileNumberTextField.frame = CGRect(x: self.bounds.midX - Constants.mobileTextFieldWidth/2, y: self.bounds.minY + Constants.mobileTextFieldOriginY, width: Constants.mobileTextFieldWidth, height: Constants.mobileTextFieldHeight)
+        mobileNumberTextField.font = mobileNumberTextField.font?.withSize(Constants.mobileTextFieldFontSize)
+        mobileNumberTextField.textAlignment = .center
+        mobileNumberTextField.delegate = self
+        self.addSubview(mobileNumberTextField)
     }
     
     // MARK: Gesture Recognizer functions
@@ -128,6 +136,12 @@ private struct Constants {
     static let nameEditButtonOriginY: CGFloat = 196
     static let editButtonWidth: CGFloat = 20
     static let editButtonHeight: CGFloat = 20
+    
+    static let mobileTextFieldPlaceholder: String = "+(!!!!!)13090203930"
+    static let mobileTextFieldOriginY: CGFloat = 175
+    static let mobileTextFieldWidth: CGFloat = 200
+    static let mobileTextFieldHeight: CGFloat = 60
+    static let mobileTextFieldFontSize: CGFloat = 24
    
     static let nameTextFieldTag: Int = 1
     static let userPhotoTag: Int = 2
