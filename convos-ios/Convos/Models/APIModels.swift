@@ -21,6 +21,7 @@ class User: NSObject, APIModel {
     // vars
     let uuid: String
     let name: String
+    let handle: String
     let photoURI: String?
     
     override var hashValue: Int {
@@ -28,26 +29,29 @@ class User: NSObject, APIModel {
     }
     
     // init
-    init(uuid: String, name: String, photoURI: String?) {
+    init(uuid: String, name: String, handle: String, photoURI: String?) {
         self.uuid = uuid
         self.name = name
+        self.handle = handle
         self.photoURI = photoURI
     }
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
-            let nameJSON = dictionary["Name"] else {
+            let nameJSON = dictionary["Name"],
+            let handleJSON = dictionary["Handle"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         name = nameJSON.stringValue
+        handle = handleJSON.stringValue
         photoURI = dictionary["PhotoURI"]?.string
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name)]
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name), "Handle": JSON(handle)]
         if let photoURI = photoURI {
             dict["PhotoURI"] = JSON(photoURI)
         }
@@ -55,7 +59,7 @@ class User: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return User(uuid: uuid, name: name, photoURI: photoURI)
+        return User(uuid: uuid, name: name, handle: handle, photoURI: photoURI)
     }
     
 }
@@ -259,6 +263,7 @@ class Group: NSObject, APIModel {
     // vars
     var uuid: String
     var name: String
+    var handle: String
     var photoURI: String?
     var conversations: [Conversation]
     
@@ -279,9 +284,10 @@ class Group: NSObject, APIModel {
     }
     
     // init
-    init(uuid: String, name: String, photoURI: String?, conversations: [Conversation]) {
+    init(uuid: String, name: String, handle: String, photoURI: String?, conversations: [Conversation]) {
         self.uuid = uuid
         self.name = name
+        self.handle = handle
         self.photoURI = photoURI
         self.conversations = conversations
     }
@@ -290,11 +296,13 @@ class Group: NSObject, APIModel {
         guard let dictionary = json.dictionary,
             let uuidJSON = dictionary["UUID"],
             let nameJSON = dictionary["Name"],
+            let handleJSON = dictionary["Handle"],
             let conversationsJSON = dictionary["Conversations"] else {
                 return nil
         }
         uuid = uuidJSON.stringValue
         name = nameJSON.stringValue
+        handle = handleJSON.stringValue
         conversations = []
         photoURI = dictionary["PhotoURI"]?.stringValue
         
@@ -307,7 +315,7 @@ class Group: NSObject, APIModel {
     
     // Model
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name), "Conversations": JSON(conversations)]
+        var dict: [String: JSON] = ["UUID": JSON(uuid), "Name": JSON(name), "Handle": JSON(handle), "Conversations": JSON(conversations)]
         if let url = photoURI {
             dict["PhotoURI"] = JSON(url)
         }
@@ -315,7 +323,7 @@ class Group: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return Group(uuid: uuid, name: name, photoURI: photoURI, conversations: conversations)
+        return Group(uuid: uuid, name: name, handle: handle, photoURI: photoURI, conversations: conversations)
     }
     
 }

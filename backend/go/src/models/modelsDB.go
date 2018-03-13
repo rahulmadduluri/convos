@@ -7,7 +7,8 @@ import (
 type User struct {
 	ID                     int
 	UUID                   string
-	Username               string
+	Name                   string
+	Handle                 string
 	MobileNumber           string
 	PhotoURI               null.String
 	CreatedTimestampServer int
@@ -43,6 +44,7 @@ type Group struct {
 	ID                     int
 	UUID                   string
 	Name                   string
+	Handle                 string
 	CreatedTimestampServer int
 	PhotoURI               null.String
 }

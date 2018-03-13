@@ -67,6 +67,12 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate {
                     let storedSuccessfully = Credentials.credentialsManager.store(credentials: credentials)
                     if storedSuccessfully == false {
                         print("Failed to store credentials :(")
+                    } else {
+                        guard let accessToken = credentials.accessToken else {
+                            print("Access token wasn't available")
+                            break
+                        }
+                        // attach access token to networking for headers
                     }
                     self.dismiss(animated: false, completion: nil)
                 }

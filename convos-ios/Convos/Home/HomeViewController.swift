@@ -151,12 +151,22 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         self.conversationInfoVC?.dismiss(animated: true, completion: nil)
     }
     
+    // MARK: UserInfoVCDelegate
+    
+    func logout() {
+        let successfulLogout = Credentials.credentialsManager.clear()
+        if successfulLogout == true {
+            presentLogin()
+        }
+    }
+    
     // MARK: Private
     
     fileprivate func configureHome() {
         // TODO: Move this to auth controller
         UserDefaults.standard.set("uuid-1", forKey: "uuid")
         UserDefaults.standard.set("Prafulla", forKey: "name")
+        UserDefaults.standard.set("prafullasd", forKey: "handle")
         UserDefaults.standard.set("prafulla_prof", forKey: "photo_uri")
     }
     

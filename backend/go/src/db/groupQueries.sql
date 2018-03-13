@@ -2,6 +2,7 @@
 select
 	users.uuid as uuid,
 	users.name as name,
+	users.handle as handle,
 	users.photo_uri as photouri
 from (
 	select distinct 
@@ -16,7 +17,7 @@ from (
 ) as group_members
 join users
 	on group_members.person_id = users.id
-where users.name like :search_text
+where users.name like :search_text or users.handle like :search_text
 order by group_members.created_timestamp_server desc limit :max_members
 ;
 
@@ -35,10 +36,11 @@ insert into members (group_id, user_id, created_timestamp_server)
 ;
 
 -- name: createGroup
-insert into groups (uuid, name, created_timestamp_server, photo_uri)
+insert into groups (uuid, name, handle, created_timestamp_server, photo_uri)
 	select
 		:group_uuid,
 		:name,
+		:handle,
 		:created_timestamp_server,
 		:photo_uri
 ;

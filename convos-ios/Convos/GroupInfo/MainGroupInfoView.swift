@@ -19,6 +19,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     
     var groupInfoVC: GroupInfoComponentDelegate? = nil
     var nameTextField = UITextField()
+    var handleTextField = UITextField()
     var memberTextField: SmartTextField = SmartTextField()
     var groupPhotoImageView = UIImageView()
     var createNewGroupButton = UIButton()
@@ -68,6 +69,16 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
         singleTap.numberOfTapsRequired = 1
         groupPhotoImageView.addGestureRecognizer(singleTap)
         self.addSubview(groupPhotoImageView)
+        
+        // HandleTextField
+        handleTextField.placeholder = Constants.handleTextFieldPlaceholder
+        handleTextField.frame = CGRect(x: self.bounds.midX - Constants.handleTextFieldWidth/2, y: self.bounds.minY + Constants.handleTextFieldOriginY, width: Constants.handleTextFieldWidth, height: Constants.handleTextFieldHeight)
+        handleTextField.font = handleTextField.font?.withSize(Constants.handleTextFieldFontSize)
+        handleTextField.textAlignment = .center
+        handleTextField.tag = Constants.handleTextFieldTag
+        handleTextField.alpha = 1
+        handleTextField.delegate = self
+        self.addSubview(handleTextField)
         
         // MemberTextField
         memberTextField.defaultPlaceholderText = Constants.memberTextFieldPlaceholder
@@ -120,7 +131,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     }
     
     func tapCreateNewGroup(_ obj: Any) {        
-        groupInfoVC?.groupCreated(name: nameTextField.text, photo: groupPhotoImageView.image)
+        groupInfoVC?.groupCreated(name: nameTextField.text, handle: handleTextField.text, photo: groupPhotoImageView.image)
     }
     
     // MARK: UITextFieldDelegate
@@ -149,6 +160,7 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
     func resetFlag() {
         flagIsWaving = false
         nameTextField.text = ""
+        handleTextField.text = ""
         memberTextField.text = ""
         setNeedsLayout()
     }
@@ -173,6 +185,8 @@ class MainGroupInfoView: UIView, GroupInfoUIComponent, UITextFieldDelegate {
             memberTextField.becomeFirstResponder()
         } else if tag == Constants.groupPhotoTag {
             
+        } else if tag == Constants.handleTextFieldTag {
+            handleTextField.becomeFirstResponder()
         }
     }
     
@@ -186,20 +200,26 @@ private struct Constants {
     static let nameTextFieldPlaceholder: String = "Name Your Guild"
     static let nameTextFieldOriginY: CGFloat = 175
     static let nameTextFieldWidth: CGFloat = 200
-    static let nameTextFieldHeight: CGFloat = 60
+    static let nameTextFieldHeight: CGFloat = 40
     static let nameTextFieldFontSize: CGFloat = 24
+    
+    static let handleTextFieldPlaceholder: String = "@guildhandle"
+    static let handleTextFieldOriginY: CGFloat = 210
+    static let handleTextFieldWidth: CGFloat = 200
+    static let handleTextFieldHeight: CGFloat = 40
+    static let handleTextFieldFontSize: CGFloat = 16
     
     static let nameEditButtonOriginY: CGFloat = 196
     static let editButtonWidth: CGFloat = 20
     static let editButtonHeight: CGFloat = 20
     
     static let memberTextFieldPlaceholder: String = "Add Members"
-    static let memberTextFieldOriginY: CGFloat = 250
+    static let memberTextFieldOriginY: CGFloat = 275
     static let memberTextFieldWidth: CGFloat = 200
     static let memberTextFieldHeight: CGFloat = 40
     
     static let memberTableMarginConstant: CGFloat = 25
-    static let memberTableOriginY: CGFloat = 300
+    static let memberTableOriginY: CGFloat = 320
     static let memberTableHeight: CGFloat = 275
     
     static let createGroupButtonOriginY: CGFloat = 600
@@ -208,6 +228,7 @@ private struct Constants {
     static let nameTextFieldTag: Int = 1
     static let memberTextFieldTag: Int = 2
     static let groupPhotoTag: Int = 3
+    static let handleTextFieldTag: Int = 4
     
     static let flagGifHeight: CGFloat = 300
     static let flagGifMargin: CGFloat = 75

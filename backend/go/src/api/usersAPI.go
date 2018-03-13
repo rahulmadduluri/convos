@@ -15,8 +15,9 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userUUID, _ := vars[_paramUUID]
 	name := r.FormValue(_paramName)
+	handle := r.FormValue(_paramHandle)
 
-	err := db.GetHandler().UpdateUser(userUUID, name)
+	err := db.GetHandler().UpdateUser(userUUID, name, handle)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "failed to update user")
 	}

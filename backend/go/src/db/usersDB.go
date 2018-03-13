@@ -11,17 +11,30 @@ const (
 	_findContactsForUser = "findContactsForUser"
 	_updateContacts      = "updateContacts"
 	_updateUserName      = "updateUserName"
+	_updateUserHandle    = "updateUserHandle"
 )
 
-func (dbh *dbHandler) UpdateUser(userUUID string, name string) error {
-	_, err := dbh.db.NamedQuery(
-		dbh.userQueries[_updateUserName],
-		map[string]interface{}{
-			"user_uuid": userUUID,
-			"name":      name,
-		},
-	)
-	return err
+func (dbh *dbHandler) UpdateUser(userUUID string, name string, handle string) error {
+	if name != "" {
+		_, err := dbh.db.NamedQuery(
+			dbh.userQueries[_updateUserName],
+			map[string]interface{}{
+				"user_uuid": userUUID,
+				"name":      name,
+			},
+		)
+		return err
+	} else if handle != "" {
+		_, err := dbh.db.NamedQuery(
+			dbh.userQueries[_updateUserHandle],
+			map[string]interface{}{
+				"user_uuid": userUUID,
+				"handle":    handle,
+			},
+		)
+		return err
+	}
+	return nil
 }
 
 func (dbh *dbHandler) GetUsers(searchText string, maxUsers int) ([]models.UserObj, error) {

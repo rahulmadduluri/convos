@@ -9,6 +9,7 @@
 import UIKit
 
 protocol UserInfoVCDelegate {
+    func logout()
 }
 
 protocol UserInfoComponentDelegate {
@@ -17,7 +18,9 @@ protocol UserInfoComponentDelegate {
     func getUser() -> User?
     func userPhotoEdited(image: UIImage)
     func userNameEdited(name: String)
+    func userHandleEdited(handle: String)
     func presentAlertOption(tag: Int)
+    func logout()
 }
 
 protocol UserInfoUIComponent {

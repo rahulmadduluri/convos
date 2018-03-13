@@ -26,6 +26,10 @@ class REST: NSObject {
     
     // Users
     
+    static func createUserURL() -> URL {
+        return URL(string: baseURL + "users")!
+    }
+    
     static func getContactsURL(userUUID: String, searchText: String?, maxContacts: Int?) -> URL {
         let urlString = baseURL + "users/" + userUUID + "/contacts"
         return generateSearchForContactsURL(urlString: urlString, searchText: searchText, maxContacts: maxContacts)

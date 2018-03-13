@@ -5,10 +5,12 @@ CREATE TABLE IF NOT EXISTS users (
 	id 							int 			NOT NULL AUTO_INCREMENT,
 	uuid						varchar(36)		NOT NULL,
 	name 						varchar(200)	NOT NULL,
+	handle                      varchar(200)    NOT NULL,
 	mobile_number				varchar(36)		NOT NULL,
 	photo_uri 					varchar(200),
 	created_timestamp_server	int				NOT NULL,
 	UNIQUE KEY (uuid),
+	UNIQUE KEY (handle),
 	UNIQUE KEY (mobile_number),
 	PRIMARY KEY (id)
 );
@@ -28,9 +30,11 @@ CREATE TABLE IF NOT EXISTS groups (
 	id  						int 			NOT NULL AUTO_INCREMENT,
 	uuid						varchar(36)		NOT NULL,
 	name						varchar(200)	NOT NULL,
+	handle 						varchar(200) 	NOT NULL,
 	created_timestamp_server	int				NOT NULL,
 	photo_uri 					varchar(200),
 	UNIQUE KEY (uuid),
+	UNIQUE KEY (handle),
 	PRIMARY KEY (id)
 );
 
@@ -94,15 +98,15 @@ CREATE TABLE IF NOT EXISTS contacts (
 
 -- repeat names are because group creates a tag that shares the group name
 -- users: 1. prafulla, 2. rahul, 3. reia
-INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', '724309111', 'prafulla_prof', 1000), 
-						 (NULL, 'uuid-2', 'Rahul', '724309222', 'rahul_prof', 1200),
-						 (NULL, 'uuid-3', 'Reia', '724309228', 'reia_prof', 1400);
+INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', 'prafullasd', '724309111', 'prafulla_prof', 1000), 
+						 (NULL, 'uuid-2', 'Rahul', 'rahulmfromspace', '724309222', 'rahul_prof', 1200),
+						 (NULL, 'uuid-3', 'Reia', 'chor46', '724309228', 'reia_prof', 1400);
 INSERT INTO contacts VALUES (1,2,500),(1,3,600),(2,1,500),(2,3,700),(3,1,600),(3,2,700);
 -- groups: 1. prafulla, 2. rahul, 3. reia 4. 93 webster
-INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 1000, 'prafulla_prof'),
-						  (NULL, 'uuid-2', 'Rahul', 1200, 'rahul_prof'),
-						  (NULL, 'uuid-3', 'Reia', 1400, 'reia_prof'),
-						  (NULL, 'uuid-4', '93Webster', 1600, '93');
+INSERT INTO groups VALUES (NULL, 'uuid-1', 'Prafulla', 'prafullasd', 1000, 'prafulla_prof'),
+						  (NULL, 'uuid-2', 'Rahul', 'rahulmfromspace', 1200, 'rahul_prof'),
+						  (NULL, 'uuid-3', 'Reia', 'chor46', 1400, 'reia_prof'),
+						  (NULL, 'uuid-4', '93Webster', '93Webster', 1600, '93');
 INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, "A", 1, 'prafulla_prof'),
 								 (NULL, 'uuid-2', 1200, 1200, "B", 2, 'rahul_prof'),
 								 (NULL, 'uuid-3', 1200, 1200, "C", 2, 'rahul_prof'),

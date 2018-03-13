@@ -32,7 +32,7 @@ protocol GroupInfoComponentDelegate {
     func groupNameEdited(name: String)
     func resetMembers()
     func memberStatusSelected(mvd: MemberViewData)
-    func groupCreated(name: String?, photo: UIImage?)
+    func groupCreated(name: String?, handle: String?, photo: UIImage?)
     func presentAlertOption(tag: Int)
 }
 

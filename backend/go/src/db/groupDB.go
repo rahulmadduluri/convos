@@ -49,7 +49,12 @@ func (dbh *dbHandler) GetMembersForGroup(groupUUID string, searchText string, ma
 	return objs, err
 }
 
-func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error {
+func (dbh *dbHandler) UpdateGroup(
+	groupUUID string,
+	name string,
+	timestampServer int,
+	newMemberUUID string,
+) error {
 	if name != "" {
 		_, err := dbh.db.NamedQuery(
 			dbh.groupQueries[_updateGroupName],
@@ -75,6 +80,7 @@ func (dbh *dbHandler) UpdateGroup(groupUUID string, name string, timestampServer
 
 func (dbh *dbHandler) CreateGroup(
 	name string,
+	handle string,
 	createdTimestampServer int,
 	photoURI string,
 	memberUUIDs []string,
@@ -87,8 +93,9 @@ func (dbh *dbHandler) CreateGroup(
 	tx := dbh.db.MustBegin()
 
 	q1Args := map[string]interface{}{
-		"group_uuid": groupUUID,
-		"name":       name,
+		"group_uuid":               groupUUID,
+		"name":                     name,
+		"handle":                   handle,
 		"created_timestamp_server": createdTimestampServer,
 		"photo_uri":                photoURI,
 	}

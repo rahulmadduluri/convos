@@ -18,13 +18,14 @@ join groups
 	on user_group_ids.group_id = groups.id
 join conversations
 	on conversations.group_id = user_group_ids.group_id
-where (groups.name like :search_text or conversations.topic like :search_text)
+where (groups.name like :search_text or groups.handle like :search_text or conversations.topic like :search_text)
 ;
 
 -- name: findGroupsWithUUIDs
 select
 	groups.uuid as uuid,
 	groups.name as name,
+	groups.handle as handle,
 	groups.created_timestamp_server as createdtimestampserver,
 	groups.photo_uri as photouri
 from groups

@@ -96,14 +96,15 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         }
     }
     
-    func groupCreated(name: String?, photo: UIImage?) {
+    func groupCreated(name: String?, handle: String?, photo: UIImage?) {
         memberTableVC.reloadMemberViewData()
         let memberUUIDs: [String] = removableMemberViewDataQueue.flatMap { $0.uuid }
         
         
         // wave flag for 2 seconds
-        if let name = name,
+        if let name = name, let handle = handle,
             name.isEmpty == false,
+            handle.isEmpty == false,
             memberUUIDs.count > 0,
             isNewGroup == true {
             containerView?.showFlag()
@@ -112,7 +113,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
                 self.containerView?.resetFlag()
                 self.groupInfoVCDelegate?.groupCreated()
             })
-            GroupAPI.createGroup(name: name, photo: photo, memberUUIDs: memberUUIDs) { success in
+            GroupAPI.createGroup(name: name, handle: handle, photo: photo, memberUUIDs: memberUUIDs) { success in
                 if success == false {
                     print("Failed to encode create group request :( ")
                 }
@@ -175,6 +176,8 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             editActionTitle += "Add Member"
         } else if tag == Constants.photoTag {
             editActionTitle += "Edit Photo"
+        } else if tag == Constants.handleTag {
+            editActionTitle += "Edit Handle"
         }
         alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
             self.containerView?.beginEditPressed(tag: tag)
@@ -230,10 +233,13 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
         
         if isNewGroup == false {
             containerView?.nameTextField.text = group!.name
+            containerView?.handleTextField.text = "@" + group!.handle
+            containerView?.handleTextField.isUserInteractionEnabled = false
             if let uri = group!.photoURI {
                 containerView?.groupPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
             }
         } else {
+            containerView?.handleTextField.isUserInteractionEnabled = true
             containerView?.groupPhotoImageView.image = UIImage(named: "capybara")
             containerView?.createNewGroupButton.alpha = 1
         }
@@ -333,6 +339,7 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
     fileprivate func resetTextFields() {
         containerView?.memberTextField.text = ""
         containerView?.nameTextField.text = ""
+        containerView?.handleTextField.text = ""
     }
 }
 
@@ -340,4 +347,5 @@ private struct Constants {
     static let nameTag = 1
     static let memberTag = 2
     static let photoTag = 3
+    static let handleTag = 4
 }

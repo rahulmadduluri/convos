@@ -56,6 +56,10 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     
     // MARK: UserInfoComponentDelegate
     
+    func logout() {
+        userInfoVCDelegate?.logout()
+    }
+    
     func getUser() -> User? {
         return person
     }
@@ -72,9 +76,20 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     
     func userNameEdited(name: String) {
         if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String, isMe == true{
-            UserAPI.updateUser(userUUID: myUUID, name: name) { success in
+            UserAPI.updateUser(userUUID: myUUID, name: name, handle: nil) { success in
                 if success == false {
                     print("Failed to update name :( ")
+                }
+            }
+        }
+    }
+    
+    func userHandleEdited(handle: String) {
+        let modifiedHandle = handle.replacingOccurrences(of: " ", with: "")
+        if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String, isMe == true{
+            UserAPI.updateUser(userUUID: myUUID, name: nil, handle: modifiedHandle) { success in
+                if success == false {
+                    print("Failed to update handle :( ")
                 }
             }
         }
@@ -88,6 +103,8 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
             editActionTitle += "Edit Name"
         } else if tag == Constants.photoTag {
             editActionTitle += "Edit Photo"
+        } else if tag == Constants.handleTag {
+            editActionTitle += "Edit Handle"
         }
         alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
             self.containerView?.beginEditPressed(tag: tag)
@@ -129,7 +146,7 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     // MARK: Private
     
     fileprivate func configureUserInfo() {
-        containerView?.nameTextField.text = ""
+        resetTextFields()
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             imagePicker.delegate = self
@@ -145,8 +162,10 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
             }
         } else {
             if let myName = UserDefaults.standard.object(forKey: "name") as? String,
+                let myHandle = UserDefaults.standard.object(forKey: "handle") as? String,
                 let myPhotoURI = UserDefaults.standard.object(forKey: "photo_uri") as? String {
                 containerView?.nameTextField.text = myName
+                containerView?.handleTextField.text = "@" + myHandle
                 containerView?.userPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: myPhotoURI))
             }
         }
@@ -154,9 +173,15 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
         panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
+    fileprivate func resetTextFields() {
+        containerView?.nameTextField.text = ""
+        containerView?.handleTextField.text = ""
+    }
+    
 }
 
 private struct Constants {
     static let nameTag = 1
     static let photoTag = 2
+    static let handleTag = 3
 }

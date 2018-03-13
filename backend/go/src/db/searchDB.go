@@ -114,6 +114,7 @@ func combineGroupsAndConversations(groups []models.Group, conversationObjs []mod
 		obj := models.GroupObj{
 			UUID:          g.UUID,
 			Name:          g.Name,
+			Handle:        g.Handle,
 			PhotoURI:      g.PhotoURI,
 			Conversations: groupConvoMap[g.UUID],
 		}

@@ -19,10 +19,10 @@ class GroupAPI: NSObject {
         let url = REST.updateGroupURL(groupUUID: groupUUID, name: newGroupName, newMemberUUID: newMemberUUID)
         var params: [String: Any] = [:]
         if let name = newGroupName {
-            params["name"] = name
+            params[Constants.nameParam] = name
         }
         if let newMemberUUID = newMemberUUID {
-            params["memberuuid"] = newMemberUUID
+            params[Constants.memberUUIDParam] = newMemberUUID
         }
         Alamofire.request(
             url,
@@ -94,6 +94,7 @@ class GroupAPI: NSObject {
     
     static func createGroup(
         name: String,
+        handle: String,
         photo: UIImage?,
         memberUUIDs: [String],
         completion: (@escaping (Bool) -> Void)) {
@@ -103,7 +104,8 @@ class GroupAPI: NSObject {
             if let photo = photo, let imageData = UIImagePNGRepresentation(photo) {
                 multipartFormData.append(imageData, withName: "image.png", mimeType: "image/png")
             }
-            multipartFormData.append(name.data(using: .utf8)!, withName: "name")
+            multipartFormData.append(name.data(using: .utf8)!, withName: Constants.nameParam)
+            multipartFormData.append(handle.data(using: .utf8)!, withName: Constants.handleParam)
             do {
                 let memberUUIDData = try JSON(memberUUIDs).rawData(options: .prettyPrinted)
                 multipartFormData.append(memberUUIDData, withName: Constants.memberUUIDsParam)
@@ -123,5 +125,8 @@ class GroupAPI: NSObject {
 }
 
 private struct Constants {
+    static let nameParam = "name"
+    static let handleParam = "handle"
+    static let memberUUIDParam = "memberuuid"
     static let memberUUIDsParam = "memberuuids"
 }

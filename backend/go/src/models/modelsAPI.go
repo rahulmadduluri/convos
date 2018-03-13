@@ -24,6 +24,7 @@ type ConversationObj struct {
 type GroupObj struct {
 	UUID          string
 	Name          string
+	Handle        string
 	PhotoURI      null.String
 	Conversations []ConversationObj
 }
@@ -31,5 +32,6 @@ type GroupObj struct {
 type UserObj struct {
 	UUID     string
 	Name     string
+	Handle   string
 	PhotoURI null.String
 }

@@ -10,14 +10,15 @@ import UIKit
 
 class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
     
-    fileprivate var nameEditCancelButton = UIButton()
     // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
     fileprivate var editAlertHasBeenPressed = false
     
     var userInfoVC: UserInfoComponentDelegate? = nil
     var nameTextField = UITextField()
+    var handleTextField = UITextField()
     var userPhotoImageView = UIImageView()
     var mobileNumberTextField = UITextField()
+    var logoutButton = UIButton()
     
     // MARK: Init
     
@@ -46,12 +47,15 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
         nameTextField.alpha = 1
         self.addSubview(nameTextField)
         
-        // nameEditCancelButton
-        nameEditCancelButton.frame = CGRect(x: self.bounds.midX + Constants.nameTextFieldWidth/2, y: self.bounds.minY + Constants.nameEditButtonOriginY, width: Constants.editButtonWidth, height: Constants.editButtonHeight)
-        nameEditCancelButton.setImage(UIImage(named: "cancel"), for: .normal)
-        nameEditCancelButton.alpha = 0
-        nameEditCancelButton.addTarget(self, action: #selector(MainUserInfoView.tapNameEditCancel(_:)), for: .touchUpInside)
-        self.addSubview(nameEditCancelButton)
+        // HandleTextField
+        handleTextField.placeholder = Constants.handleTextFieldPlaceholder
+        handleTextField.frame = CGRect(x: self.bounds.midX - Constants.handleTextFieldWidth/2, y: self.bounds.minY + Constants.handleTextFieldOriginY, width: Constants.handleTextFieldWidth, height: Constants.handleTextFieldHeight)
+        handleTextField.font = handleTextField.font?.withSize(Constants.handleTextFieldFontSize)
+        handleTextField.textAlignment = .center
+        handleTextField.tag = Constants.handleTextFieldTag
+        handleTextField.alpha = 1
+        handleTextField.delegate = self
+        self.addSubview(handleTextField)
         
         // configure image view
         userPhotoImageView.frame = CGRect(x: self.bounds.midX - Constants.userPhotoRadius/2, y: self.bounds.minY + Constants.userPhotoOriginY, width: Constants.userPhotoRadius, height: Constants.userPhotoRadius)
@@ -67,42 +71,51 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
         // MobileNumberTextField
         mobileNumberTextField.frame = CGRect(x: self.bounds.midX - Constants.mobileTextFieldWidth/2, y: self.bounds.minY + Constants.mobileTextFieldOriginY, width: Constants.mobileTextFieldWidth, height: Constants.mobileTextFieldHeight)
         mobileNumberTextField.font = mobileNumberTextField.font?.withSize(Constants.mobileTextFieldFontSize)
+        mobileNumberTextField.alpha = 1.0
+        mobileNumberTextField.placeholder = Constants.mobileTextFieldPlaceholder
         mobileNumberTextField.textAlignment = .center
         mobileNumberTextField.delegate = self
         self.addSubview(mobileNumberTextField)
+        
+        // LogoutButton
+        logoutButton.frame = CGRect(x: self.bounds.midX - Constants.logoutButtonRadius/2, y: self.bounds.minY + Constants.logoutButtonOriginY, width: Constants.logoutButtonRadius, height: Constants.logoutButtonRadius)
+        logoutButton.setImage(UIImage(named: "rocket_launch"), for: .normal)
+        logoutButton.alpha = 0
+        logoutButton.addTarget(self, action: #selector(MainUserInfoView.tapLogout(_:)), for: .touchUpInside)
+        self.addSubview(logoutButton)
     }
     
     // MARK: Gesture Recognizer functions
-    
-    func tapNameEditCancel(_ obj: Any) {
-        nameEditCancelButton.alpha = 0
-        
-        nameTextField.text = ""
-        
-        nameTextField.resignFirstResponder()
-    }
     
     func tapUserPhoto(_ obj: Any) {
         userInfoVC?.presentAlertOption(tag: userPhotoImageView.tag)
     }
     
+    func tapLogout(_ obj: Any) {
+        userInfoVC?.logout()
+    }
+    
     // MARK: UITextFieldDelegate
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        if editAlertHasBeenPressed == true {
-            editAlertHasBeenPressed = false
-            return true
-        } else {
-            userInfoVC?.presentAlertOption(tag: textField.tag)
-            return false
+        if textField.tag == Constants.nameTextFieldTag || textField.tag == Constants.userPhotoTag || textField.tag == Constants.handleTextFieldTag {
+            if editAlertHasBeenPressed == true {
+                editAlertHasBeenPressed = false
+                return true
+            } else {
+                userInfoVC?.presentAlertOption(tag: textField.tag)
+                return false
+            }
         }
+        return false
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let text = textField.text ?? ""
         if textField.tag == Constants.nameTextFieldTag {
             userInfoVC?.userNameEdited(name: text)
-            nameEditCancelButton.alpha = 0
+        } else if textField.tag == Constants.handleTextFieldTag {
+            userInfoVC?.userHandleEdited(handle: text)
         }
         textField.resignFirstResponder()
         return true
@@ -113,10 +126,11 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
     func beginEditPressed(tag: Int) {
         editAlertHasBeenPressed = true
         if tag == Constants.nameTextFieldTag {
-            nameEditCancelButton.alpha = 1
             nameTextField.becomeFirstResponder()
         } else if tag == Constants.userPhotoTag {
             
+        } else if tag == Constants.handleTextFieldTag {
+            handleTextField.becomeFirstResponder()
         }
     }
     
@@ -130,19 +144,25 @@ private struct Constants {
     static let nameTextFieldPlaceholder: String = "Member Name"
     static let nameTextFieldOriginY: CGFloat = 175
     static let nameTextFieldWidth: CGFloat = 150
-    static let nameTextFieldHeight: CGFloat = 60
+    static let nameTextFieldHeight: CGFloat = 40
     static let nameTextFieldFontSize: CGFloat = 24
     
-    static let nameEditButtonOriginY: CGFloat = 196
-    static let editButtonWidth: CGFloat = 20
-    static let editButtonHeight: CGFloat = 20
+    static let handleTextFieldPlaceholder: String = "@userhandle"
+    static let handleTextFieldOriginY: CGFloat = 210
+    static let handleTextFieldWidth: CGFloat = 200
+    static let handleTextFieldHeight: CGFloat = 40
+    static let handleTextFieldFontSize: CGFloat = 16
     
-    static let mobileTextFieldPlaceholder: String = "+(!!!!!)13090203930"
-    static let mobileTextFieldOriginY: CGFloat = 175
+    static let mobileTextFieldPlaceholder: String = "111:)111"
+    static let mobileTextFieldOriginY: CGFloat = 260
     static let mobileTextFieldWidth: CGFloat = 200
-    static let mobileTextFieldHeight: CGFloat = 60
+    static let mobileTextFieldHeight: CGFloat = 40
     static let mobileTextFieldFontSize: CGFloat = 24
+    
+    static let logoutButtonOriginY: CGFloat = 600
+    static let logoutButtonRadius: CGFloat = 40
    
     static let nameTextFieldTag: Int = 1
     static let userPhotoTag: Int = 2
+    static let handleTextFieldTag: Int = 3
 }
