@@ -20,7 +20,6 @@ protocol UserInfoComponentDelegate {
     func userNameEdited(name: String)
     func userHandleEdited(handle: String)
     func presentAlertOption(tag: Int)
-    func logout()
 }
 
 protocol UserInfoUIComponent {

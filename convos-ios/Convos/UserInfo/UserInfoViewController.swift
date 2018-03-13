@@ -55,11 +55,7 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     
     
     // MARK: UserInfoComponentDelegate
-    
-    func logout() {
-        userInfoVCDelegate?.logout()
-    }
-    
+        
     func getUser() -> User? {
         return person
     }
@@ -97,18 +93,30 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
     
     func presentAlertOption(tag: Int) {
         var editActionTitle: String = ""
-        let updateUserTitle = "Update Profile"
+        var updateUserTitle = "Update Profile"
         let alert = UIAlertController(title: updateUserTitle, message: "", preferredStyle: .actionSheet)
         if tag == Constants.nameTag {
             editActionTitle += "Edit Name"
+            alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
+                self.containerView?.beginEditPressed(tag: tag)
+            })
         } else if tag == Constants.photoTag {
             editActionTitle += "Edit Photo"
+            alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
+                self.containerView?.beginEditPressed(tag: tag)
+            })
         } else if tag == Constants.handleTag {
             editActionTitle += "Edit Handle"
+            alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
+                self.containerView?.beginEditPressed(tag: tag)
+            })
+        } else if tag == Constants.logoutTag {
+            updateUserTitle = "Log Out?"
+            editActionTitle = "Log Out!"
+            alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
+                self.userInfoVCDelegate?.logout()
+            })
         }
-        alert.addAction(UIAlertAction(title: editActionTitle, style: .default) { action in
-            self.containerView?.beginEditPressed(tag: tag)
-        })
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
         present(alert, animated: true)
     }
@@ -184,4 +192,5 @@ private struct Constants {
     static let nameTag = 1
     static let photoTag = 2
     static let handleTag = 3
+    static let logoutTag = 4
 }

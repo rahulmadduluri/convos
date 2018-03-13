@@ -79,8 +79,9 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
         
         // LogoutButton
         logoutButton.frame = CGRect(x: self.bounds.midX - Constants.logoutButtonRadius/2, y: self.bounds.minY + Constants.logoutButtonOriginY, width: Constants.logoutButtonRadius, height: Constants.logoutButtonRadius)
-        logoutButton.setImage(UIImage(named: "rocket_launch"), for: .normal)
-        logoutButton.alpha = 0
+        logoutButton.setImage(UIImage(named: "logout"), for: .normal)
+        logoutButton.alpha = (userInfoVC?.isMe ?? false) ? 1 : 0
+        logoutButton.tag = Constants.logoutButtonTag
         logoutButton.addTarget(self, action: #selector(MainUserInfoView.tapLogout(_:)), for: .touchUpInside)
         self.addSubview(logoutButton)
     }
@@ -92,7 +93,7 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
     }
     
     func tapLogout(_ obj: Any) {
-        userInfoVC?.logout()
+        userInfoVC?.presentAlertOption(tag: logoutButton.tag)
     }
     
     // MARK: UITextFieldDelegate
@@ -165,4 +166,5 @@ private struct Constants {
     static let nameTextFieldTag: Int = 1
     static let userPhotoTag: Int = 2
     static let handleTextFieldTag: Int = 3
+    static let logoutButtonTag: Int = 4
 }
