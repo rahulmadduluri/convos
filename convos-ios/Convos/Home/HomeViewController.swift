@@ -9,8 +9,7 @@
 import UIKit
 
 class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
-    var containerView: MainHomeView? = nil
-
+    
     var loginVC: LoginViewController?
     var searchVC: SearchViewController?
     var conversationVC: ConversationViewController?
@@ -48,7 +47,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
     }
     
     override func loadView() {
-        self.view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        let backgroundView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        backgroundView.backgroundColor = UIColor.clear
+        self.view = backgroundView
     }
     
     // MARK: LoginVCDelegate
@@ -67,7 +68,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         conversationInfoVC?.setConversationInfo(conversation: nil, groupUUID: group.uuid)
         
         if let newVC = self.conversationInfoVC {
-            self.present(newVC, animated: false, completion: nil)
+            if self.presentedViewController == searchVC {
+                searchVC?.present(newVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -78,7 +81,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         conversationVC?.setConversationInfo(uuid: conversation.uuid, newTitle: conversation.topic)
         
         if let newVC = self.conversationVC {
-            self.present(newVC, animated: false, completion: nil)
+            if self.presentedViewController == searchVC {
+                searchVC?.present(newVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -90,7 +95,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         groupInfoVC?.setGroupInfo(group: nil)
         
         if let newVC = self.groupInfoVC {
-            self.present(newVC, animated: false, completion: nil)
+            if self.presentedViewController == searchVC {
+                searchVC?.present(newVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -102,7 +109,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         groupInfoVC?.setGroupInfo(group: group)
 
         if let newVC = self.groupInfoVC {
-            self.present(newVC, animated: false, completion: nil)
+            if self.presentedViewController == searchVC {
+                searchVC?.present(newVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -112,7 +121,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         }
         
         if let newVC = self.contactsVC {
-            self.present(newVC, animated: false, completion: nil)
+            if self.presentedViewController == searchVC {
+                searchVC?.present(newVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -122,7 +133,9 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         }
         
         if let newVC = self.userInfoVC {
-            self.present(newVC, animated: false, completion: nil)
+            if self.presentedViewController == searchVC {
+                searchVC?.present(newVC, animated: true, completion: nil)
+            }
         }
     }
     
@@ -154,7 +167,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         }
         
         if let newVC = self.searchVC {
-            self.present(newVC, animated: false, completion: nil)
+            self.presentOverHome(vc: newVC, animated: false)
         }
     }
     
@@ -165,7 +178,19 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         }
         
         if let newVC = self.loginVC {
-            self.present(newVC, animated: false, completion: nil)
+            self.presentOverHome(vc: newVC, animated: false)
+        }
+    }
+    
+    fileprivate func presentOverHome(vc: UIViewController, animated: Bool) {
+        vc.modalPresentationStyle = .overCurrentContext
+        
+        if let currentVC = presentedViewController {
+            currentVC.dismiss(animated: false, completion: {
+                self.present(vc, animated: animated, completion: nil)
+            })
+        } else {
+            self.present(vc, animated: animated, completion: nil)
         }
     }
     

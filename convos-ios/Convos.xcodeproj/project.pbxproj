@@ -18,7 +18,6 @@
 		B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF801F7C789400735F5D /* MainSearchView.swift */; };
 		B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF821F7CA98500735F5D /* SearchTableViewController.swift */; };
 		B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8C1F7D036000735F5D /* HomeViewController.swift */; };
-		B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B748CF8F1F7D03B300735F5D /* MainHomeView.swift */; };
 		B77BB1451FEE3453005FB88C /* MulticastDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */; };
 		B77BB151200268EF005FB88C /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB150200268EF005FB88C /* OrderedDictionary.swift */; };
 		B77BB15320038EED005FB88C /* ConversationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15220038EED005FB88C /* ConversationProtocols.swift */; };
@@ -87,7 +86,6 @@
 		B748CF801F7C789400735F5D /* MainSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSearchView.swift; sourceTree = "<group>"; };
 		B748CF821F7CA98500735F5D /* SearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewController.swift; sourceTree = "<group>"; };
 		B748CF8C1F7D036000735F5D /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		B748CF8F1F7D03B300735F5D /* MainHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticastDelegate.swift; sourceTree = "<group>"; };
 		B77BB150200268EF005FB88C /* OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
 		B77BB15220038EED005FB88C /* ConversationProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationProtocols.swift; sourceTree = "<group>"; };
@@ -189,7 +187,6 @@
 			isa = PBXGroup;
 			children = (
 				B748CF8C1F7D036000735F5D /* HomeViewController.swift */,
-				B748CF8F1F7D03B300735F5D /* MainHomeView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -594,7 +591,6 @@
 				B77BB157200638DE005FB88C /* SearchTableViewCell.swift in Sources */,
 				B77CE81E2020B0CA00B6D9A2 /* SearchAPI.swift in Sources */,
 				B77CE859204E9BB700B6D9A2 /* ContactsProtocols.swift in Sources */,
-				B748CF901F7D03B300735F5D /* MainHomeView.swift in Sources */,
 				B78720F91F5E85AE004F74E7 /* ConversationViewController.swift in Sources */,
 				B788107D1F539D23009AC9FE /* AppDelegate.swift in Sources */,
 				B77BB161200DF697005FB88C /* SearchCollectionViewCell.swift in Sources */,
