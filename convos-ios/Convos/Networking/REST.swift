@@ -98,6 +98,15 @@ class REST: NSObject {
     
     // Groups
     
+    static func getConversationsURL(groupUUID: String, maxConversations: Int?) -> URL {
+        var urlString = baseURL + "groups/" + groupUUID + "/conversations"
+        let maxConversationsParam = "maxconversations="
+        if let maxConversations = maxConversations {
+            urlString += "?" + maxConversationsParam + String(maxConversations)
+        }
+        return URL(string: urlString)!
+    }
+    
     static func getMembersURL(groupUUID: String, searchText: String?, maxMembers: Int?) -> URL {
         let urlString = baseURL + "groups/" + groupUUID + "/members"
         return generateSearchForMembersURL(urlString: urlString, searchText: searchText, maxMembers: maxMembers)

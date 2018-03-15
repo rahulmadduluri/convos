@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
+class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, ConversationVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
     
     var loginVC: LoginViewController?
     var searchVC: SearchViewController?
@@ -78,7 +78,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, G
         if self.conversationVC == nil {
             self.conversationVC = ConversationViewController()
         }
-        conversationVC?.setConversationInfo(uuid: conversation.uuid, newTitle: conversation.topic)
+        conversationVC?.setConversationInfo(uuid: conversation.uuid, groupUUID: conversation.groupUUID, newTitle: conversation.topic)
         
         if let newVC = self.conversationVC {
             if self.presentedViewController == searchVC {

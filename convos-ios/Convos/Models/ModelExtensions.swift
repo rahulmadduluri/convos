@@ -9,4 +9,5 @@
 import UIKit
 
 extension Group: Comparable {}
+extension Conversation: Comparable {}
 extension Message: Comparable {}

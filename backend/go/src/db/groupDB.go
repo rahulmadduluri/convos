@@ -9,14 +9,47 @@ import (
 )
 
 const (
-	_findMembersForGroup = "findMembersForGroup"
-	_updateGroupName     = "updateGroupName"
-	_updateGroupMembers  = "updateGroupMembers"
-	_createGroup         = "createGroup"
-	_createConversation  = "createConversation"
+	_findConversationsForGroup = "findConversationsForGroup"
+	_findMembersForGroup       = "findMembersForGroup"
+	_updateGroupName           = "updateGroupName"
+	_updateGroupMembers        = "updateGroupMembers"
+	_createGroup               = "createGroup"
+	_createConversation        = "createConversation"
 
 	_newConversationName = "Hall"
 )
+
+func (dbh *dbHandler) GetConversationsForGroup(
+	groupUUID string,
+	maxConversations int,
+) ([]models.ConversationObj, error) {
+	var objs []models.ConversationObj
+
+	rows, err := dbh.db.NamedQuery(
+		dbh.groupQueries[_findConversationsForGroup],
+		map[string]interface{}{
+			"group_uuid":        groupUUID,
+			"max_conversations": maxConversations,
+		},
+	)
+
+	if err != nil {
+		return objs, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var obj models.ConversationObj
+		err := rows.StructScan(&obj)
+		if err != nil {
+			log.Fatal("scan error: ", err)
+			continue
+		}
+		objs = append(objs, obj)
+	}
+	err = rows.Err()
+	return objs, err
+}
 
 func (dbh *dbHandler) GetMembersForGroup(groupUUID string, searchText string, maxMembers int) ([]models.UserObj, error) {
 	var objs []models.UserObj

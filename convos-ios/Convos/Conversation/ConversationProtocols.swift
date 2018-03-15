@@ -8,9 +8,44 @@
 
 import UIKit
 
+protocol ConversationVCDelegate {
+    func convoSelected(conversation: Conversation)
+}
+
 protocol ConversationComponentDelegate {
+    // messages for conversation w/ parent, child relationship
     func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]>
     func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData?
+    // switch to conversation specified by uuid
+    func switchConvoSelected(uuid: String)
+    // conversations in this group
+    func getConversationViewData() -> [ConversationViewData]
+}
+
+struct ConversationViewData: Hashable, Comparable {
+    var uuid: String
+    var text: String
+    var photoURI: String?
+    var updatedTimestamp: Int
+    
+    var hashValue: Int {
+        return uuid.hashValue
+    }
+    
+    init(uuid: String, text: String, photoURI: String? = nil, updatedTimestamp: Int) {
+        self.uuid = uuid
+        self.text = text
+        self.photoURI = photoURI
+        self.updatedTimestamp = updatedTimestamp
+    }
+}
+
+func ==(lhs: ConversationViewData, rhs: ConversationViewData) -> Bool {
+    return lhs.uuid == rhs.uuid
+}
+
+func <(lhs: ConversationViewData, rhs: ConversationViewData) -> Bool {
+    return lhs.updatedTimestamp < rhs.updatedTimestamp
 }
 
 protocol MessageTableVCDelegate: ConversationComponentDelegate {
@@ -23,7 +58,7 @@ protocol MessageTableVCProtocol {
 }
 
 protocol ConversationUIComponent {
-    var delegate: ConversationComponentDelegate? { get set }
+    var conversationVC: ConversationComponentDelegate? { get set }
 }
 
 protocol MessageTableCellDelegate {

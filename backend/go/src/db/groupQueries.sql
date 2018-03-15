@@ -1,3 +1,22 @@
+-- name: findConversationsForGroup
+select
+	conversations.uuid as uuid,
+	conversations.updated_timestamp_server as updated_timestamp_server
+	conversations.topic as topic,
+	selected_group.uuid as group_uuid,
+	conversations.photo_uri as photo_uri
+from (
+	select
+		groups.id as group_id,
+		groups.uuid as uuid 
+	from groups
+	where group.uuid = :group_uuid
+) as selected_group
+join conversations
+	on conversations.group_id = selected_group.group_id
+order by conversations.updated_timestamp_server desc limit :max_conversations
+;
+
 -- name: findMembersForGroup
 select
 	users.uuid as uuid,

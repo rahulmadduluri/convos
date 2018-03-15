@@ -13,10 +13,15 @@ import Alamofire
 class ConversationViewController: UIViewController, SocketManagerDelegate, MessageTableVCDelegate, UITextFieldDelegate {
     
     var containerView: MainConversationView?
+    var conversationVCDelegate: ConversationVCDelegate?
     
+    fileprivate var groupUUID: String = ""
     fileprivate var conversationUUID: String = ""
     fileprivate var titleText: String = ""
     fileprivate var messageTableVC = MessageTableViewController()
+    // Set of all conversations, ordered by updatedTimestampServer
+    fileprivate var allCachedConversations = Set<Conversation>()
+    fileprivate var conversationViewData: [ConversationViewData] = []
     /* Message Cache
      First level key: Conversation UUID
      2nd level key: top level message
@@ -91,12 +96,8 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         }
     }
     
-    // MARK: MessageTableVCDelegate
-    
-    func goBack() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
+    // MARK: ConversationComponentDelegate
+        
     func findMessageViewData(primaryIndex: Int, secondaryIndex: Int?) -> MessageViewData? {
         let messageViewData = getMessageViewData()
         if let j = secondaryIndex {
@@ -107,6 +108,24 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     func getMessageViewData() -> OrderedDictionary<MessageViewData, [MessageViewData]> {
         return messageViewData
+    }
+    
+    func switchConvoSelected(uuid: String) {
+        for c in allCachedConversations {
+            if c.uuid == uuid {
+                conversationVCDelegate?.convoSelected(conversation: c)
+            }
+        }
+    }
+    
+    func getConversationViewData() -> [ConversationViewData] {
+        return conversationViewData
+    }
+    
+    // MARK: MessageTableVCDelegate
+    
+    func goBack() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func setMessageViewData(parent: MessageViewData?, mvd: MessageViewData) {
@@ -164,8 +183,9 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     // MARK: Public
     
-    func setConversationInfo(uuid: String, newTitle: String) {
+    func setConversationInfo(uuid: String, groupUUID: String, newTitle: String) {
         self.conversationUUID = uuid
+        self.groupUUID = groupUUID
         self.titleText = newTitle
         containerView?.topBarView.setTitle(newTitle: newTitle)
     }
@@ -181,7 +201,20 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         } else {
             messageViewData = createMessageViewData(messages: OrderedDictionary<Message, Set<Message>>())
         }
+
+        fetchConversationsForGroup()
         messageTableVC.reloadMessageViewData()
+    }
+    
+    fileprivate func fetchConversationsForGroup() {
+        GroupAPI.getConversations(groupUUID: groupUUID, maxConversations: nil) { conversations in
+            if let conversations = conversations {
+                for c in conversations {
+                    self.allCachedConversations.insert(c)
+                }
+                self.conversationViewData = self.createConversationViewData(conversations: self.allCachedConversations)
+            }
+        }
     }
     
     fileprivate func received(response: PullMessagesResponse) {
@@ -233,6 +266,12 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
                 replies?.map { MessageViewData(uuid: $0.uuid, text: $0.allText, photoURI: $0.senderPhotoURI, isTopLevel: true, isCollapsed: false, createdTimestamp: m1.createdTimestampServer, createdTimeText: DateTimeUtilities.minutesAgoText(unixTimestamp: m1.createdTimestampServer)) }
         }
         return orderedMessages
+    }
+    
+    fileprivate func createConversationViewData(conversations: Set<Conversation>) -> [ConversationViewData] {
+        return conversations.map {
+            ConversationViewData(uuid: $0.uuid, text: $0.topic, photoURI: $0.photoURI, updatedTimestamp: $0.updatedTimestampServer)
+        }
     }
     
     fileprivate func remotePullMessages(lastXMessages: Int, latestTimestampServer: Int?) {

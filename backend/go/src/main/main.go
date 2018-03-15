@@ -37,6 +37,7 @@ func main() {
 	r.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
 	r.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
 	// Group
+	r.HandleFunc("/groups/{uuid}/conversations", api.GetConversationsForGroup).Methods("GET")
 	r.HandleFunc("/groups/{uuid}/members", api.GetMembersForGroup).Methods("GET")
 	r.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")
 	r.HandleFunc("/groups", api.CreateGroup).Methods("POST")

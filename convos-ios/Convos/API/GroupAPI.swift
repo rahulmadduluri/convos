@@ -58,6 +58,39 @@ class GroupAPI: NSObject {
         }
     }
     
+    static func getConversations(
+        groupUUID: String,
+        maxConversations: Int?,
+        completion: (@escaping ([Conversation]?) -> Void)) {
+        let url = REST.getConversationsURL(groupUUID: groupUUID, maxConversations: maxConversations)
+        Alamofire.request(
+            url,
+            method: .get)
+            .validate()
+            .responseJSON { response in
+                completion(convertResponseToConversations(res: response))
+        }
+    }
+    
+    private static func convertResponseToConversations(res: Alamofire.DataResponse<Any>) -> [Conversation]? {
+        guard res.result.isSuccess else {
+            print("Error while fetching conversations: \(res.result.error)")
+            return nil
+        }
+        
+        if res.data != nil {
+            let jsonArray = JSON(data: res.data!)
+            var conversations: [Conversation] = []
+            for (_, cRaw) in jsonArray {
+                if let c = Conversation(json: cRaw) {
+                    conversations.append(c)
+                }
+            }
+            return conversations
+        }
+        return nil
+    }
+    
     static func getMembers(
         groupUUID: String,
         searchText: String?,

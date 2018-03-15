@@ -12,6 +12,24 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func GetConversationsForGroup(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	groupUUID, _ := vars[_paramUUID]
+
+	maxConversations, _ := strconv.Atoi(r.FormValue(_paramMaxConversations))
+	// If maxConversations, isn't given, set upper bound to 10
+	if maxConversations == 0 {
+		maxConversations = 10
+	}
+
+	conversations, err := db.GetHandler().GetConversationsForGroup(groupUUID, maxConversations)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "failed to get conversations")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, conversations)
+}
+
 func GetMembersForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]

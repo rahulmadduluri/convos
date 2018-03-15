@@ -71,6 +71,7 @@
 		B7DED5CB205556090002BF2F /* LoginProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CA205556090002BF2F /* LoginProtocols.swift */; };
 		B7DED5CD2055587D0002BF2F /* MainLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CC2055587D0002BF2F /* MainLoginView.swift */; };
 		B7DED5D0205567770002BF2F /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CF205567770002BF2F /* Credentials.swift */; };
+		B7DED5D2205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5D1205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -141,6 +142,7 @@
 		B7DED5CA205556090002BF2F /* LoginProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginProtocols.swift; sourceTree = "<group>"; };
 		B7DED5CC2055587D0002BF2F /* MainLoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainLoginView.swift; sourceTree = "<group>"; };
 		B7DED5CF205567770002BF2F /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		B7DED5D1205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchConversationCollectionViewCell.swift; sourceTree = "<group>"; };
 		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -310,6 +312,7 @@
 				B708F99E1FAC75CD00757721 /* ConversationBottomBarView.swift */,
 				B748CF751F743EBC00735F5D /* ConversationTopBarView.swift */,
 				B7DED5C32054BBB00002BF2F /* SwitchConversationCollectionView.swift */,
+				B7DED5D1205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift */,
 			);
 			path = Conversation;
 			sourceTree = "<group>";
@@ -586,6 +589,7 @@
 				B748CF831F7CA98500735F5D /* SearchTableViewController.swift in Sources */,
 				B7DED5CD2055587D0002BF2F /* MainLoginView.swift in Sources */,
 				B7DED5C22052B5E50002BF2F /* MainUserInfoView.swift in Sources */,
+				B7DED5D2205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift in Sources */,
 				B748CF811F7C789400735F5D /* MainSearchView.swift in Sources */,
 				B788107F1F539D23009AC9FE /* SearchViewController.swift in Sources */,
 				B77BB157200638DE005FB88C /* SearchTableViewCell.swift in Sources */,

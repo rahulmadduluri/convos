@@ -16,11 +16,12 @@ const (
 	_paramMaxUsers    = "maxusers"
 	_paramContactUUID = "contactuuid"
 	// Group
-	_paramMaxMembers = "maxmembers"
-	_paramGroupUUID  = "groupuuid"
-	// Members
+	_paramMaxMembers  = "maxmembers"
+	_paramGroupUUID   = "groupuuid"
 	_paramMemberUUID  = "memberuuid"
 	_paramMemberUUIDs = "memberuuids"
+	// Conversation
+	_paramMaxConversations = "maxconversations"
 	// Tags
 	_paramTopic    = "topic"
 	_paramTagUUID  = "taguuid"
