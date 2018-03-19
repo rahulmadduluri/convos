@@ -8,7 +8,9 @@
 
 import UIKit
 
-class ConversationTopBarView: UIView {
+class ConversationTopBarView: UIView, ConversationUIComponent {
+
+    var conversationVC: ConversationComponentDelegate?    
     let titleLabel = UILabel()
     
     // MARK: UIView
@@ -17,6 +19,10 @@ class ConversationTopBarView: UIView {
         super.init(frame: frame)
         
         backgroundColor = UIColor.white
+        
+        let panGestureRecognizer = UIPanGestureRecognizer()
+        panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
+        addGestureRecognizer(panGestureRecognizer)
 
         // Setup Title
         self.addSubview(titleLabel)
@@ -32,5 +38,14 @@ class ConversationTopBarView: UIView {
         titleLabel.text = newTitle
         titleLabel.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
         titleLabel.bounds.size = titleLabel.intrinsicContentSize
+    }
+    
+    func respondToPanGesture(gesture: UIGestureRecognizer) {
+        if let panGesture = gesture as? UIPanGestureRecognizer {
+            let translation = panGesture.translation(in: self)
+            if (translation.y > 25) {
+                conversationVC?.showSwitcher()
+            }
+        }
     }
 }

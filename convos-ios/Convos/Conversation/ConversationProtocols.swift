@@ -20,6 +20,9 @@ protocol ConversationComponentDelegate {
     func switchConvoSelected(uuid: String)
     // conversations in this group
     func getConversationViewData() -> [ConversationViewData]
+    
+    func showSwitcher()
+    func hideSwitcher()
 }
 
 struct ConversationViewData: Hashable, Comparable {

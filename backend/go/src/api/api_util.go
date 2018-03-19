@@ -39,6 +39,9 @@ func respondWithError(w http.ResponseWriter, code int, message string) {
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if code >= 300 {
+		w.WriteHeader(code)
+	}
 	if err := json.NewEncoder(w).Encode(payload); err != nil {
 		log.Println(err)
 	}

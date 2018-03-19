@@ -1,16 +1,16 @@
 -- name: findConversationsForGroup
 select
 	conversations.uuid as uuid,
-	conversations.updated_timestamp_server as updated_timestamp_server
+	conversations.updated_timestamp_server as updatedtimestampserver,
 	conversations.topic as topic,
-	selected_group.uuid as group_uuid,
-	conversations.photo_uri as photo_uri
+	selected_group.uuid as groupuuid,
+	conversations.photo_uri as photouri
 from (
 	select
 		groups.id as group_id,
 		groups.uuid as uuid 
 	from groups
-	where group.uuid = :group_uuid
+	where groups.uuid = :group_uuid
 ) as selected_group
 join conversations
 	on conversations.group_id = selected_group.group_id

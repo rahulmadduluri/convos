@@ -12,6 +12,7 @@ private let cellReuseIdentifier = "MessageCell"
 
 class MessageTableViewController: UITableViewController, MessageTableVCProtocol, MessageTableCellDelegate {
     
+    var scrolledToBottom: Bool = true
     var messageTableVCDelegate: MessageTableVCDelegate? = nil
     
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
@@ -86,7 +87,7 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
         headerHeightAtSection[section] = height
         return height
     }
-    
+
     // MARK: MessageCellDelegate
 
     func messageTapped(section: Int, row: Int?) {

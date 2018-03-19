@@ -13,7 +13,7 @@ private let conversationReuseIdentifier = "SwitchConversationCollectionCell"
 class SwitchConversationCollectionView: UIView, ConversationUIComponent, UICollectionViewDelegate, UICollectionViewDataSource {
     var conversationVC: ConversationComponentDelegate? = nil
     
-    var switchCollectionView: UICollectionView?
+    fileprivate var switchCollectionView: UICollectionView?
     
     // MARK: Init
     
@@ -32,14 +32,12 @@ class SwitchConversationCollectionView: UIView, ConversationUIComponent, UIColle
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        if (switchCollectionView == nil) {
-            let layout = UICollectionViewFlowLayout()
-            layout.itemSize = CGSize(width: Constants.cellWidth, height: self.bounds.size.height)
-            layout.minimumInteritemSpacing = Constants.betweenCellSpace
-            switchCollectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
-            configureCollectionView()
-            self.addSubview(switchCollectionView!)
-        }
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: Constants.cellWidth, height: self.bounds.size.height)
+        layout.minimumInteritemSpacing = Constants.betweenCellSpace
+        switchCollectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
+        configureCollectionView()
+        self.addSubview(switchCollectionView!)
         switchCollectionView?.reloadData()
     }
     
@@ -79,13 +77,31 @@ class SwitchConversationCollectionView: UIView, ConversationUIComponent, UIColle
         return cell
     }
     
+    // MARK: Public
+    
+    func resetCollection() {
+        switchCollectionView?.reloadData()
+    }
+    
+    func respondToPanGesture(gesture: UIGestureRecognizer) {
+        if let panGesture = gesture as? UIPanGestureRecognizer {
+            let translation = panGesture.translation(in: self)
+            if (translation.y < -25) {
+                conversationVC?.hideSwitcher()
+            }
+        }
+    }
+    
     // MARK: Private
     
     private func configureCollectionView() {
         switchCollectionView?.backgroundColor = UIColor.white
-        switchCollectionView?.register(SwitchConversationCollectionView.self, forCellWithReuseIdentifier: conversationReuseIdentifier)
+        switchCollectionView?.register(SwitchConversationCollectionViewCell.self, forCellWithReuseIdentifier: conversationReuseIdentifier)
         switchCollectionView?.delegate = self
         switchCollectionView?.dataSource = self
+        let pgr = UIPanGestureRecognizer()
+        pgr.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
+        self.addGestureRecognizer(pgr)
     }
     
 }

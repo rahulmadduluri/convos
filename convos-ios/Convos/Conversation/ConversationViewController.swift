@@ -134,6 +134,14 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         }
     }
     
+    func showSwitcher() {
+        containerView?.showSwitcher()
+    }
+    
+    func hideSwitcher() {
+        containerView?.hideSwitcher()
+    }
+        
     // MARK: Handle keyboard events
     
     func keyboardWillShow(_ notification: Notification) {
@@ -194,6 +202,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     fileprivate func configureConversation() {
         messageTableVC.messageTableVCDelegate = self
+        containerView?.conversationVC = self
         socketManager.delegates.add(delegate: self)
         
         if let messages = allCachedMessages[conversationUUID] {
