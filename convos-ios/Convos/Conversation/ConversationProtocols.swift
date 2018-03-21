@@ -54,6 +54,8 @@ func <(lhs: ConversationViewData, rhs: ConversationViewData) -> Bool {
 protocol MessageTableVCDelegate: ConversationComponentDelegate {
     func setMessageViewData(parent: MessageViewData?, mvd: MessageViewData)
     func goBack()
+    func showKeyboard()
+    func hideKeyboard()
 }
 
 protocol MessageTableVCProtocol {

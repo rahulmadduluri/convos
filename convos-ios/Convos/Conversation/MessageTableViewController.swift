@@ -12,13 +12,20 @@ private let cellReuseIdentifier = "MessageCell"
 
 class MessageTableViewController: UITableViewController, MessageTableVCProtocol, MessageTableCellDelegate {
     
-    var scrolledToBottom: Bool = true
     var messageTableVCDelegate: MessageTableVCDelegate? = nil
     
     var cellHeightAtIndexPath = Dictionary<IndexPath, CGFloat>()
     var headerHeightAtSection = Dictionary<Int, CGFloat>()
     
+    fileprivate var keyboardShowing = false
+    
     // MARK: - View Controller
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: Notification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: Notification.Name.UIKeyboardWillShow, object: nil)
+    }
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +34,10 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
         tableView.separatorStyle = .none
         
         tableView.panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: Public
@@ -40,6 +51,14 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
         }
     }
     
+    func keyboardWillAppear() {
+        keyboardShowing = true
+    }
+    
+    func keyboardWillDisappear() {
+        keyboardShowing = false
+    }
+    
     // MARK: MessageTableVCProtocol
     
     func reloadMessageViewData() {
@@ -48,6 +67,16 @@ class MessageTableViewController: UITableViewController, MessageTableVCProtocol,
     }
         
     // UITableViewController
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentYoffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+        if distanceFromBottom < 100 && contentYoffset > 20 && keyboardShowing == false {
+            messageTableVCDelegate?.showKeyboard()
+        } else if distanceFromBottom > 100 && contentYoffset < -25 && keyboardShowing == true {
+            messageTableVCDelegate?.hideKeyboard()
+        }
+    }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return messageTableVCDelegate?.getMessageViewData().keys.count ?? 0

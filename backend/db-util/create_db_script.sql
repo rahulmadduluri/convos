@@ -115,5 +115,5 @@ INSERT INTO conversations VALUES (NULL, 'uuid-1', 1000, 1000, "A", 1, 'prafulla_
 INSERT INTO members VALUES (1,1,1000),(2,2,1200),(3,3,1400),(4,1,1480),(4,2,1490),(4,3,1500);
 INSERT INTO messages VALUES (NULL, 'uuid-1', 'Hello World!', 1500, 1, NULL, 1),
 							(NULL, 'uuid-2', 'Yo yo yo', 1505, 1, NULL, 1),
-							(NULL, 'uuid-3', 'My name is jo', 1510, 1, 2, 1),
-							(NULL, 'uuid-4', 'Huh-Watchu talking about?', 1520, 1, 2, 1);
+							(NULL, 'uuid-3', 'My name is jo', 1510, 1, NULL, 1),
+							(NULL, 'uuid-4', 'Huh-Watchu talking about?', 1520, 1, NULL, 1);

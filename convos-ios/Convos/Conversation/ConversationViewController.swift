@@ -124,6 +124,14 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     // MARK: MessageTableVCDelegate
     
+    func showKeyboard() {
+        containerView?.showKeyboard()
+    }
+    
+    func hideKeyboard() {
+        containerView?.hideKeyboard()
+    }
+    
     func goBack() {
         self.dismiss(animated: true, completion: nil)
     }
@@ -180,6 +188,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text,
+            text != "",
             let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
             let pushMessageRequest = PushMessageRequest(conversationUUID: conversationUUID, allText: text, senderUUID: uuid, parentUUID: nil)
             MessageAPI.pushMessage(pushMessageRequest: pushMessageRequest)

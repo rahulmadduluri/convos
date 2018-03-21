@@ -70,6 +70,14 @@ class MainConversationView: UIView, ConversationUIComponent {
     
     // MARK: Public
     
+    func showKeyboard() {
+        bottomBarView.newMessageTextField.becomeFirstResponder()
+    }
+    
+    func hideKeyboard() {
+        bottomBarView.newMessageTextField.resignFirstResponder()
+    }
+    
     func showSwitcher() {
         isShowingSwitcher = true
         setNeedsLayout()
