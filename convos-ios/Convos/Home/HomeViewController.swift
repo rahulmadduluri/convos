@@ -21,7 +21,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     private var hasBeenDisplayed = false
     
     var isLoggedIn: Bool {
-        return Credentials.credentialsManager.hasValid()
+        return MyAuth.credentialsManager.hasValid()
     }
         
     // MARK: UIViewController
@@ -154,7 +154,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     // MARK: UserInfoVCDelegate
     
     func logout() {
-        let successfulLogout = Credentials.credentialsManager.clear()
+        let successfulLogout = MyAuth.credentialsManager.clear()
         if successfulLogout == true {
             presentLogin()
         }

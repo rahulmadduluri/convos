@@ -92,16 +92,10 @@ final class SocketManager: NSObject, SocketManaging {
             }
             ws.event.close = { code, reason, clean in
                 print("Web Socket Closed!")
-                print(reason)
-                if (self.retryConnectionCount < 10) {
-                    print("Trying to reopen")
+                print("Trying to reopen")
+                Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true, block: { _ in
                     ws.open()
-                    // retryConnectionCount += 1
-                    // wait 5 seconds
-                    print("Web Socket Reopened!")
-                } else {
-                    print("error: tried to connect Web Socket too many times")
-                }
+                })
             }
             ws.event.error = { error in
                 print("error \(error)")

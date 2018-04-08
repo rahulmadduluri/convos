@@ -5,12 +5,15 @@ import (
 
 	"api"
 	"db"
+	"middleware"
 	"networking"
 
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
+	"github.com/urfave/negroni"
 )
 
 var upgrader = websocket.Upgrader{
@@ -22,45 +25,44 @@ var upgrader = websocket.Upgrader{
 var hub = networking.NewHub()
 
 func main() {
-	log.SetFlags(0 | log.Lshortfile)
+	err := godotenv.Load()
+	if err != nil {
+		log.Print("Error loading .env file")
+	}
 
 	log.Println("Start application")
 	db.ConfigHandler()
 	go hub.Run()
 
+	// middleware
+	jwtMiddleware := middleware.JWTMiddleware()
+
 	r := mux.NewRouter()
-	r.HandleFunc("/", homeHandler)
-	r.HandleFunc("/ws", websocketHandler)
+	ar := mux.NewRouter()
+
+	ar.HandleFunc("/ws", websocketHandler)
 	// User
-	r.HandleFunc("/users", api.GetUsers).Methods("GET")
-	r.HandleFunc("/users/{uuid}", api.UpdateUser).Methods("PUT")
-	r.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
-	r.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
+	ar.HandleFunc("/users", api.GetUsers).Methods("GET")
+	ar.HandleFunc("/users/{uuid}", api.UpdateUser).Methods("PUT")
+	ar.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
+	ar.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
 	// Group
-	r.HandleFunc("/groups/{uuid}/conversations", api.GetConversationsForGroup).Methods("GET")
-	r.HandleFunc("/groups/{uuid}/members", api.GetMembersForGroup).Methods("GET")
-	r.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")
-	r.HandleFunc("/groups", api.CreateGroup).Methods("POST")
+	ar.HandleFunc("/groups/{uuid}/conversations", api.GetConversationsForGroup).Methods("GET")
+	ar.HandleFunc("/groups/{uuid}/members", api.GetMembersForGroup).Methods("GET")
+	ar.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")
+	ar.HandleFunc("/groups", api.CreateGroup).Methods("POST")
 	// Conversation
-	r.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
-	r.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
-	r.Handle("/static/{s3_uri}",
+	ar.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
+	ar.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
+	ar.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.Handle("/", r)
 
-	// Start listening on port 8000
-	err := http.ListenAndServe(":8000", nil)
-	if err != nil {
-		log.Println("ListenAndServe: ", err)
-	} else {
-		log.Println("http server started on :8000")
-	}
-}
+	an := negroni.New(negroni.HandlerFunc(jwtMiddleware.HandlerWithNext), negroni.Wrap(ar))
+	r.PathPrefix("/").Handler(an)
+	n := negroni.Classic()
+	n.UseHandler(r)
 
-// Home Handler
-func homeHandler(res http.ResponseWriter, req *http.Request) {
-	// do nothing
-	log.Println("Home accessed")
+	n.Run(":8000")
 }
 
 // Create new websocket

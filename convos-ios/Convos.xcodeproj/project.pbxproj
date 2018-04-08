@@ -70,8 +70,9 @@
 		B7DED5C92055541E0002BF2F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5C82055541E0002BF2F /* LoginViewController.swift */; };
 		B7DED5CB205556090002BF2F /* LoginProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CA205556090002BF2F /* LoginProtocols.swift */; };
 		B7DED5CD2055587D0002BF2F /* MainLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CC2055587D0002BF2F /* MainLoginView.swift */; };
-		B7DED5D0205567770002BF2F /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5CF205567770002BF2F /* Credentials.swift */; };
 		B7DED5D2205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DED5D1205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift */; };
+		B7FFCCCF2079D07D008F0BDF /* APIHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FFCCCE2079D07D008F0BDF /* APIHeaders.swift */; };
+		B7FFCCD2207A2460008F0BDF /* Authenticate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FFCCD1207A2460008F0BDF /* Authenticate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -141,8 +142,10 @@
 		B7DED5C82055541E0002BF2F /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		B7DED5CA205556090002BF2F /* LoginProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginProtocols.swift; sourceTree = "<group>"; };
 		B7DED5CC2055587D0002BF2F /* MainLoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainLoginView.swift; sourceTree = "<group>"; };
-		B7DED5CF205567770002BF2F /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		B7DED5D1205A8B720002BF2F /* SwitchConversationCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchConversationCollectionViewCell.swift; sourceTree = "<group>"; };
+		B7FFCCCE2079D07D008F0BDF /* APIHeaders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIHeaders.swift; sourceTree = "<group>"; };
+		B7FFCCD02079E1CE008F0BDF /* Convos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Convos.entitlements; sourceTree = "<group>"; };
+		B7FFCCD1207A2460008F0BDF /* Authenticate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticate.swift; sourceTree = "<group>"; };
 		CA0A44646363CD11EE8FBE03 /* Pods_Convos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Convos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -196,6 +199,7 @@
 		B77CE8192020B09700B6D9A2 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				B7FFCCCE2079D07D008F0BDF /* APIHeaders.swift */,
 				B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */,
 				B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */,
 				B77CE837203085DE00B6D9A2 /* UserAPI.swift */,
@@ -338,6 +342,7 @@
 		B788107B1F539D23009AC9FE /* Convos */ = {
 			isa = PBXGroup;
 			children = (
+				B7FFCCD02079E1CE008F0BDF /* Convos.entitlements */,
 				B788107C1F539D23009AC9FE /* AppDelegate.swift */,
 				B77BB1441FEE3453005FB88C /* MulticastDelegate.swift */,
 				B77BB150200268EF005FB88C /* OrderedDictionary.swift */,
@@ -379,7 +384,7 @@
 		B7DED5CE205567640002BF2F /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				B7DED5CF205567770002BF2F /* Credentials.swift */,
+				B7FFCCD1207A2460008F0BDF /* Authenticate.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -430,6 +435,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 7KP2V8DA69;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -539,11 +549,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7FFCCD2207A2460008F0BDF /* Authenticate.swift in Sources */,
 				B77CE8262027450600B6D9A2 /* REST.swift in Sources */,
 				B77CE857204E9B0C00B6D9A2 /* ContactsViewController.swift in Sources */,
 				B748CF6E1F73D89D00735F5D /* MessageTableViewController.swift in Sources */,
 				B77CE83C20384DB200B6D9A2 /* GroupAPI.swift in Sources */,
-				B7DED5D0205567770002BF2F /* Credentials.swift in Sources */,
 				B77CE829202DAC5200B6D9A2 /* GroupInfoViewController.swift in Sources */,
 				B748CF8D1F7D036000735F5D /* HomeViewController.swift in Sources */,
 				B7DED5B8204FEB630002BF2F /* ContactsTableViewController.swift in Sources */,
@@ -559,6 +569,7 @@
 				B77CE8442043947A00B6D9A2 /* ConversationInfoProtocols.swift in Sources */,
 				B748CF651F728D1600735F5D /* MainConversationView.swift in Sources */,
 				B77BB159200638F2005FB88C /* SearchTableViewHeader.swift in Sources */,
+				B7FFCCCF2079D07D008F0BDF /* APIHeaders.swift in Sources */,
 				B77CE85B204FCBDB00B6D9A2 /* MainContactsView.swift in Sources */,
 				B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */,
 				B748CF701F73D8F000735F5D /* MessageTableViewCell.swift in Sources */,
@@ -719,6 +730,7 @@
 			baseConfigurationReference = 38D3FDE16ED64C0225CC71FD /* Pods-Convos.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Convos/Convos.entitlements;
 				DEVELOPMENT_TEAM = 7KP2V8DA69;
 				INFOPLIST_FILE = Convos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -733,6 +745,7 @@
 			baseConfigurationReference = 46E8CBBD8BD2C2079F61A45C /* Pods-Convos.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Convos/Convos.entitlements;
 				DEVELOPMENT_TEAM = 7KP2V8DA69;
 				INFOPLIST_FILE = Convos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
