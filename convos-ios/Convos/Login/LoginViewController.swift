@@ -54,7 +54,6 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate {
                 return
             }
             
-            if 
             
             // TODO
             // instead of phone #, have Auth0 return a uuid

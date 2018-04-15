@@ -43,8 +43,8 @@ func main() {
 	r := mux.NewRouter()  // unauth
 	ar := mux.NewRouter() // auth
 
-	// Websocket -- need to custom auth since token is in Sec-Websocket-Protocol
-	r.HandleFunc("/ws", websocketHandler)
+	// Websocket
+	ar.HandleFunc("/ws", websocketHandler)
 	// User
 	ar.HandleFunc("/users", api.GetUsers).Methods("GET")
 	ar.HandleFunc("/users/{uuid}", api.UpdateUser).Methods("PUT")

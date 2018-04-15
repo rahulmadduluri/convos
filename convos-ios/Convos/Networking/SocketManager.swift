@@ -86,7 +86,9 @@ final class SocketManager: NSObject, SocketManaging {
     // MARK: Private
     
     fileprivate func generateWebSocket(token: String) {
-        self.webSocket = WebSocket("ws://localhost:8000/ws", subProtocols: [token])
+        var urlRequest = URLRequest(url: URL(string: "ws://localhost:8000/ws")!)
+        urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+        self.webSocket = WebSocket(request: urlRequest)
         if let ws = self.webSocket {
             ws.event.open = {
                 print("Web Socket Opened!")
