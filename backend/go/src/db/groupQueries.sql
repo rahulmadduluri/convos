@@ -1,3 +1,24 @@
+-- name: memberInGroup
+select
+	users.uuid as uuid,
+	users.name as name,
+	users.handle as handle,
+	users.photo_uri as photouri
+from (
+	select distinct 
+		members.user_id as person_id,
+	from members
+	where group_id in (
+		select id
+		from groups
+		where groups.uuid = :group_uuid
+	)
+) as group_members
+join users
+	on group_members.person_id = users.id
+where users.uuid = :user_uuid
+;
+
 -- name: findConversationsForGroup
 select
 	conversations.uuid as uuid,

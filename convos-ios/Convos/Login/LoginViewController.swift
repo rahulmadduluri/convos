@@ -8,8 +8,8 @@
 
 import UIKit
 
-class LoginViewController: UIViewController, LoginUIComponentDelegate {
-    
+class LoginViewController: UIViewController, LoginUIComponentDelegate, NewUserVCDelegate {
+
     var loginVCDelegate: LoginVCDelegate?
     
     fileprivate var containerView: MainLoginView? = nil
@@ -41,54 +41,47 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate {
     // MARK: LoginUIComponentDelegate
     
     func loginTapped() {
+        // Set access token & create web socket if successfully authenticated
         MyAuth.authenticate(completion: { accessToken in
-            
-            if let token = accessToken {
-                APIHeaders.setAccessToken(accessToken: token)
-                self.socketManager.createWebSocket(accessToken: token)
-                self.dismiss(animated: false, completion: nil)
-            } else {
+            guard let accessToken = accessToken else {
                 let alert = UIAlertController(title: "Failed to authenticate", message: "", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
                 self.present(alert, animated: true)
                 return
             }
             
-            
-            // TODO
-            // instead of phone #, have Auth0 return a uuid
-            // create a user in database (if does not exist) with this uuid
-            // return data for user and store in NSUserDefaults
-            
-            // add header x-uuid and attach the uuid
-            // use checkUUID function on backend to verify that the UUID passed matches the UUID encoded in the token
-            
-            
-            
-            
-            
-            /*
-            MyAuth.fetchUserPhoneNumber { number in
-                if let number = number {
-                    UserAPI.getUser(mobileNumber: number) { user in
+            MyAuth.fetchUserInfoFromRemote(accessToken: accessToken) { uuid, phoneNumber in
+                if let uuid = uuid, let mobileNumber = phoneNumber {
+                    UserAPI.getUser(uuid: uuid) { user in
                         if let user = user {
-                            UserDefaults.standard.set(user.uuid, forKey: "uuid")
-                            UserDefaults.standard.set(user.name, forKey: "name")
-                            UserDefaults.standard.set(user.handle, forKey: "handle")
-                            UserDefaults.standard.set(user.photoURI, forKey: "photo_uri")
-                            UserDefaults.standard.set(number, forKey: "mobile_number")
+                            // Found user
+                            MyAuth.registerUserInfo(accessToken: accessToken, uuid: uuid, mobileNumber: mobileNumber, name: user.name, handle: user.handle, photoURI: user.photoURI)
+                            self.dismiss(animated: false, completion: nil)
+                        } else {
+                            // Couldn't find user in database. Create new user!
+                            let newUserVC = NewUserViewController(uuid: uuid, mobileNumber: mobileNumber)
+                            newUserVC.newUserVCDelegate = self
+                            self.present(newUserVC, animated: true, completion: nil)
                         }
-                        self.dismiss(animated: false, completion: nil)
                     }
                 } else {
-                    let alert = UIAlertController(title: "Failed to get phone #", message: "", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Failed to get user info", message: "", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
                     self.present(alert, animated: true)
-                    return
                 }
             }
-            */
         })
+    }
+        
+    // MARK: NewUserVCDelegate
+    
+    func userCreated(uuid: String, mobileNumber: String, name: String, handle: String, photoURI: String?) {
+        MyAuth.fetchAccessToken{ accessToken in
+            if let accessToken = accessToken {
+                MyAuth.registerUserInfo(accessToken: accessToken, uuid: uuid, mobileNumber: mobileNumber, name: name, handle: handle, photoURI: photoURI)
+                self.dismiss(animated: false, completion: nil)
+            }
+        }
     }
     
     // MARK: Private

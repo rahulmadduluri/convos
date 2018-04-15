@@ -46,7 +46,7 @@ class MyAuth: NSObject {
         credentialsManager.credentials { (error, credentials) in
             guard let credentials = credentials,
                 let refreshToken = credentials.refreshToken, error == nil else {
-                    let removedCredentials = self.credentialsManager.clear()
+                    let removedCredentials = MyAuth.logout()
                     print("Auth0: Removed Credentials: \(removedCredentials) failed to get refresh token")
                     completion(nil)
                     return
@@ -61,7 +61,7 @@ class MyAuth: NSObject {
                     case .success(let credentials):
                         let storedSuccessfully = credentialsManager.store(credentials: credentials)
                         if storedSuccessfully == false {
-                            let removedCredentials = self.credentialsManager.clear()
+                            let removedCredentials = MyAuth.logout()
                             print("Auth0: Removed Credentials: \(removedCredentials) Error: \(error)")
                             completion(nil)
                         } else {
@@ -78,7 +78,7 @@ class MyAuth: NSObject {
         credentialsManager.credentials { (error, credentials) in
             guard let credentials = credentials,
                 let accessToken = credentials.accessToken, error == nil else {
-                    let removedCredentials = self.credentialsManager.clear()
+                    let removedCredentials = MyAuth.logout()
                     print("Auth0: Removed Credentials: \(removedCredentials) failed to fetch access token")
                     completion(nil)
                     return
@@ -87,33 +87,59 @@ class MyAuth: NSObject {
         }
     }
     
-    // fetches UUID from Auth0. returns nil if failed to retrieve
-    static func fetchUUIDFromAuth0(completion: @escaping (String?)->Void) {
-        credentialsManager.credentials { (error, credentials) in
-            guard let credentials = credentials,
-                let accessToken = credentials.accessToken, error == nil else {
-                    print("Auth0: Failed to get user phone number")
-                    completion(nil)
-                    return
-            }
-            Auth0
-                .authentication()
-                .userInfo(withAccessToken: accessToken)
-                .start { result in
-                    switch result {
-                    case .success(let profile):
-                        if let customClaims = profile.customClaims,
-                            let uuid = customClaims["uuid"] as? String {
-                            completion(uuid)
-                        } else {
-                            print("Auth0: profile didn't have a uuid")
-                            completion(nil)
-                        }
-                    case .failure(let error):
-                        print("Auth0: Failed to grab user profile \(error)")
-                        completion(nil)
+    // fetches UUID & phone # from Auth0. returns nil if failed to retrieve
+    static func fetchUserInfoFromRemote(accessToken: String, completion: @escaping (String?, String?)->Void) {
+        Auth0
+            .authentication()
+            .userInfo(withAccessToken: accessToken)
+            .start { result in
+                switch result {
+                case .success(let profile):
+                    var uuid: String? = nil
+                    if let customClaims = profile.customClaims,
+                        let claimUUID = customClaims["uuid"] as? String {
+                        uuid = claimUUID
+                    } else {
+                        print("Auth0: profile didn't have a uuid")
                     }
-            }
+                    var phoneNumber: String? = nil
+                    if let number = profile.name {
+                        phoneNumber = number.replacingOccurrences(of: "+", with: "")
+                    } else {
+                        print("Auth0: profile didn't have a phone #")
+                    }
+                    completion(uuid, phoneNumber)
+                case .failure(let error):
+                    print("Auth0: Failed to grab user profile \(error)")
+                    completion(nil, nil)
+                }
         }
     }
+    
+    // setup all local auth info -- create secure header, web socket, and store
+    static func registerUserInfo(accessToken: String, uuid: String, mobileNumber: String, name: String, handle: String, photoURI: String?) {
+        UserDefaults.standard.set(uuid, forKey: "uuid")
+        UserDefaults.standard.set(name, forKey: "name")
+        UserDefaults.standard.set(handle, forKey: "handle")
+        UserDefaults.standard.set(photoURI, forKey: "photo_uri")
+        UserDefaults.standard.set(mobileNumber, forKey: "mobile_number")
+        APIHeaders.setAccessToken(accessToken: accessToken)
+        SocketManager.sharedInstance.createWebSocket(accessToken: accessToken)
+    }
+    
+    static func logout() -> Bool {
+        SocketManager.sharedInstance.webSocket?.close()
+        UserDefaults.standard.set("", forKey: "uuid")
+        UserDefaults.standard.set("", forKey: "name")
+        UserDefaults.standard.set("", forKey: "handle")
+        UserDefaults.standard.set("", forKey: "photo_uri")
+        UserDefaults.standard.set("", forKey: "mobile_number")
+        APIHeaders.reset()
+        let successfulLogout = MyAuth.credentialsManager.clear()
+        if successfulLogout == false {
+            print("ERROR: Failed to clear credentials")
+        }
+        return successfulLogout
+    }
+
 }

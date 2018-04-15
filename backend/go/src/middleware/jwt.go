@@ -9,6 +9,7 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 )
 
 type CustomClaims struct {
@@ -57,6 +58,11 @@ func JWTMiddleware() *jwtmiddleware.JWTMiddleware {
 	})
 }
 
+// Gets UUID from header so that API can check that authorization is permitted
+func GetUUIDFromHeader(header http.Header) string {
+	return header.Get("x-uuid")
+}
+
 // Each authorized API call should a uuid that matches the user's true uuid
 func HasUUID(header http.Header) bool {
 	authHeaderParts := strings.Split(header.Get("Authorization"), " ")
@@ -70,6 +76,16 @@ func HasUUID(header http.Header) bool {
 		hasUUID = true
 	}
 	return hasUUID
+}
+
+// Checks user UUID in parameters to make sure it's the same as the Header's UUID
+func CheckUUIDParam(r *http.Request) bool {
+	vars := mux.Vars(r)
+	if userUUID, ok := vars["uuid"]; ok && userUUID != "" {
+		return r.Header.Get("x-uuid") == userUUID
+	} else {
+		return false
+	}
 }
 
 func getPemCert(token *jwt.Token) (string, error) {

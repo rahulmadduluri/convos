@@ -5,7 +5,7 @@ select
 	users.handle as handle,
 	users.photo_uri as photouri
 from users
-where users.mobile_number = :mobile_number
+where users.mobile_number = :user_uuid
 
 -- name: findContactsForUser
 select

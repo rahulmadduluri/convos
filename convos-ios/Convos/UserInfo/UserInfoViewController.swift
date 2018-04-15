@@ -7,8 +7,6 @@
 //
 
 import UIKit
-
-import UIKit
 import SwiftyJSON
 
 class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfoComponentDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {

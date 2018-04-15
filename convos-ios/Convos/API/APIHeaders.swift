@@ -17,6 +17,10 @@ class APIHeaders: NSObject {
         return headers
     }
     
+    static func reset() {
+        headers = Alamofire.HTTPHeaders()
+    }
+    
     static func authorizationValue() -> String {
         return headers["Authorization"] ?? ""
     }

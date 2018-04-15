@@ -8,6 +8,7 @@
 
 import UIKit
 
+// Home View Controller acts as a Routing VC for all other major VCs (some of which will present their own VCs)
 class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, ConversationVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate, UserInfoVCDelegate {
     
     var loginVC: LoginViewController?
@@ -153,13 +154,11 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     // MARK: UserInfoVCDelegate
     
     func logout() {
-        let successfulLogout = MyAuth.credentialsManager.clear()
+        let successfulLogout = MyAuth.logout()
         if successfulLogout == false {
             print("ERROR: Failed to clear credentials")
         }
-        presentedViewController?.dismiss(animated: false, completion: {
-            self.presentLogin()
-        })
+        presentLogin()
     }
     
     // MARK: Private
@@ -175,18 +174,29 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
                 }
             } else {
                 MyAuth.reauthenticate{ accessToken in
-                    if let t = accessToken {
-                        APIHeaders.setAccessToken(accessToken: t)
-                        self.socketManager.createWebSocket(accessToken: t)
+                    guard let accessToken = accessToken else {
+                        return
+                    }
+                    MyAuth.fetchUserInfoFromRemote(accessToken: accessToken) { uuid, phoneNumber in
+                        if let uuid = uuid, let mobileNumber = phoneNumber {
+                            UserAPI.getUser(uuid: uuid) { user in
+                                if let user = user {
+                                    MyAuth.registerUserInfo(accessToken: accessToken, uuid: uuid, mobileNumber: mobileNumber, name: user.name, handle: user.handle, photoURI: user.photoURI)
+                                } else {
+                                    let alert = UIAlertController(title: "Failed to reauthenticate", message: "", preferredStyle: .alert)
+                                    alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
+                                    self.present(alert, animated: true)
+                                }
+                            }
+                        } else {
+                            let alert = UIAlertController(title: "Failed to reauthenticate", message: "", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
+                            self.present(alert, animated: true)
+                        }
                     }
                 }
             }
         }
-        // TODO: Move this to auth controller
-        UserDefaults.standard.set("uuid-1", forKey: "uuid")
-        UserDefaults.standard.set("Prafulla", forKey: "name")
-        UserDefaults.standard.set("prafullasd", forKey: "handle")
-        UserDefaults.standard.set("prafulla_prof", forKey: "photo_uri")
     }
     
     fileprivate func presentSearch() {
@@ -214,10 +224,10 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     fileprivate func presentOverHome(vc: UIViewController, animated: Bool) {
         vc.modalPresentationStyle = .overCurrentContext
         
-        if let currentVC = presentedViewController {
-            currentVC.dismiss(animated: false, completion: {
+        if presentedViewController != nil {
+            presentedViewController?.dismiss(animated: false) {
                 self.present(vc, animated: animated, completion: nil)
-            })
+            }
         } else {
             self.present(vc, animated: animated, completion: nil)
         }

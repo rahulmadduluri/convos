@@ -1,24 +1,20 @@
 //
-//  MainUserInfoView.swift
+//  MainNewUserView.swift
 //  Convos
 //
-//  Created by Rahul Madduluri on 3/9/18.
+//  Created by Rahul Madduluri on 4/15/18.
 //  Copyright © 2018 rahulm. All rights reserved.
 //
 
 import UIKit
 
-class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
-    
-    // HACK :( tells text field that the edit alert has been pressed (look at ShouldBeginEditing)
-    fileprivate var editAlertHasBeenPressed = false
-    
-    var userInfoVC: UserInfoComponentDelegate? = nil
+class MainNewUserView: UIView, UITextFieldDelegate {
+    var newUserVC: NewUserUIComponentDelegate? = nil
     var nameTextField = UITextField()
     var handleTextField = UITextField()
     var userPhotoImageView = UIImageView()
     var mobileNumberTextField = UITextField()
-    var logoutButton = UIButton()
+    var createUserButton = UIButton()
     
     // MARK: Init
     
@@ -72,68 +68,41 @@ class MainUserInfoView: UIView, UserInfoUIComponent, UITextFieldDelegate {
         mobileNumberTextField.frame = CGRect(x: self.bounds.midX - Constants.mobileTextFieldWidth/2, y: self.bounds.minY + Constants.mobileTextFieldOriginY, width: Constants.mobileTextFieldWidth, height: Constants.mobileTextFieldHeight)
         mobileNumberTextField.font = mobileNumberTextField.font?.withSize(Constants.mobileTextFieldFontSize)
         mobileNumberTextField.alpha = 1.0
-        mobileNumberTextField.placeholder = Constants.mobileTextFieldPlaceholder
+        mobileNumberTextField.tag = Constants.mobileNumberTag
         mobileNumberTextField.textAlignment = .center
         mobileNumberTextField.delegate = self
         self.addSubview(mobileNumberTextField)
         
-        // LogoutButton
-        logoutButton.frame = CGRect(x: self.bounds.midX - Constants.logoutButtonRadius/2, y: self.bounds.minY + Constants.logoutButtonOriginY, width: Constants.logoutButtonRadius, height: Constants.logoutButtonRadius)
-        logoutButton.setImage(UIImage(named: "logout"), for: .normal)
-        logoutButton.alpha = (userInfoVC?.isMe ?? false) ? 1 : 0
-        logoutButton.tag = Constants.logoutButtonTag
-        logoutButton.addTarget(self, action: #selector(MainUserInfoView.tapLogout(_:)), for: .touchUpInside)
-        self.addSubview(logoutButton)
+        // CreateUserButton
+        createUserButton.frame = CGRect(x: self.bounds.midX - Constants.createUserButtonRadius/2, y: self.bounds.minY + Constants.createUserButtonOriginY, width: Constants.createUserButtonRadius, height: Constants.createUserButtonRadius)
+        createUserButton.setImage(UIImage(named: "rocket_launch"), for: .normal)
+        createUserButton.addTarget(self, action: #selector(MainNewUserView.tapCreateUser(_:)), for: .touchUpInside)
+        self.addSubview(createUserButton)
     }
     
     // MARK: Gesture Recognizer functions
     
     func tapUserPhoto(_ obj: Any) {
-        userInfoVC?.presentAlertOption(tag: userPhotoImageView.tag)
+        // bring up image picker
     }
     
-    func tapLogout(_ obj: Any) {
-        userInfoVC?.presentAlertOption(tag: logoutButton.tag)
+    func tapCreateUser(_ obj: Any) {
+        newUserVC?.createUserTapped()
     }
     
     // MARK: UITextFieldDelegate
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        if textField.tag == Constants.nameTextFieldTag || textField.tag == Constants.handleTextFieldTag {
-            if editAlertHasBeenPressed == true {
-                editAlertHasBeenPressed = false
-                return true
-            } else {
-                userInfoVC?.presentAlertOption(tag: textField.tag)
-                return false
-            }
-        }
-        return false
+        // can't edit mobile #
+        return textField.tag != Constants.mobileNumberTag
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let text = textField.text ?? ""
-        if textField.tag == Constants.nameTextFieldTag {
-            userInfoVC?.userNameEdited(name: text)
-        } else if textField.tag == Constants.handleTextFieldTag {
-            userInfoVC?.userHandleEdited(handle: text)
-        }
         textField.resignFirstResponder()
         return true
     }
     
     // MARK: Public
-    
-    func beginEditPressed(tag: Int) {
-        editAlertHasBeenPressed = true
-        if tag == Constants.nameTextFieldTag {
-            nameTextField.becomeFirstResponder()
-        } else if tag == Constants.userPhotoTag {
-            
-        } else if tag == Constants.handleTextFieldTag {
-            handleTextField.becomeFirstResponder()
-        }
-    }
     
 }
 
@@ -154,17 +123,17 @@ private struct Constants {
     static let handleTextFieldHeight: CGFloat = 40
     static let handleTextFieldFontSize: CGFloat = 16
     
-    static let mobileTextFieldPlaceholder: String = "111:)111"
     static let mobileTextFieldOriginY: CGFloat = 260
     static let mobileTextFieldWidth: CGFloat = 200
     static let mobileTextFieldHeight: CGFloat = 40
     static let mobileTextFieldFontSize: CGFloat = 24
     
-    static let logoutButtonOriginY: CGFloat = 600
-    static let logoutButtonRadius: CGFloat = 40
-   
+    static let createUserButtonOriginY: CGFloat = 600
+    static let createUserButtonRadius: CGFloat = 40
+    
     static let nameTextFieldTag: Int = 1
     static let userPhotoTag: Int = 2
     static let handleTextFieldTag: Int = 3
-    static let logoutButtonTag: Int = 4
+    static let mobileNumberTag: Int = 4
+    static let createUserButtonTag: Int = 5
 }

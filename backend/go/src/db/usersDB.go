@@ -15,13 +15,13 @@ const (
 	_updateUserHandle    = "updateUserHandle"
 )
 
-func (dbh *dbHandler) GetUser(mobileNumber string) (models.UserObj, error) {
+func (dbh *dbHandler) GetUser(userUUID string) (models.UserObj, error) {
 	var obj models.UserObj
 
 	rows, err := dbh.db.NamedQuery(
 		dbh.userQueries[_getUser],
 		map[string]interface{}{
-			"mobile_number": mobileNumber,
+			"user_uuid": userUUID,
 		},
 	)
 	if err != nil {

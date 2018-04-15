@@ -12,9 +12,9 @@ import Alamofire
 
 class UserAPI: NSObject {
     static func getUser(
-        mobileNumber: String,
+        uuid: String,
         completion: (@escaping (User?) -> Void)) {
-        let url = REST.getUserURL(mobileNumber: mobileNumber)
+        let url = REST.getUserURL(userUUID: uuid)
         Alamofire.request(
             url,
             method: .get,

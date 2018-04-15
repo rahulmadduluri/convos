@@ -26,8 +26,10 @@ class REST: NSObject {
     
     // Users
     
-    static func getUserURL(mobileNumber: String) -> URL {
-        return URL(string: baseURL + "users?mobilenumber=" + mobileNumber)!
+    static func getUserURL(userUUID: String) -> URL {
+        let urlString = baseURL + "users/" + userUUID
+        let validatedURL = validateString(rawString: urlString)
+        return URL(string: validatedURL)!
     }
     
     static func createUserURL() -> URL {

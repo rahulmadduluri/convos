@@ -15,9 +15,36 @@ const (
 	_updateGroupMembers        = "updateGroupMembers"
 	_createGroup               = "createGroup"
 	_createConversation        = "createConversation"
+	_memberInGroup             = "groupHasMember"
 
 	_newConversationName = "Hall"
 )
+
+func (dbh *dbHandler) GroupHasMember(userUUID string, groupUUID string) bool {
+	var obj models.UserObj
+
+	rows, err := dbh.db.NamedQuery(
+		dbh.groupQueries[_memberInGroup],
+		map[string]interface{}{
+			"user_uuid":  userUUID,
+			"group_uuid": groupUUID,
+		},
+	)
+	if err != nil {
+		return false
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.StructScan(&obj)
+		if err != nil {
+			log.Fatal("scan error: ", err)
+			continue
+		}
+		return true
+	}
+	return false
+}
 
 func (dbh *dbHandler) GetConversationsForGroup(
 	groupUUID string,
@@ -63,7 +90,6 @@ func (dbh *dbHandler) GetMembersForGroup(groupUUID string, searchText string, ma
 			"max_members": maxMembers,
 		},
 	)
-
 	if err != nil {
 		return objs, err
 	}
