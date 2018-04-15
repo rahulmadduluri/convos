@@ -236,7 +236,9 @@ class GroupInfoViewController: UIViewController, SmartTextFieldDelegate, GroupIn
             containerView?.handleTextField.text = "@" + group!.handle
             containerView?.handleTextField.isUserInteractionEnabled = false
             if let uri = group!.photoURI {
-                containerView?.groupPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                containerView?.groupPhotoImageView.af_setImage(withURLRequest: urlRequest)
             }
         } else {
             containerView?.handleTextField.isUserInteractionEnabled = true

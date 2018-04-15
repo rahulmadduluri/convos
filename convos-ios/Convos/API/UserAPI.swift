@@ -11,6 +11,29 @@ import SwiftyJSON
 import Alamofire
 
 class UserAPI: NSObject {
+    static func getUser(
+        mobileNumber: String,
+        completion: (@escaping (User?) -> Void)) {
+        let url = REST.getUserURL(mobileNumber: mobileNumber)
+        Alamofire.request(
+            url,
+            method: .get,
+            headers: APIHeaders.defaultHeaders())
+            .validate()
+            .responseJSON { res in
+                if res.error == nil {
+                    completion(convertResponseToUser(res: res))
+                } else {
+                    print("Error while getting a user: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(nil)
+                        }
+                    }
+                }
+        }
+    }
+    
     static func getContacts(
         userUUID: String,
         searchText: String?,
@@ -19,10 +42,20 @@ class UserAPI: NSObject {
         let url = REST.getContactsURL(userUUID: userUUID, searchText: searchText, maxContacts: maxContacts)
         Alamofire.request(
             url,
-            method: .get)
+            method: .get,
+            headers: APIHeaders.defaultHeaders())
         .validate()
-        .responseJSON { response in
-            completion(convertResponseToContacts(res: response))
+        .responseJSON { res in
+            if res.error == nil {
+                completion(convertResponseToContacts(res: res))
+            } else {
+                print("Error while getting contacts: \(res.error)")
+                if res.response?.statusCode == 401 {
+                    APIHeaders.resetAccessToken{ _ in
+                        completion(nil)
+                    }
+                }
+            }
         }
     }
     
@@ -33,10 +66,20 @@ class UserAPI: NSObject {
         let url = REST.getPeopleURL(searchText: searchText, maxUsers: maxUsers)
         Alamofire.request(
             url,
-            method: .get)
+            method: .get,
+            headers: APIHeaders.defaultHeaders())
             .validate()
-            .responseJSON { response in
-                completion(convertResponseToContacts(res: response))
+            .responseJSON { res in
+                if res.error == nil {
+                    completion(convertResponseToContacts(res: res))
+                } else {
+                    print("Error while getting people: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(nil)
+                        }
+                    }
+                }
         }
     }
     
@@ -46,14 +89,19 @@ class UserAPI: NSObject {
         Alamofire.request(
             url,
             method: .post,
-            parameters: params)
+            parameters: params,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
                     completion(true)
                 } else {
-                    print("Error while updating conversation photo: \(res.error)")
-                    completion(false)
+                    print("Error while adding a contact: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    }
                 }
         }
     }
@@ -74,14 +122,19 @@ class UserAPI: NSObject {
         Alamofire.request(
             url,
             method: .put,
-            parameters: params)
+            parameters: params,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
                     completion(true)
                 } else {
                     print("Error while updating user: \(res.error)")
-                    completion(false)
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    }
                 }
         }
     }
@@ -93,14 +146,19 @@ class UserAPI: NSObject {
         let url = REST.updateUserPhotoURL(userUUID: userUUID)
         Alamofire.request(
             url,
-            method: .put)
+            method: .put,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
                     completion(true)
                 } else {
                     print("Error while updating user photo: \(res.error)")
-                    completion(false)
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    }
                 }
         }
     }
@@ -117,14 +175,31 @@ class UserAPI: NSObject {
             }
             multipartFormData.append(name.data(using: .utf8)!, withName: "name")
             multipartFormData.append(handle.data(using: .utf8)!, withName: "handle")
-        }, to: url) { result in
-            switch result {
+        }, to: url,
+           headers: APIHeaders.defaultHeaders()) { res in
+            switch res {
             case .success(_, _, _):
                 completion(true)
             case .failure:
-                completion(false)
+                print("Error while creating a user")
+                APIHeaders.resetAccessToken{ _ in
+                    completion(false)
+                }
             }
         }
+    }
+    
+    private static func convertResponseToUser(res: Alamofire.DataResponse<Any>) -> User? {
+        guard res.result.isSuccess else {
+            print("Error while fetching user: \(res.result.error)")
+            return nil
+        }
+        
+        if let data = res.data,
+            let user = User(json: JSON(data: data)) {
+            return user
+        }
+        return nil
     }
     
     private static func convertResponseToContacts(res: Alamofire.DataResponse<Any>) -> [User]? {

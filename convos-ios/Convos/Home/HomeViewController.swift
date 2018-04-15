@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, ConversationVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate {
+class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, ConversationVCDelegate, GroupInfoVCDelegate, ConversationInfoVCDelegate, UserInfoVCDelegate {
     
     var loginVC: LoginViewController?
     var searchVC: SearchViewController?
@@ -18,19 +18,17 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     var contactsVC: ContactsViewController?
     var userInfoVC: UserInfoViewController?
     
+    // TODO: remove?
     private var hasBeenDisplayed = false
     
-    var isLoggedIn: Bool {
-        return MyAuth.credentialsManager.hasValid()
-    }
-        
+    fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
+    
     // MARK: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureHome()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -38,7 +36,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
         
         if hasBeenDisplayed == false {
             hasBeenDisplayed = true
-            if isLoggedIn == true {
+            if MyAuth.credentialsManager.hasValid() == true {
                 presentSearch()
             } else {
                 presentLogin()
@@ -130,6 +128,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     func showProfile() {
         if self.userInfoVC == nil {
             self.userInfoVC = UserInfoViewController()
+            self.userInfoVC?.userInfoVCDelegate = self
         }
         
         if let newVC = self.userInfoVC {
@@ -155,14 +154,34 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     
     func logout() {
         let successfulLogout = MyAuth.credentialsManager.clear()
-        if successfulLogout == true {
-            presentLogin()
+        if successfulLogout == false {
+            print("ERROR: Failed to clear credentials")
         }
+        presentedViewController?.dismiss(animated: false, completion: {
+            self.presentLogin()
+        })
     }
     
     // MARK: Private
     
     fileprivate func configureHome() {
+        if APIHeaders.hasAccessToken() == false {
+            if MyAuth.credentialsManager.hasValid() {
+                MyAuth.fetchAccessToken { token in
+                    if let t = token {
+                        APIHeaders.setAccessToken(accessToken: t)
+                        self.socketManager.createWebSocket(accessToken: t)
+                    }
+                }
+            } else {
+                MyAuth.reauthenticate{ accessToken in
+                    if let t = accessToken {
+                        APIHeaders.setAccessToken(accessToken: t)
+                        self.socketManager.createWebSocket(accessToken: t)
+                    }
+                }
+            }
+        }
         // TODO: Move this to auth controller
         UserDefaults.standard.set("uuid-1", forKey: "uuid")
         UserDefaults.standard.set("Prafulla", forKey: "name")

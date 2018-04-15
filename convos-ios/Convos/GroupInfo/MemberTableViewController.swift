@@ -66,7 +66,9 @@ extension MemberTableViewController {
         if let mvd = groupInfoVC?.getMemberViewData()[indexPath.row] {
             cell.customTextLabel.text = mvd.text
             if let uri = mvd.photoURI {
-                cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                cell.photoImageView.af_setImage(withURLRequest: urlRequest)
             }
             cell.data = mvd
             switch mvd.status {

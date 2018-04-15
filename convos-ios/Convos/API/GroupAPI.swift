@@ -27,7 +27,8 @@ class GroupAPI: NSObject {
         Alamofire.request(
             url,
             method: .put,
-            parameters: params)
+            parameters: params,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
@@ -46,14 +47,19 @@ class GroupAPI: NSObject {
         let url = REST.updateGroupPhotoURL(groupUUID: groupUUID)
         Alamofire.request(
             url,
-            method: .put)
+            method: .put,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
                     completion(true)
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    completion(false)
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    }
                 }
         }
     }
@@ -65,10 +71,20 @@ class GroupAPI: NSObject {
         let url = REST.getConversationsURL(groupUUID: groupUUID, maxConversations: maxConversations)
         Alamofire.request(
             url,
-            method: .get)
+            method: .get,
+            headers: APIHeaders.defaultHeaders())
             .validate()
-            .responseJSON { response in
-                completion(convertResponseToConversations(res: response))
+            .responseJSON { res in
+                if res.error == nil {
+                    completion(convertResponseToConversations(res: res))
+                } else {
+                    print("Error while updating group photo: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(nil)
+                        }
+                    }
+                }
         }
     }
     
@@ -99,10 +115,20 @@ class GroupAPI: NSObject {
         let url = REST.getMembersURL(groupUUID: groupUUID, searchText: searchText, maxMembers: maxMembers)
         Alamofire.request(
             url,
-            method: .get)
+            method: .get,
+            headers: APIHeaders.defaultHeaders())
             .validate()
-            .responseJSON { response in
-                completion(convertResponseToMembers(res: response))
+            .responseJSON { res in
+                if res.error == nil {
+                    completion(convertResponseToMembers(res: res))
+                } else {
+                    print("Error while updating group photo: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(nil)
+                        }
+                    }
+                }
         }
     }
     
@@ -145,12 +171,16 @@ class GroupAPI: NSObject {
             } catch {
                 print("Could not create array of member UUIDs")
             }
-        }, to: url) { result in
-            switch result {
+        }, to: url,
+           headers: APIHeaders.defaultHeaders()) { res in
+            switch res {
             case .success(_, _, _):
                 completion(true)
             case .failure:
-                completion(false)
+                print("Failed to create a group")
+                APIHeaders.resetAccessToken{ _ in
+                    completion(false)
+                }
             }
         }
     }

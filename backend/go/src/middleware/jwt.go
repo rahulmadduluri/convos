@@ -3,7 +3,6 @@ package middleware
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -13,7 +12,7 @@ import (
 )
 
 type CustomClaims struct {
-	Scope string `json:"scope"`
+	UUID string `json:"uuid"`
 	jwt.StandardClaims
 }
 
@@ -33,9 +32,8 @@ type JSONWebKeys struct {
 func JWTMiddleware() *jwtmiddleware.JWTMiddleware {
 	return jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			log.Println(token.Claims)
 			// Verify 'aud' claim
-			aud := os.Getenv("AUTH0_AUDIENCE")
+			aud := os.Getenv("JWT_AUDIENCE")
 			checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAud {
 				return token, errors.New("Invalid audience.")
@@ -59,23 +57,19 @@ func JWTMiddleware() *jwtmiddleware.JWTMiddleware {
 	})
 }
 
-// Each authorized API call should use this function to check if it has the required scope
-func HasScope(scope string, header http.Header) bool {
+// Each authorized API call should a uuid that matches the user's true uuid
+func HasUUID(header http.Header) bool {
 	authHeaderParts := strings.Split(header.Get("Authorization"), " ")
 	tokenString := authHeaderParts[1]
 
 	token, _ := jwt.ParseWithClaims(tokenString, &CustomClaims{}, nil)
 	claims, _ := token.Claims.(*CustomClaims)
 
-	hasScope := false
-	result := strings.Split(claims.Scope, " ")
-	for i := range result {
-		if result[i] == scope {
-			hasScope = true
-		}
+	hasUUID := false
+	if claims.UUID == header.Get("x-uuid") {
+		hasUUID = true
 	}
-
-	return hasScope
+	return hasUUID
 }
 
 func getPemCert(token *jwt.Token) (string, error) {

@@ -27,14 +27,19 @@ class ConversationAPI: NSObject {
         Alamofire.request(
             url,
             method: .put,
-            parameters: params)
+            parameters: params,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
                     completion(true)
                 } else {
-                    print("Error while updating conversation: \(res.error)")
-                    completion(false)
+                    print("Error while updating group photo: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    }
                 }
         }
     }
@@ -46,14 +51,19 @@ class ConversationAPI: NSObject {
         let url = REST.updateConversationPhotoURL(conversationUUID: conversationUUID)
         Alamofire.request(
             url,
-            method: .put)
+            method: .put,
+            headers: APIHeaders.defaultHeaders())
             .validate()
             .response { res in
                 if res.error == nil {
                     completion(true)
                 } else {
-                    print("Error while updating conversation photo: \(res.error)")
-                    completion(false)
+                    print("Error while updating group photo: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    }
                 }
         }
     }
@@ -85,12 +95,15 @@ class ConversationAPI: NSObject {
             } catch {
                 print("Could not create array of tags UUIDs")
             }
-        }, to: url) { result in
-            switch result {
+        }, to: url,
+           headers: APIHeaders.defaultHeaders()) { res in
+            switch res {
             case .success(_, _, _):
                 completion(true)
             case .failure:
-                completion(false)
+                APIHeaders.resetAccessToken{ _ in
+                    completion(false)
+                }
             }
         }
     }

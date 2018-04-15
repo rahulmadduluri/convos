@@ -103,7 +103,9 @@ class SearchTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollecti
                 cell.customTextLabel.text = svd[groupViewData]?[convoIndex].text
                 cell.photoImageView.image = nil
                 if let uri = svd[groupViewData]?[convoIndex].photoURI {
-                    cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                    var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                    urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                    cell.photoImageView.af_setImage(withURLRequest: urlRequest)
                 }
             }
         }

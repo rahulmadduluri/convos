@@ -146,7 +146,9 @@ extension MessageTableViewController {
         if let messageViewData = messageTableVCDelegate?.findMessageViewData(primaryIndex: indexPath.section, secondaryIndex: indexPath.row) {
             cell.customTextLabel.text = messageViewData.text
             if let uri = messageViewData.photoURI {
-                cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                cell.photoImageView.af_setImage(withURLRequest: urlRequest)
             }
         }
         
@@ -164,7 +166,9 @@ extension MessageTableViewController {
         if let messageViewData = messageTableVCDelegate?.findMessageViewData(primaryIndex: section, secondaryIndex: nil) {
             header.customTextLabel.text = messageViewData.text
             if let uri = messageViewData.photoURI {
-                header.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                header.photoImageView.af_setImage(withURLRequest: urlRequest)
             }
         }
         

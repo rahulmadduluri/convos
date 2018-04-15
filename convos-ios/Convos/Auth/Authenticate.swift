@@ -8,7 +8,6 @@
 
 import UIKit
 import Auth0
-import Locksmith
 
 class MyAuth: NSObject {
     
@@ -18,58 +17,102 @@ class MyAuth: NSObject {
     
     static let credentialsManager = CredentialsManager(authentication: Auth0.authentication())
     
-    static func authenticate(onSuccess: @escaping ()->Void) {
+    // pass access token if true, nil otherwise
+    static func authenticate(completion: @escaping (String?)->Void) {
         Auth0
             .webAuth()
             .scope("openid profile offline_access")
-            .audience("https://zebi.auth0.com/userinfo")
+            .audience("localhost:8000")
             .start {
                 switch $0 {
                 case .failure(let error):
-                    // Handle the error
-                    print("Error: \(error)")
+                    print("Auth0: failed to authenticate: \(error)")
+                    completion(nil)
                 case .success(let credentials):
                     // Auth0 will automatically dismiss the login page
                     let storedSuccessfully = credentialsManager.store(credentials: credentials)
                     if storedSuccessfully == false {
-                        print("Failed to store credentials on authenticate :(")
+                        print("Auth0: Failed to store credentials on authenticate :(")
+                        completion(nil)
                     } else {
-                        onSuccess()
+                        completion(credentials.accessToken)
                     }
                 }
         }
     }
     
-    static func reauthenticate(onSuccess: @escaping ()->Void) {
+    // pass access token if true, nil otherwise
+    static func reauthenticate(completion: @escaping (String?)->Void) {
         credentialsManager.credentials { (error, credentials) in
-            if error != nil {
-                let removedCredentials = self.credentialsManager.clear()
-                print("Removed Credentials: \(removedCredentials) Error: \(error)")
-            } else {
-                guard let credentials = credentials,
-                    let refreshToken = credentials.refreshToken else {
-                        let removedCredentials = self.credentialsManager.clear()
-                        print("Removed Credentials: \(removedCredentials) failed to get refresh token")
-                        return
-                }
-                Auth0
-                    .authentication()
-                    .renew(withRefreshToken: refreshToken)
-                    .start { result in
-                        switch(result) {
-                        case .failure(let error):
+            guard let credentials = credentials,
+                let refreshToken = credentials.refreshToken, error == nil else {
+                    let removedCredentials = self.credentialsManager.clear()
+                    print("Auth0: Removed Credentials: \(removedCredentials) failed to get refresh token")
+                    completion(nil)
+                    return
+            }
+            Auth0
+                .authentication()
+                .renew(withRefreshToken: refreshToken)
+                .start { result in
+                    switch(result) {
+                    case .failure(let error):
+                        print("Auth0: Re-auth FAILED: Error: \(error)")
+                    case .success(let credentials):
+                        let storedSuccessfully = credentialsManager.store(credentials: credentials)
+                        if storedSuccessfully == false {
                             let removedCredentials = self.credentialsManager.clear()
-                            print("Removed Credentials: \(removedCredentials) Error: \(error)")
-                        case .success(let credentials):
-                            let storedSuccessfully = credentialsManager.store(credentials: credentials)
-                            if storedSuccessfully == false {
-                                let removedCredentials = self.credentialsManager.clear()
-                                print("Removed Credentials: \(removedCredentials) Error: \(error)")
-                            } else {
-                                onSuccess()
-                            }
+                            print("Auth0: Removed Credentials: \(removedCredentials) Error: \(error)")
+                            completion(nil)
+                        } else {
+                            
+                            completion(credentials.accessToken)
                         }
-                }
+                    }
+            }
+        }
+    }
+    
+    // grab access token from credential manager
+    static func fetchAccessToken(completion: @escaping (String?)->Void) {
+        credentialsManager.credentials { (error, credentials) in
+            guard let credentials = credentials,
+                let accessToken = credentials.accessToken, error == nil else {
+                    let removedCredentials = self.credentialsManager.clear()
+                    print("Auth0: Removed Credentials: \(removedCredentials) failed to fetch access token")
+                    completion(nil)
+                    return
+            }
+            completion(accessToken)
+        }
+    }
+    
+    // fetches UUID from Auth0. returns nil if failed to retrieve
+    static func fetchUUIDFromAuth0(completion: @escaping (String?)->Void) {
+        credentialsManager.credentials { (error, credentials) in
+            guard let credentials = credentials,
+                let accessToken = credentials.accessToken, error == nil else {
+                    print("Auth0: Failed to get user phone number")
+                    completion(nil)
+                    return
+            }
+            Auth0
+                .authentication()
+                .userInfo(withAccessToken: accessToken)
+                .start { result in
+                    switch result {
+                    case .success(let profile):
+                        if let customClaims = profile.customClaims,
+                            let uuid = customClaims["uuid"] as? String {
+                            completion(uuid)
+                        } else {
+                            print("Auth0: profile didn't have a uuid")
+                            completion(nil)
+                        }
+                    case .failure(let error):
+                        print("Auth0: Failed to grab user profile \(error)")
+                        completion(nil)
+                    }
             }
         }
     }

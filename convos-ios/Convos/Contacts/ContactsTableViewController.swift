@@ -64,7 +64,9 @@ extension ContactsTableViewController {
         if let cvd = contactsVC?.getContactsViewData()[indexPath.row] {
             cell.customTextLabel.text = cvd.text
             if let uri = cvd.photoURI {
-                cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                cell.photoImageView.af_setImage(withURLRequest: urlRequest)
             }
             cell.data = cvd
             switch cvd.status {

@@ -12,9 +12,10 @@ const (
 	_paramName       = "name"
 	_paramHandle     = "handle"
 	// User
-	_paramMaxContacts = "maxcontacts"
-	_paramMaxUsers    = "maxusers"
-	_paramContactUUID = "contactuuid"
+	_paramMobileNumber = "mobilenumber"
+	_paramMaxContacts  = "maxcontacts"
+	_paramMaxUsers     = "maxusers"
+	_paramContactUUID  = "contactuuid"
 	// Group
 	_paramMaxMembers  = "maxmembers"
 	_paramGroupUUID   = "groupuuid"

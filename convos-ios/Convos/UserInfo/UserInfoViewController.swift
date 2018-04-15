@@ -166,7 +166,9 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
         if isMe == false {
             containerView?.nameTextField.text = person!.name
             if let uri = person!.photoURI {
-                containerView?.userPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                containerView?.userPhotoImageView.af_setImage(withURLRequest: urlRequest)
             }
         } else {
             if let myName = UserDefaults.standard.object(forKey: "name") as? String,
@@ -174,7 +176,9 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
                 let myPhotoURI = UserDefaults.standard.object(forKey: "photo_uri") as? String {
                 containerView?.nameTextField.text = myName
                 containerView?.handleTextField.text = "@" + myHandle
-                containerView?.userPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: myPhotoURI))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: myPhotoURI))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                containerView?.userPhotoImageView.af_setImage(withURLRequest: urlRequest)
             }
         }
         

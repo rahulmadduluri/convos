@@ -7,12 +7,37 @@ import (
 )
 
 const (
+	_getUser             = "getUser"
 	_findUsers           = "findUsers"
 	_findContactsForUser = "findContactsForUser"
 	_updateContacts      = "updateContacts"
 	_updateUserName      = "updateUserName"
 	_updateUserHandle    = "updateUserHandle"
 )
+
+func (dbh *dbHandler) GetUser(mobileNumber string) (models.UserObj, error) {
+	var obj models.UserObj
+
+	rows, err := dbh.db.NamedQuery(
+		dbh.userQueries[_getUser],
+		map[string]interface{}{
+			"mobile_number": mobileNumber,
+		},
+	)
+	if err != nil {
+		return obj, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.StructScan(&obj)
+		if err != nil {
+			log.Fatal("scan error: ", err)
+		}
+		return obj, err
+	}
+	return obj, err
+}
 
 func (dbh *dbHandler) UpdateUser(userUUID string, name string, handle string) error {
 	if name != "" {

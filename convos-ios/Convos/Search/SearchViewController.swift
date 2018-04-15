@@ -183,7 +183,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         return viewDataMap
     }
     
-    fileprivate func configureSearch() {
+    fileprivate func configureSearch() {        
         searchTableVC.searchVC = self
         containerView?.searchTextField.smartTextFieldDelegate = self
         containerView?.bottomBarView.searchVC = self

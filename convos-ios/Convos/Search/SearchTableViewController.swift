@@ -88,7 +88,9 @@ extension SearchTableViewController {
         if let svd = searchVC?.getSearchViewData().keys[section] {
             header.customTextLabel.text = svd.text
             if let uri = svd.photoURI {
-                header.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                header.photoImageView.af_setImage(withURLRequest: urlRequest)
             }
         }
         

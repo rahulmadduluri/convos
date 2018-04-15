@@ -11,6 +11,7 @@ import SwiftyJSON
 import SwiftWebSocket
 
 protocol SocketManaging {
+    func createWebSocket(accessToken: String)
     func send(packetType: String, json: JSON)
 }
 
@@ -64,13 +65,6 @@ final class SocketManager: NSObject, SocketManaging {
     
     private var retryConnectionCount = 0
     
-    // MARK: Init
-    
-    private override init() {
-        super.init()
-        configureWebSocket()
-    }
-    
     // MARK: SocketManaging
     
     func send(packetType: String, json: JSON) {
@@ -82,11 +76,18 @@ final class SocketManager: NSObject, SocketManaging {
         }
     }
     
+    func createWebSocket(accessToken: String) {
+        if webSocket != nil {
+            webSocket?.close()
+        }
+        self.generateWebSocket(token: "Bearer " + accessToken)
+    }
+    
     // MARK: Private
     
-    fileprivate func configureWebSocket() {
-        webSocket = WebSocket("ws://localhost:8000/ws")
-        if let ws = webSocket {
+    fileprivate func generateWebSocket(token: String) {
+        self.webSocket = WebSocket("ws://localhost:8000/ws", subProtocols: [token])
+        if let ws = self.webSocket {
             ws.event.open = {
                 print("Web Socket Opened!")
             }

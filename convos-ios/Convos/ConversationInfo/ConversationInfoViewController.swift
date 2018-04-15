@@ -176,7 +176,9 @@ class ConversationInfoViewController: UIViewController, SmartTextFieldDelegate, 
         if isNewConversation == false {
             containerView?.topicTextField.text = conversation!.topic
             if let uri = conversation!.photoURI {
-                containerView?.conversationPhotoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                containerView?.conversationPhotoImageView.af_setImage(withURLRequest: urlRequest)
             }
         } else {
             containerView?.conversationPhotoImageView.image = UIImage(named: "capybara")

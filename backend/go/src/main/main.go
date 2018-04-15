@@ -25,11 +25,13 @@ var upgrader = websocket.Upgrader{
 var hub = networking.NewHub()
 
 func main() {
+	// load env
 	err := godotenv.Load()
 	if err != nil {
 		log.Print("Error loading .env file")
 	}
 
+	// setup
 	log.Println("Start application")
 	db.ConfigHandler()
 	go hub.Run()
@@ -37,10 +39,12 @@ func main() {
 	// middleware
 	jwtMiddleware := middleware.JWTMiddleware()
 
-	r := mux.NewRouter()
-	ar := mux.NewRouter()
+	//  routers
+	r := mux.NewRouter()  // unauth
+	ar := mux.NewRouter() // auth
 
-	ar.HandleFunc("/ws", websocketHandler)
+	// Websocket -- need to custom auth since token is in Sec-Websocket-Protocol
+	r.HandleFunc("/ws", websocketHandler)
 	// User
 	ar.HandleFunc("/users", api.GetUsers).Methods("GET")
 	ar.HandleFunc("/users/{uuid}", api.UpdateUser).Methods("PUT")
@@ -54,6 +58,7 @@ func main() {
 	// Conversation
 	ar.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
 	ar.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
+	// Static Resources
 	ar.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 

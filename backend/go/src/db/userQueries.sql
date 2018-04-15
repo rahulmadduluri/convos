@@ -1,3 +1,12 @@
+-- name: getUser
+select
+	users.uuid as uuid,
+	users.name as name,
+	users.handle as handle,
+	users.photo_uri as photouri
+from users
+where users.mobile_number = :mobile_number
+
 -- name: findContactsForUser
 select
 	users.uuid as uuid,

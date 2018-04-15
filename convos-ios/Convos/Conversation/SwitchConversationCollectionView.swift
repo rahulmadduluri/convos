@@ -70,7 +70,9 @@ class SwitchConversationCollectionView: UIView, ConversationUIComponent, UIColle
             cell.customTextLabel.text = cvd[convoIndex].text
             cell.photoImageView.image = nil
             if let uri = cvd[convoIndex].photoURI {
-                cell.photoImageView.af_setImage(withURL: REST.imageURL(imageURI: uri))
+                var urlRequest = URLRequest(url: REST.imageURL(imageURI: uri))
+                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                cell.photoImageView.af_setImage(withURLRequest: urlRequest)
             }
         }
         cell.setNeedsLayout()

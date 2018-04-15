@@ -8,9 +8,8 @@
 
 import UIKit
 import Alamofire
-import Locksmith
 
-class Headers: NSObject {
+class APIHeaders: NSObject {
     
     static private var headers = Alamofire.HTTPHeaders()
     
@@ -18,11 +17,26 @@ class Headers: NSObject {
         return headers
     }
     
-    static func setAccessToken() {
-        if let dictionary = Locksmith.loadDataForUserAccount(userAccount: "user_account"),
-            let atRaw = dictionary["access_token"],
-            let accessToken = atRaw as? String {
-            headers["Authorization: Bearer"] = accessToken
+    static func authorizationValue() -> String {
+        return headers["Authorization"] ?? ""
+    }
+    
+    static func hasAccessToken() -> Bool {
+        return headers["Authorization"] != nil
+    }
+    
+    static func setAccessToken(accessToken: String) {
+        headers["Authorization"] = "Bearer " + accessToken
+    }
+    
+    static func resetAccessToken(completion: (@escaping (Bool) -> Void)) {
+        MyAuth.fetchAccessToken { accessToken in
+            if let t = accessToken {
+                APIHeaders.setAccessToken(accessToken: t)
+                completion(true)
+            } else {
+                completion(false)
+            }
         }
     }
 }
