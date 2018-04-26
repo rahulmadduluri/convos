@@ -9,7 +9,6 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/mux"
 )
 
 type CustomClaims struct {
@@ -58,33 +57,21 @@ func JWTMiddleware() *jwtmiddleware.JWTMiddleware {
 	})
 }
 
-// Gets UUID from header so that API can check that authorization is permitted
-func GetUUIDFromHeader(header http.Header) string {
-	return header.Get("x-uuid")
-}
-
-// Each authorized API call should a uuid that matches the user's true uuid
-func HasUUID(header http.Header) bool {
-	authHeaderParts := strings.Split(header.Get("Authorization"), " ")
+// Negroni function that checks if user has UUID
+func HandlerForUUIDWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	authHeaderParts := strings.Split(r.Header.Get("Authorization"), " ")
 	tokenString := authHeaderParts[1]
-
 	token, _ := jwt.ParseWithClaims(tokenString, &CustomClaims{}, nil)
 	claims, _ := token.Claims.(*CustomClaims)
 
 	hasUUID := false
-	if claims.UUID == header.Get("x-uuid") {
+	if claims.UUID == r.Header.Get("x-uuid") {
 		hasUUID = true
 	}
-	return hasUUID
-}
 
-// Checks user UUID in parameters to make sure it's the same as the Header's UUID
-func CheckUUIDParam(r *http.Request) bool {
-	vars := mux.Vars(r)
-	if userUUID, ok := vars["uuid"]; ok && userUUID != "" {
-		return r.Header.Get("x-uuid") == userUUID
-	} else {
-		return false
+	// If client has UUID.
+	if hasUUID == true {
+		next(w, r)
 	}
 }
 

@@ -62,7 +62,7 @@ func main() {
 	ar.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	an := negroni.New(negroni.HandlerFunc(jwtMiddleware.HandlerWithNext), negroni.Wrap(ar))
+	an := negroni.New(negroni.HandlerFunc(jwtMiddleware.HandlerWithNext), negroni.HandlerFunc(middleware.HandlerForUUIDWithNext), negroni.Wrap(ar))
 	r.PathPrefix("/").Handler(an)
 	n := negroni.Classic()
 	n.UseHandler(r)
@@ -72,22 +72,18 @@ func main() {
 
 // Create new websocket
 func websocketHandler(res http.ResponseWriter, req *http.Request) {
-	if middleware.HasUUID(req.Header) {
-		// Upgrade HTTP request handler to a websocket
-		ws, err := upgrader.Upgrade(res, req, nil)
-		if err != nil {
-			log.Println("Failed to upgrade to websocket", err)
-			http.NotFound(res, req)
-			return
-		}
-
-		client := networking.NewClient(ws)
-		hub.Register(client)
-
-		// Each client runs a thread for reading & a thread for writing
-		go client.RunRead(hub)
-		go client.RunWrite(hub)
-	} else {
-		log.Println("Failed to auth web socket. header did not pass UUID")
+	// Upgrade HTTP request handler to a websocket
+	ws, err := upgrader.Upgrade(res, req, nil)
+	if err != nil {
+		log.Println("Failed to upgrade to websocket", err)
+		http.NotFound(res, req)
+		return
 	}
+
+	client := networking.NewClient(ws)
+	hub.Register(client)
+
+	// Each client runs a thread for reading & a thread for writing
+	go client.RunRead(hub)
+	go client.RunWrite(hub)
 }

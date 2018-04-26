@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"db"
-	"middleware"
 
 	"github.com/gorilla/mux"
 )

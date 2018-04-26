@@ -20,7 +20,7 @@ const (
 	_newConversationName = "Hall"
 )
 
-func (dbh *dbHandler) GroupHasMember(userUUID string, groupUUID string) bool {
+func (dbh *dbHandler) IsMemberOfGroup(userUUID string, groupUUID string) (bool, error) {
 	var obj models.UserObj
 
 	rows, err := dbh.db.NamedQuery(
@@ -31,7 +31,7 @@ func (dbh *dbHandler) GroupHasMember(userUUID string, groupUUID string) bool {
 		},
 	)
 	if err != nil {
-		return false
+		return false, err
 	}
 	defer rows.Close()
 
@@ -41,9 +41,9 @@ func (dbh *dbHandler) GroupHasMember(userUUID string, groupUUID string) bool {
 			log.Fatal("scan error: ", err)
 			continue
 		}
-		return true
+		return true, nil
 	}
-	return false
+	return false, nil
 }
 
 func (dbh *dbHandler) GetConversationsForGroup(

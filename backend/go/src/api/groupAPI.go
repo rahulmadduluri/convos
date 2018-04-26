@@ -16,7 +16,7 @@ import (
 func GetConversationsForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if middleware.HasUUID() && groupHasMember(middleware.GetUUIDFromHeader(), groupUUID) {
+	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		maxConversations, _ := strconv.Atoi(r.FormValue(_paramMaxConversations))
 		// If maxConversations, isn't given, set upper bound to 10
 		if maxConversations == 0 {
@@ -37,7 +37,7 @@ func GetConversationsForGroup(w http.ResponseWriter, r *http.Request) {
 func GetMembersForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if middleware.HasUUID() && groupHasMember(middleware.GetUUIDFromHeader(), groupUUID) {
+	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		searchText := r.FormValue(_paramSearchText)
 		maxMembers, _ := strconv.Atoi(r.FormValue(_paramMaxMembers))
 		// If maxMembers, isn't given, set upper bound to 30
@@ -59,7 +59,7 @@ func GetMembersForGroup(w http.ResponseWriter, r *http.Request) {
 func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if middleware.HasUUID() && groupHasMember(middleware.GetUUIDFromHeader(), groupUUID) {
+	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		name := r.FormValue(_paramName)
 		newMemberUUID := r.FormValue(_paramMemberUUID)
 		timestampServer := int(time.Now().Unix())
@@ -77,7 +77,7 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if middleware.HasUUID() && groupHasMember(middleware.GetUUIDFromHeader(), groupUUID) {
+	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		respondWithJSON(w, http.StatusOK, nil)
 	} else {
 		respondWithError(w, http.StatusUnauthorized, "failed to update group")
@@ -85,28 +85,26 @@ func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroup(w http.ResponseWriter, r *http.Request) {
-	if middleware.HasUUID() {
-		name := r.PostFormValue(_paramName)
-		handle := r.PostFormValue(_paramHandle)
-		createdTimestampServer := int(time.Now().Unix())
-		photoURI := "group." + name + ".png"
+	name := r.PostFormValue(_paramName)
+	handle := r.PostFormValue(_paramHandle)
+	createdTimestampServer := int(time.Now().Unix())
+	photoURI := "group." + name + ".png"
 
-		var newMemberUUIDs []string
-		json.Unmarshal([]byte(r.PostFormValue(_paramMemberUUIDs)), &newMemberUUIDs)
+	var newMemberUUIDs []string
+	json.Unmarshal([]byte(r.PostFormValue(_paramMemberUUIDs)), &newMemberUUIDs)
 
-		err := db.GetHandler().CreateGroup(name, handle, createdTimestampServer, photoURI, newMemberUUIDs)
-		if err != nil {
-			log.Println(err)
-			respondWithError(w, http.StatusInternalServerError, "failed to create group")
-		}
-		respondWithJSON(w, http.StatusOK, nil)
+	err := db.GetHandler().CreateGroup(name, handle, createdTimestampServer, photoURI, newMemberUUIDs)
+	if err != nil {
+		log.Println(err)
+		respondWithError(w, http.StatusInternalServerError, "failed to create group")
 	}
+	respondWithJSON(w, http.StatusOK, nil)
 }
 
-func groupHasMember(userUUID string, groupUUID) bool {
-	hasMember, err := db.GetHandler().GroupHasMember(userUUID, groupUUID)
+func isMemberOfGroup(userUUID string, groupUUID string) bool {
+	isMember, err := db.GetHandler().IsMemberOfGroup(userUUID, groupUUID)
 	if err != nil {
 		return false
 	}
-	return hasMember
+	return isMember
 }

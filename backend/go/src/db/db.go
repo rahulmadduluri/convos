@@ -32,7 +32,7 @@ type DbHandler interface {
 	GetContactsForUser(userUUID string, searchText string, maxContacts int) ([]models.UserObj, error)
 	CreateContact(userUUID string, contactUUID string, createdTimestampServer int) error
 	// Group
-	GroupHasMember(userUUID string, groupUUID string) bool
+	IsMemberOfGroup(userUUID string, groupUUID string) (bool, error)
 	GetConversationsForGroup(groupUUID string, maxConversations int) ([]models.ConversationObj, error)
 	GetMembersForGroup(groupUUID string, searchText string, maxMembers int) ([]models.UserObj, error)
 	UpdateGroup(groupUUID string, name string, timestampServer int, newMemberUUID string) error
