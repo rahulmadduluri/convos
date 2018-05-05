@@ -35,7 +35,7 @@ class ConversationAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode == 401 {
+                    if res.response?.statusCode != 200 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
@@ -59,7 +59,7 @@ class ConversationAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode == 401 {
+                    if res.response?.statusCode != 200 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
@@ -98,8 +98,21 @@ class ConversationAPI: NSObject {
         }, to: url,
            headers: APIHeaders.defaultHeaders()) { res in
             switch res {
-            case .success(_, _, _):
-                completion(true)
+            case .success(let upload, _, _):
+                upload.responseJSON {
+                    response in
+                    if response.result.value != nil{
+                        DispatchQueue.main.async {
+                            if(response.response?.statusCode != 200){
+                                completion(true)
+                            } else{
+                                completion(false)
+                            }
+                        }
+                    } else {
+                        completion(false)
+                    }
+                }
             case .failure:
                 APIHeaders.resetAccessToken{ _ in
                     completion(false)

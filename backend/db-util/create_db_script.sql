@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 -- repeat names are because group creates a tag that shares the group name
 -- users: 1. prafulla, 2. rahul, 3. reia
 INSERT INTO users VALUES (NULL, 'uuid-1', 'Prafulla', 'prafullasd', '17243098898', 'prafulla_prof', 1000), 
-						 (NULL, 'uuid-2', 'Rahul', 'rahulmfromspace', '14088396561', 'rahul_prof', 1200),
+						 (NULL, 'uuid-2', 'Rahul', 'rahulmfromspace', '14088396562', 'rahul_prof', 1200),
 						 (NULL, 'uuid-3', 'Reia', 'chor46', '724309228', 'reia_prof', 1400);
 INSERT INTO contacts VALUES (1,2,500),(1,3,600),(2,1,500),(2,3,700),(3,1,600),(3,2,700);
 -- groups: 1. prafulla, 2. rahul, 3. reia 4. 93 webster

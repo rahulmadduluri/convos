@@ -62,6 +62,7 @@ func main() {
 	ar.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	// Negroni middleware handling
 	an := negroni.New(negroni.HandlerFunc(jwtMiddleware.HandlerWithNext), negroni.HandlerFunc(middleware.HandlerForUUIDWithNext), negroni.Wrap(ar))
 	r.PathPrefix("/").Handler(an)
 	n := negroni.Classic()

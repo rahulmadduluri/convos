@@ -95,20 +95,15 @@ class MyAuth: NSObject {
             .start { result in
                 switch result {
                 case .success(let profile):
-                    var uuid: String? = nil
-                    if let customClaims = profile.customClaims,
-                        let claimUUID = customClaims["uuid"] as? String {
-                        uuid = claimUUID
-                    } else {
+                    guard let customClaims = profile.customClaims,
+                        let claimUUID = customClaims["https://zebi.com/uuid"] as? String,
+                        let rawNumber = profile.name else {
                         print("Auth0: profile didn't have a uuid")
+                        completion(nil, nil)
+                        return
                     }
-                    var phoneNumber: String? = nil
-                    if let number = profile.name {
-                        phoneNumber = number.replacingOccurrences(of: "+", with: "")
-                    } else {
-                        print("Auth0: profile didn't have a phone #")
-                    }
-                    completion(uuid, phoneNumber)
+                    let phoneNumber = rawNumber.replacingOccurrences(of: "+", with: "")
+                    completion(claimUUID, phoneNumber)
                 case .failure(let error):
                     print("Auth0: Failed to grab user profile \(error)")
                     completion(nil, nil)
