@@ -180,9 +180,9 @@ class GroupAPI: NSObject {
                     if response.result.value != nil{
                         DispatchQueue.main.async {
                             if(response.response?.statusCode != 200){
-                                completion(true)
-                            } else{
                                 completion(false)
+                            } else{
+                                completion(true)
                             }
                         }
                     } else {

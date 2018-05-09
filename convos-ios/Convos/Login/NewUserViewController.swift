@@ -54,21 +54,22 @@ class NewUserViewController: UIViewController, NewUserUIComponentDelegate, UIIma
     
     func createUserTapped() {
         if let name = containerView?.nameTextField.text,
-            let handle = containerView?.handleTextField.text {
-            UserAPI.createUser(name: name, handle: handle, photo: containerView?.userPhotoImageView.image) { success in
+            let handle = containerView?.handleTextField.text,
+            let number = containerView?.mobileNumberTextField.text {
+            UserAPI.createUser(name: name, handle: handle, mobileNumber: number, photo: containerView?.userPhotoImageView.image) { success in
                 if success == true {
                     UserAPI.getUser(uuid: self.uuid) { user in
                         if let user = user {
                             self.newUserVCDelegate?.userCreated(uuid: self.uuid, mobileNumber: self.mobileNumber, name: name, handle: handle, photoURI: user.photoURI)
                             self.dismiss(animated: false, completion: nil)
                         } else {
-                            let alert = UIAlertController(title: "Failed to create user", message: "", preferredStyle: .alert)
+                            let alert = UIAlertController(title: "Failed to get newly created user", message: "", preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
                             self.present(alert, animated: true)
                         }
                     }
                 } else {
-                    let alert = UIAlertController(title: "Failed to create user", message: "", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "User with mobile number or handle already exists", message: "", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
                     self.present(alert, animated: true)
                 }

@@ -3,6 +3,7 @@ package middleware
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -12,8 +13,12 @@ import (
 )
 
 type CustomClaims struct {
-	UUID string `json:"uuid"`
+	uuidClaims UUIDClaims
 	jwt.StandardClaims
+}
+
+type UUIDClaims struct {
+	UUID string `json:"https://zebi.com/uuid,omitempty"`
 }
 
 type Jwks struct {
@@ -65,7 +70,13 @@ func HandlerForUUIDWithNext(w http.ResponseWriter, r *http.Request, next http.Ha
 	claims, _ := token.Claims.(*CustomClaims)
 
 	hasUUID := false
-	if claims.UUID == r.Header.Get("x-uuid") {
+	log.Println("GETTING UUID")
+	log.Println(claims)
+	log.Println(r.Header.Get("x-uuid"))
+	// claims.UUID comes from key specified in Auth0
+	if claims.uuidClaims.UUID == r.Header.Get("x-uuid") && r.Header.Get("x-uuid") != "" {
+		log.Println("Has UUID")
+		log.Println(r.Header.Get("x-uuid"))
 		hasUUID = true
 	}
 

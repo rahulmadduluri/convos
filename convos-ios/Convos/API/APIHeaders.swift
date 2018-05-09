@@ -33,6 +33,10 @@ class APIHeaders: NSObject {
         headers["Authorization"] = "Bearer " + accessToken
     }
     
+    static func setUUID(uuid: String) {
+        headers["x-uuid"] = uuid
+    }
+    
     static func resetAccessToken(completion: (@escaping (Bool) -> Void)) {
         MyAuth.fetchAccessToken { accessToken in
             if let t = accessToken {

@@ -166,6 +166,7 @@ class UserAPI: NSObject {
     static func createUser(
         name: String,
         handle: String,
+        mobileNumber: String,
         photo: UIImage?,
         completion: (@escaping (Bool) -> Void)) {
         let url = REST.createUserURL()
@@ -175,6 +176,7 @@ class UserAPI: NSObject {
             }
             multipartFormData.append(name.data(using: .utf8)!, withName: "name")
             multipartFormData.append(handle.data(using: .utf8)!, withName: "handle")
+            multipartFormData.append(mobileNumber.data(using: .utf8)!, withName: "mobilenumber")
         }, to: url,
            headers: APIHeaders.defaultHeaders()) { res in
             switch res {
@@ -184,9 +186,9 @@ class UserAPI: NSObject {
                     if response.result.value != nil{
                         DispatchQueue.main.async {
                             if(response.response?.statusCode != 200){
-                                completion(true)
-                            } else{
                                 completion(false)
+                            } else{
+                                completion(true)
                             }
                         }
                     } else {

@@ -7,6 +7,17 @@ select
 from users
 where users.mobile_number = :user_uuid
 
+-- name: createUser
+insert into users (uuid, name, handle, mobile_number, created_timestamp_server, photo_uri)
+	select
+		:user_uuid,
+		:name,
+		:handle,
+		:mobile_number,
+		:created_timestamp_server,
+		:photo_uri
+;
+
 -- name: findContactsForUser
 select
 	users.uuid as uuid,

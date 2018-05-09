@@ -12,6 +12,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	name := r.PostFormValue(_paramName)
+	handle := r.PostFormValue(_paramHandle)
+	mobileNumber := r.PostFormValue(_paramMobileNumber)
+	createdTimestampServer := int(time.Now().Unix())
+	photoURI := "user." + name + ".png"
+
+	err := db.GetHandler().CreateUser(name, handle, mobileNumber, createdTimestampServer, photoURI)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "failed to create user")
+	}
+	respondWithJSON(w, http.StatusOK, nil)
+}
+
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if middleware.CheckUUIDParamMatchesHeader(r) {
 		vars := mux.Vars(r)
@@ -45,19 +59,21 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	searchText := r.FormValue(_paramSearchText)
-	maxUsers, _ := strconv.Atoi(r.FormValue(_paramMaxUsers))
-	// If maxUsers, isn't given, set upper bound to 100
-	if maxUsers == 0 {
-		maxUsers = 30
-	}
+	if middleware.CheckUUIDParamMatchesHeader(r) {
+		searchText := r.FormValue(_paramSearchText)
+		maxUsers, _ := strconv.Atoi(r.FormValue(_paramMaxUsers))
+		// If maxUsers, isn't given, set upper bound to 100
+		if maxUsers == 0 {
+			maxUsers = 30
+		}
 
-	users, err := db.GetHandler().GetUsers(searchText, maxUsers)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "failed to get users")
-		return
+		users, err := db.GetHandler().GetUsers(searchText, maxUsers)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "failed to get users")
+			return
+		}
+		respondWithJSON(w, http.StatusOK, users)
 	}
-	respondWithJSON(w, http.StatusOK, users)
 }
 
 func GetContactsForUser(w http.ResponseWriter, r *http.Request) {
