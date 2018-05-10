@@ -164,17 +164,20 @@ class UserAPI: NSObject {
     }
     
     static func createUser(
+        uuid: String,
         name: String,
         handle: String,
+        mobileNumber: String,
         photo: UIImage?,
         completion: (@escaping (Bool) -> Void)) {
-        let url = REST.createUserURL()
+        let url = REST.createUserURL(userUUID: uuid)
         Alamofire.upload(multipartFormData: { multipartFormData in
             if let photo = photo, let imageData = UIImagePNGRepresentation(photo) {
                 multipartFormData.append(imageData, withName: "image.png", mimeType: "image/png")
             }
             multipartFormData.append(name.data(using: .utf8)!, withName: "name")
             multipartFormData.append(handle.data(using: .utf8)!, withName: "handle")
+            multipartFormData.append(mobileNumber.data(using: .utf8)!, withName: "mobilenumber")
         }, to: url,
            headers: APIHeaders.defaultHeaders()) { res in
             switch res {
@@ -184,9 +187,9 @@ class UserAPI: NSObject {
                     if response.result.value != nil{
                         DispatchQueue.main.async {
                             if(response.response?.statusCode != 200){
-                                completion(true)
-                            } else{
                                 completion(false)
+                            } else{
+                                completion(true)
                             }
                         }
                     } else {

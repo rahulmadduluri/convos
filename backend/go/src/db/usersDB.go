@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	_createUser          = "createUser"
 	_getUser             = "getUser"
 	_findUsers           = "findUsers"
 	_findContactsForUser = "findContactsForUser"
@@ -14,6 +15,31 @@ const (
 	_updateUserName      = "updateUserName"
 	_updateUserHandle    = "updateUserHandle"
 )
+
+func (dbh *dbHandler) CreateUser(
+	uuid string,
+	name string,
+	handle string,
+	mobileNumber string,
+	createdTimestampServer int,
+	photoURI string,
+) error {
+	_, err := dbh.db.NamedQuery(
+		dbh.userQueries[_createUser],
+		map[string]interface{}{
+			"user_uuid":                uuid,
+			"name":                     name,
+			"handle":                   handle,
+			"mobile_number":            mobileNumber,
+			"created_timestamp_server": createdTimestampServer,
+			"photo_uri":                photoURI,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func (dbh *dbHandler) GetUser(userUUID string) (models.UserObj, error) {
 	var obj models.UserObj

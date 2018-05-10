@@ -96,6 +96,7 @@ class MyAuth: NSObject {
                 switch result {
                 case .success(let profile):
                     guard let customClaims = profile.customClaims,
+                        // customClaims specified by Auth0
                         let claimUUID = customClaims["https://zebi.com/uuid"] as? String,
                         let rawNumber = profile.name else {
                         print("Auth0: profile didn't have a uuid")
@@ -119,7 +120,7 @@ class MyAuth: NSObject {
         UserDefaults.standard.set(photoURI, forKey: "photo_uri")
         UserDefaults.standard.set(mobileNumber, forKey: "mobile_number")
         APIHeaders.setAccessToken(accessToken: accessToken)
-        SocketManager.sharedInstance.createWebSocket(accessToken: accessToken)
+        APIHeaders.setUUID(uuid: uuid)
     }
     
     static func logout() -> Bool {
@@ -135,6 +136,13 @@ class MyAuth: NSObject {
             print("ERROR: Failed to clear credentials")
         }
         return successfulLogout
+    }
+    
+    static func isLoggedIn() -> Bool {
+        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
+            return uuid != "" && MyAuth.credentialsManager.hasValid() == true
+        }
+        return false
     }
 
 }

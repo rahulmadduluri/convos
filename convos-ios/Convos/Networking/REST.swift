@@ -32,8 +32,10 @@ class REST: NSObject {
         return URL(string: validatedURL)!
     }
     
-    static func createUserURL() -> URL {
-        return URL(string: baseURL + "users")!
+    static func createUserURL(userUUID: String) -> URL {
+        let urlString = baseURL + "users/" + userUUID
+        let validatedURL = validateString(rawString: urlString)
+        return URL(string: validatedURL)!
     }
     
     static func getContactsURL(userUUID: String, searchText: String?, maxContacts: Int?) -> URL {

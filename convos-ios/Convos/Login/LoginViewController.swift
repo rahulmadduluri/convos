@@ -44,6 +44,7 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate, NewUserVC
         // Set access token & create web socket if successfully authenticated
         MyAuth.authenticate(completion: { accessToken in
             guard let accessToken = accessToken else {
+                let _ = MyAuth.logout()
                 let alert = UIAlertController(title: "Failed to authenticate", message: "", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
                 self.present(alert, animated: true)
@@ -59,12 +60,15 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate, NewUserVC
                             self.dismiss(animated: false, completion: nil)
                         } else {
                             // Couldn't find user in database. Create new user!
+                            APIHeaders.setAccessToken(accessToken: accessToken)
+                            APIHeaders.setUUID(uuid: uuid)
                             let newUserVC = NewUserViewController(uuid: uuid, mobileNumber: mobileNumber)
                             newUserVC.newUserVCDelegate = self
                             self.present(newUserVC, animated: true, completion: nil)
                         }
                     }
                 } else {
+                    let _ = MyAuth.logout()
                     let alert = UIAlertController(title: "Failed to get user info", message: "", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
                     self.present(alert, animated: true)
@@ -79,7 +83,7 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate, NewUserVC
         MyAuth.fetchAccessToken{ accessToken in
             if let accessToken = accessToken {
                 MyAuth.registerUserInfo(accessToken: accessToken, uuid: uuid, mobileNumber: mobileNumber, name: name, handle: handle, photoURI: photoURI)
-                self.dismiss(animated: false, completion: nil)
+                self.loginVCDelegate?.loggedIn()
             }
         }
     }

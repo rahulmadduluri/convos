@@ -67,6 +67,7 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 		err := db.GetHandler().UpdateGroup(groupUUID, name, timestampServer, newMemberUUID)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, "failed to update group")
+			return
 		}
 		respondWithJSON(w, http.StatusOK, nil)
 	} else {
@@ -97,6 +98,7 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		respondWithError(w, http.StatusInternalServerError, "failed to create group")
+		return
 	}
 	respondWithJSON(w, http.StatusOK, nil)
 }

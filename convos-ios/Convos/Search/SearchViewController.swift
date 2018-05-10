@@ -183,7 +183,23 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         return viewDataMap
     }
     
-    fileprivate func configureSearch() {        
+    fileprivate func configureSearch() {
+        // Move web socket creation elsewhere?
+        // set access tokens
+        if APIHeaders.hasAccessToken() == false {
+            if MyAuth.isLoggedIn() {
+                MyAuth.fetchAccessToken { token in
+                    if let t = token {
+                        APIHeaders.setAccessToken(accessToken: t)
+                        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
+                            APIHeaders.setUUID(uuid: uuid)
+                        }
+                        self.socketManager.createWebSocket(accessToken: t)
+                    }
+                }
+            }
+        }
+        
         searchTableVC.searchVC = self
         containerView?.searchTextField.smartTextFieldDelegate = self
         containerView?.bottomBarView.searchVC = self

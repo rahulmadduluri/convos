@@ -11,11 +11,6 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-type CustomClaims struct {
-	UUID string `json:"uuid"`
-	jwt.StandardClaims
-}
-
 type Jwks struct {
 	Keys []JSONWebKeys `json:"keys"`
 }
@@ -59,14 +54,19 @@ func JWTMiddleware() *jwtmiddleware.JWTMiddleware {
 
 // Negroni function that checks if user has UUID
 func HandlerForUUIDWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	hasUUID := false
+
 	authHeaderParts := strings.Split(r.Header.Get("Authorization"), " ")
 	tokenString := authHeaderParts[1]
-	token, _ := jwt.ParseWithClaims(tokenString, &CustomClaims{}, nil)
-	claims, _ := token.Claims.(*CustomClaims)
+	token, _ := jwt.ParseWithClaims(tokenString, &jwt.MapClaims{}, nil)
+	claims, _ := token.Claims.(*jwt.MapClaims)
 
-	hasUUID := false
-	if claims.UUID == r.Header.Get("x-uuid") {
-		hasUUID = true
+	// claims.UUID comes from key specified in Auth0
+	if claims != nil {
+		headerUUID := r.Header.Get("X-Uuid")
+		if uuidFromClaim, ok := (*claims)["https://zebi.com/uuid"]; ok && uuidFromClaim == headerUUID && headerUUID != "" {
+			hasUUID = true
+		}
 	}
 
 	// If client has UUID.

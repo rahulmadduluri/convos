@@ -171,12 +171,15 @@ class UserInfoViewController: UIViewController, SmartTextFieldDelegate, UserInfo
         } else {
             if let myName = UserDefaults.standard.object(forKey: "name") as? String,
                 let myHandle = UserDefaults.standard.object(forKey: "handle") as? String,
-                let myPhotoURI = UserDefaults.standard.object(forKey: "photo_uri") as? String {
+                let mobileNumber = UserDefaults.standard.object(forKey: "mobile_number") as? String {
                 containerView?.nameTextField.text = myName
                 containerView?.handleTextField.text = "@" + myHandle
-                var urlRequest = URLRequest(url: REST.imageURL(imageURI: myPhotoURI))
-                urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
-                containerView?.userPhotoImageView.af_setImage(withURLRequest: urlRequest)
+                containerView?.mobileNumberTextField.text = mobileNumber
+                if let myPhotoURI = UserDefaults.standard.object(forKey: "photo_uri") as? String {
+                    var urlRequest = URLRequest(url: REST.imageURL(imageURI: myPhotoURI))
+                    urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+                    containerView?.userPhotoImageView.af_setImage(withURLRequest: urlRequest)
+                }
             }
         }
         

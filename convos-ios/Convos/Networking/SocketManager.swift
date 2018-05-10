@@ -87,7 +87,9 @@ final class SocketManager: NSObject, SocketManaging {
     
     fileprivate func generateWebSocket(token: String) {
         var urlRequest = URLRequest(url: URL(string: "ws://localhost:8000/ws")!)
+        // add "Authorization" and "X-Uuid" fields to match HTTP calls (to verify auth token + user uuid)
         urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
+        urlRequest.setValue(APIHeaders.uuidValue(), forHTTPHeaderField: "X-Uuid")
         self.webSocket = WebSocket(request: urlRequest)
         if let ws = self.webSocket {
             ws.event.open = {
@@ -96,7 +98,7 @@ final class SocketManager: NSObject, SocketManaging {
             ws.event.close = { code, reason, clean in
                 print("Web Socket Closed!")
                 print("Trying to reopen")
-                Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true, block: { _ in
+                Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true, block: { _ in
                     ws.open()
                 })
             }

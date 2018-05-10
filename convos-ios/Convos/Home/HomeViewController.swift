@@ -37,7 +37,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
         
         if hasBeenDisplayed == false {
             hasBeenDisplayed = true
-            if MyAuth.credentialsManager.hasValid() == true {
+            if MyAuth.isLoggedIn() {
                 presentSearch()
             } else {
                 presentLogin()
@@ -54,7 +54,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     // MARK: LoginVCDelegate
     
     func loggedIn() {
-        
+        presentSearch()
     }
     
     // MARK: SearchVCDelegate
@@ -154,49 +154,19 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     // MARK: UserInfoVCDelegate
     
     func logout() {
-        let successfulLogout = MyAuth.logout()
-        if successfulLogout == false {
-            print("ERROR: Failed to clear credentials")
+        self.userInfoVC?.dismiss(animated: false) {
+            let successfulLogout = MyAuth.logout()
+            if successfulLogout == false {
+                print("ERROR: Failed to clear credentials")
+            }
+            self.presentLogin()
         }
-        presentLogin()
     }
     
     // MARK: Private
     
     fileprivate func configureHome() {
-        if APIHeaders.hasAccessToken() == false {
-            if MyAuth.credentialsManager.hasValid() {
-                MyAuth.fetchAccessToken { token in
-                    if let t = token {
-                        APIHeaders.setAccessToken(accessToken: t)
-                        self.socketManager.createWebSocket(accessToken: t)
-                    }
-                }
-            } else {
-                MyAuth.reauthenticate{ accessToken in
-                    guard let accessToken = accessToken else {
-                        return
-                    }
-                    MyAuth.fetchUserInfoFromRemote(accessToken: accessToken) { uuid, phoneNumber in
-                        if let uuid = uuid, let mobileNumber = phoneNumber {
-                            UserAPI.getUser(uuid: uuid) { user in
-                                if let user = user {
-                                    MyAuth.registerUserInfo(accessToken: accessToken, uuid: uuid, mobileNumber: mobileNumber, name: user.name, handle: user.handle, photoURI: user.photoURI)
-                                } else {
-                                    let alert = UIAlertController(title: "Failed to reauthenticate", message: "", preferredStyle: .alert)
-                                    alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
-                                    self.present(alert, animated: true)
-                                }
-                            }
-                        } else {
-                            let alert = UIAlertController(title: "Failed to reauthenticate", message: "", preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "Well this sucks...", style: .destructive))
-                            self.present(alert, animated: true)
-                        }
-                    }
-                }
-            }
-        }
+        // Nothing right now. Maybe create socket here?
     }
     
     fileprivate func presentSearch() {
@@ -206,7 +176,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
         }
         
         if let newVC = self.searchVC {
-            self.presentOverHome(vc: newVC, animated: false)
+            self.dismissVCAndPresent(vc: newVC, animated: false)
         }
     }
     
@@ -217,13 +187,11 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
         }
         
         if let newVC = self.loginVC {
-            self.presentOverHome(vc: newVC, animated: false)
+            self.dismissVCAndPresent(vc: newVC, animated: false)
         }
     }
     
-    fileprivate func presentOverHome(vc: UIViewController, animated: Bool) {
-        vc.modalPresentationStyle = .overCurrentContext
-        
+    fileprivate func dismissVCAndPresent(vc: UIViewController, animated: Bool) {
         if presentedViewController != nil {
             presentedViewController?.dismiss(animated: false) {
                 self.present(vc, animated: animated, completion: nil)

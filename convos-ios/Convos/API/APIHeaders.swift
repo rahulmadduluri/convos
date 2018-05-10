@@ -25,12 +25,20 @@ class APIHeaders: NSObject {
         return headers["Authorization"] ?? ""
     }
     
+    static func uuidValue() -> String {
+        return headers["X-Uuid"] ?? ""
+    }
+    
     static func hasAccessToken() -> Bool {
         return headers["Authorization"] != nil
     }
     
     static func setAccessToken(accessToken: String) {
         headers["Authorization"] = "Bearer " + accessToken
+    }
+    
+    static func setUUID(uuid: String) {
+        headers["X-Uuid"] = uuid
     }
     
     static func resetAccessToken(completion: (@escaping (Bool) -> Void)) {

@@ -21,6 +21,7 @@ func UpdateConversation(w http.ResponseWriter, r *http.Request) {
 	err := db.GetHandler().UpdateConversation(conversationUUID, topic, timestampServer, tagName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "failed to update conversation")
+		return
 	}
 	respondWithJSON(w, http.StatusOK, nil)
 }
@@ -42,6 +43,7 @@ func CreateConversation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		respondWithError(w, http.StatusInternalServerError, "failed to create group")
+		return
 	}
 	respondWithJSON(w, http.StatusOK, nil)
 }

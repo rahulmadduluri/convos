@@ -47,6 +47,8 @@ func main() {
 	ar.HandleFunc("/ws", websocketHandler)
 	// User
 	ar.HandleFunc("/users", api.GetUsers).Methods("GET")
+	ar.HandleFunc("/users/{uuid}", api.CreateUser).Methods("POST")
+	ar.HandleFunc("/users/{uuid}", api.GetUser).Methods("GET")
 	ar.HandleFunc("/users/{uuid}", api.UpdateUser).Methods("PUT")
 	ar.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
 	ar.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
