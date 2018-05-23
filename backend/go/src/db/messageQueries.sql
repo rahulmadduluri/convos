@@ -9,6 +9,22 @@ insert into messages (uuid, all_text, created_timestamp_server, sender_id, paren
 		(select id from conversations where conversations.uuid = :conversationuuid)
 ;
 
+-- name: getMessage
+select
+	messages.uuid as uuid,			
+	messages.all_text as alltext,		
+	messages.created_timestamp_server as createdtimestampserver,	
+	sender.uuid as senderuuid,		
+	parent.uuid as parentuuid,
+	sender.photo_uri as senderphotouri	
+from messages 
+join users sender 
+	on sender.id = messages.sender_id
+left join messages parent 
+	on parent.id = messages.parent_id
+where messages.uuid = :messageuuid 
+;
+
 -- name: getUsersForConversation
 select 
 	users.uuid as uuid,

@@ -6,31 +6,39 @@ import SwiftyJSON
 class PullMessagesRequest: NSObject, APIModel {
     
     // vars
+    let userUUID: String
     let conversationUUID: String
+    let groupUUID: String
     let lastXMessages: Int
     let latestTimestampServer: Int?
     
     // init
-    init(conversationUUID: String, lastXMessages: Int, latestTimestampServer: Int?) {
+    init(userUUID: String, conversationUUID: String, groupUUID: String, lastXMessages: Int, latestTimestampServer: Int?) {
+        self.userUUID = userUUID
         self.conversationUUID = conversationUUID
+        self.groupUUID = groupUUID
         self.lastXMessages = lastXMessages
         self.latestTimestampServer = latestTimestampServer
     }
     
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
+            let userUUIDJSON = dictionary["UserUUID"],
             let conversationUUIDJSON = dictionary["ConversationUUID"],
+            let groupUUIDJSON = dictionary["GroupUUID"],
             let lastXMessagesJSON = dictionary["SearchText"] else {
             return nil
         }
+        userUUID = userUUIDJSON.stringValue
         conversationUUID = conversationUUIDJSON.stringValue
+        groupUUID = groupUUIDJSON.stringValue
         lastXMessages = lastXMessagesJSON.intValue
         latestTimestampServer = dictionary["LatestTimestampServer"]?.int
     }
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "LastXMessages": JSON(lastXMessages)]
+        var dict: [String: JSON] = ["UserUUID": JSON(userUUID), "ConversationUUID": JSON(conversationUUID), "GroupUUID": JSON(groupUUID), "LastXMessages": JSON(lastXMessages)]
         if let latestTimestampServer = latestTimestampServer {
             dict["LatestTimestampServer"] = JSON(latestTimestampServer)
         }
@@ -38,7 +46,7 @@ class PullMessagesRequest: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return PullMessagesRequest(conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
+        return PullMessagesRequest(userUUID: userUUID, conversationUUID: conversationUUID, groupUUID: groupUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
     }
 }
 
@@ -94,13 +102,15 @@ class PushMessageRequest: NSObject, APIModel {
     
     // vars
     let conversationUUID: String
+    let groupUUID: String
     let allText: String
     let senderUUID: String
     let parentUUID: String?
     
     // init
-    init(conversationUUID: String, allText: String, senderUUID: String, parentUUID: String?) {
+    init(conversationUUID: String, groupUUID: String, allText: String, senderUUID: String, parentUUID: String?) {
         self.conversationUUID = conversationUUID
+        self.groupUUID = groupUUID
         self.allText = allText
         self.senderUUID = senderUUID
         self.parentUUID = parentUUID
@@ -109,11 +119,13 @@ class PushMessageRequest: NSObject, APIModel {
     required init?(json: JSON) {
         guard let dictionary = json.dictionary,
             let conversationUUIDJSON = dictionary["ConversationUUID"],
+            let groupUUIDJSON = dictionary["GroupUUID"],
             let allTextJSON = dictionary["AllText"],
             let senderUUIDJSON = dictionary["SenderUUID"] else {
             return nil
         }
         conversationUUID = conversationUUIDJSON.stringValue
+        groupUUID = groupUUIDJSON.stringValue
         allText = allTextJSON.stringValue
         senderUUID = senderUUIDJSON.stringValue
         parentUUID = dictionary["ParentUUID"]?.string
@@ -121,7 +133,7 @@ class PushMessageRequest: NSObject, APIModel {
     
     // APIModel
     func toJSON() -> JSON {
-        var dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "AllText": JSON(allText), "SenderUUID": JSON(senderUUID)]
+        var dict: [String: JSON] = ["ConversationUUID": JSON(conversationUUID), "GroupUUID": JSON(groupUUID), "AllText": JSON(allText), "SenderUUID": JSON(senderUUID)]
         if let parentUUID = parentUUID {
             dict["ParentUUID"] = JSON(parentUUID)
         }
@@ -129,7 +141,7 @@ class PushMessageRequest: NSObject, APIModel {
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        return PushMessageRequest(conversationUUID: conversationUUID, allText: allText, senderUUID: senderUUID, parentUUID: parentUUID)
+        return PushMessageRequest(conversationUUID: conversationUUID, groupUUID: groupUUID, allText: allText, senderUUID: senderUUID, parentUUID: parentUUID)
     }
 }
 

@@ -53,15 +53,17 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate, NewUserVC
             
             MyAuth.fetchUserInfoFromRemote(accessToken: accessToken) { uuid, phoneNumber in
                 if let uuid = uuid, let mobileNumber = phoneNumber {
+                    // set access token and UUID no matter what (needed to get access to API)
+                    APIHeaders.setAccessToken(accessToken: accessToken)
+                    APIHeaders.setUUID(uuid: uuid)
+                    
                     UserAPI.getUser(uuid: uuid) { user in
                         if let user = user {
                             // Found user
                             MyAuth.registerUserInfo(accessToken: accessToken, uuid: uuid, mobileNumber: mobileNumber, name: user.name, handle: user.handle, photoURI: user.photoURI)
-                            self.dismiss(animated: false, completion: nil)
+                            self.loginVCDelegate?.loggedIn()
                         } else {
                             // Couldn't find user in database. Create new user!
-                            APIHeaders.setAccessToken(accessToken: accessToken)
-                            APIHeaders.setUUID(uuid: uuid)
                             let newUserVC = NewUserViewController(uuid: uuid, mobileNumber: mobileNumber)
                             newUserVC.newUserVCDelegate = self
                             self.present(newUserVC, animated: true, completion: nil)

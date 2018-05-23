@@ -11,18 +11,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 	"github.com/urfave/negroni"
 )
-
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
-
-var hub = networking.NewHub()
 
 func main() {
 	// load env
@@ -31,10 +22,10 @@ func main() {
 		log.Print("Error loading .env file")
 	}
 
-	// setup
-	log.Println("Start application")
+	// setup DB
 	db.ConfigHandler()
-	go hub.Run()
+	// connect to MQTT broker
+	networking.GenerateMQTTHandler()
 
 	// middleware
 	jwtMiddleware := middleware.JWTMiddleware()
@@ -43,8 +34,8 @@ func main() {
 	r := mux.NewRouter()  // unauth
 	ar := mux.NewRouter() // auth
 
-	// Websocket
-	ar.HandleFunc("/ws", websocketHandler)
+	// Search
+	ar.HandleFunc("/search", api.Search).Methods("GET")
 	// User
 	ar.HandleFunc("/users", api.GetUsers).Methods("GET")
 	ar.HandleFunc("/users/{uuid}", api.CreateUser).Methods("POST")
@@ -60,6 +51,7 @@ func main() {
 	// Conversation
 	ar.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
 	ar.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
+	ar.HandleFunc("/conversations/{uuid}/messages", api.CreateMessage).Methods("POST")
 	// Static Resources
 	ar.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
@@ -71,22 +63,4 @@ func main() {
 	n.UseHandler(r)
 
 	n.Run(":8000")
-}
-
-// Create new websocket
-func websocketHandler(res http.ResponseWriter, req *http.Request) {
-	// Upgrade HTTP request handler to a websocket
-	ws, err := upgrader.Upgrade(res, req, nil)
-	if err != nil {
-		log.Println("Failed to upgrade to websocket", err)
-		http.NotFound(res, req)
-		return
-	}
-
-	client := networking.NewClient(ws)
-	hub.Register(client)
-
-	// Each client runs a thread for reading & a thread for writing
-	go client.RunRead(hub)
-	go client.RunWrite(hub)
 }

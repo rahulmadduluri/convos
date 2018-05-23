@@ -14,6 +14,7 @@ class NewUserViewController: UIViewController, NewUserUIComponentDelegate, UIIma
     
     fileprivate var uuid: String
     fileprivate var mobileNumber: String
+    fileprivate var panGestureRecognizer = UIPanGestureRecognizer()
     fileprivate var containerView: MainNewUserView? = nil
     fileprivate var imagePicker = UIImagePickerController()
     
@@ -38,6 +39,7 @@ class NewUserViewController: UIViewController, NewUserUIComponentDelegate, UIIma
     
     override func loadView() {
         containerView = MainNewUserView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        containerView?.addGestureRecognizer(panGestureRecognizer)
         containerView?.newUserVC = self
         self.view = containerView
     }
@@ -95,6 +97,17 @@ class NewUserViewController: UIViewController, NewUserUIComponentDelegate, UIIma
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: Public
+    
+    func respondToPanGesture(gesture: UIGestureRecognizer) {
+        if let panGesture = gesture as? UIPanGestureRecognizer {
+            let translation = panGesture.translation(in: self.view)
+            if (translation.x > 150) {
+                self.dismiss(animated: false, completion: nil)
+            }
+        }
     }
     
     // MARK: Private

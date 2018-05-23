@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"db"
 )
 
 const (
@@ -23,6 +25,9 @@ const (
 	_paramMemberUUIDs = "memberuuids"
 	// Conversation
 	_paramMaxConversations = "maxconversations"
+	_paramAllText          = "alltext"
+	_paramParentUUID       = "parentuuid"
+	_paramConversationUUID = "conversationuuid"
 	// Tags
 	_paramTopic    = "topic"
 	_paramTagUUID  = "taguuid"
@@ -46,4 +51,12 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	if err := json.NewEncoder(w).Encode(payload); err != nil {
 		log.Println(err)
 	}
+}
+
+func IsMemberOfGroup(userUUID string, groupUUID string) bool {
+	isMember, err := db.GetHandler().IsMemberOfGroup(userUUID, groupUUID)
+	if err != nil {
+		return false
+	}
+	return isMember
 }

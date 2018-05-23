@@ -4,7 +4,6 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/guregu/null"
 	"github.com/jmoiron/sqlx"
 	"github.com/nleof/goyesql"
 	"models"
@@ -40,10 +39,10 @@ type DbHandler interface {
 	CreateGroup(name string, handle string, createdTimestampServer int, photoURI string, newMemberUUIDs []string) error
 	// Conversation
 	UpdateConversation(conversationUUID string, topic string, timestampServer int, tagName string) error
-	CreateConversation(groupUUID string, topic string, tagNames []string, createdTimestampServer int, photoURI string) error
+	CreateConversation(conversationUUID string, groupUUID string, topic string, tagNames []string, createdTimestampServer int, photoURI string) error
 	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
-	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID null.String, conversationUUID string) ([]models.UserObj, error)
+	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID string, conversationUUID string) (models.MessageObj, error)
 	// DB
 	Close()
 }

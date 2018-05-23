@@ -31,6 +31,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	// make sure user from header (already authorized) is the user being modified
 	if middleware.CheckUUIDParamMatchesHeader(r) {
 		vars := mux.Vars(r)
 		userUUID, _ := vars[_paramUUID]
@@ -49,40 +50,35 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	if middleware.CheckUUIDParamMatchesHeader(r) {
-		vars := mux.Vars(r)
-		userUUID, _ := vars[_paramUUID]
-		user, err := db.GetHandler().GetUser(userUUID)
-		log.Println(user)
-		if err != nil || user.UUID == "" {
-			respondWithError(w, http.StatusInternalServerError, "failed to get user")
-			return
-		}
-		respondWithJSON(w, http.StatusOK, user)
-	} else {
-		respondWithError(w, http.StatusUnauthorized, "failed to get user")
+	vars := mux.Vars(r)
+	userUUID, _ := vars[_paramUUID]
+	user, err := db.GetHandler().GetUser(userUUID)
+
+	if err != nil || user.UUID == "" {
+		respondWithError(w, http.StatusInternalServerError, "failed to get user")
+		return
 	}
+	respondWithJSON(w, http.StatusOK, user)
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	if middleware.CheckUUIDParamMatchesHeader(r) {
-		searchText := r.FormValue(_paramSearchText)
-		maxUsers, _ := strconv.Atoi(r.FormValue(_paramMaxUsers))
-		// If maxUsers, isn't given, set upper bound to 100
-		if maxUsers == 0 {
-			maxUsers = 30
-		}
-
-		users, err := db.GetHandler().GetUsers(searchText, maxUsers)
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "failed to get users")
-			return
-		}
-		respondWithJSON(w, http.StatusOK, users)
+	searchText := r.FormValue(_paramSearchText)
+	maxUsers, _ := strconv.Atoi(r.FormValue(_paramMaxUsers))
+	// If maxUsers, isn't given, set upper bound to 100
+	if maxUsers == 0 {
+		maxUsers = 30
 	}
+
+	users, err := db.GetHandler().GetUsers(searchText, maxUsers)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "failed to get users")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, users)
 }
 
 func GetContactsForUser(w http.ResponseWriter, r *http.Request) {
+	// make sure user from header (already authorized) is the user being modified
 	if middleware.CheckUUIDParamMatchesHeader(r) {
 		vars := mux.Vars(r)
 		userUUID, _ := vars[_paramUUID]
@@ -108,6 +104,7 @@ func GetContactsForUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateContact(w http.ResponseWriter, r *http.Request) {
+	// make sure user from header (already authorized) is the user being modified
 	if middleware.CheckUUIDParamMatchesHeader(r) {
 		vars := mux.Vars(r)
 		userUUID, _ := vars[_paramUUID]

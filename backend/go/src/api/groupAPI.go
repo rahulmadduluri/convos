@@ -16,7 +16,9 @@ import (
 func GetConversationsForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
+
+	// make sure authorized userUUID from header is actually in the group
+	if IsMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		maxConversations, _ := strconv.Atoi(r.FormValue(_paramMaxConversations))
 		// If maxConversations, isn't given, set upper bound to 10
 		if maxConversations == 0 {
@@ -37,7 +39,9 @@ func GetConversationsForGroup(w http.ResponseWriter, r *http.Request) {
 func GetMembersForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
+
+	// make sure authorized userUUID from header is actually in the group
+	if IsMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		searchText := r.FormValue(_paramSearchText)
 		maxMembers, _ := strconv.Atoi(r.FormValue(_paramMaxMembers))
 		// If maxMembers, isn't given, set upper bound to 30
@@ -59,7 +63,9 @@ func GetMembersForGroup(w http.ResponseWriter, r *http.Request) {
 func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
+
+	// make sure authorized userUUID from header is actually in the group
+	if IsMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		name := r.FormValue(_paramName)
 		newMemberUUID := r.FormValue(_paramMemberUUID)
 		timestampServer := int(time.Now().Unix())
@@ -78,7 +84,9 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]
-	if isMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
+
+	// make sure authorized userUUID from header is actually in the group
+	if IsMemberOfGroup(middleware.GetUUIDFromHeader(r.Header), groupUUID) {
 		respondWithJSON(w, http.StatusOK, nil)
 	} else {
 		respondWithError(w, http.StatusUnauthorized, "failed to update group")
@@ -101,12 +109,4 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, http.StatusOK, nil)
-}
-
-func isMemberOfGroup(userUUID string, groupUUID string) bool {
-	isMember, err := db.GetHandler().IsMemberOfGroup(userUUID, groupUUID)
-	if err != nil {
-		return false
-	}
-	return isMember
 }

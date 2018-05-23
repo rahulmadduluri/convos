@@ -67,15 +67,13 @@ func (dbh *dbHandler) UpdateConversation(
 }
 
 func (dbh *dbHandler) CreateConversation(
+	conversationUUID string,
 	groupUUID string,
 	topic string,
 	tagNames []string,
 	createdTimestampServer int,
 	photoURI string,
 ) error {
-	conversationUUIDRaw, _ := uuid.NewV4()
-	conversationUUID := conversationUUIDRaw.String()
-
 	tx := dbh.db.MustBegin()
 
 	q1Args := map[string]interface{}{

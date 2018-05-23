@@ -190,7 +190,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
         if let text = textField.text,
             text != "",
             let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let pushMessageRequest = PushMessageRequest(conversationUUID: conversationUUID, allText: text, senderUUID: uuid, parentUUID: nil)
+            let pushMessageRequest = PushMessageRequest(conversationUUID: conversationUUID, groupUUID: groupUUID, allText: text, senderUUID: uuid, parentUUID: nil)
             MessageAPI.pushMessage(pushMessageRequest: pushMessageRequest)
             textField.text = ""
         }
@@ -293,8 +293,10 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     fileprivate func remotePullMessages(lastXMessages: Int, latestTimestampServer: Int?) {
-        let request = PullMessagesRequest(conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
-        MessageAPI.pullMessages(pullMessagesRequest: request)
+        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
+            let request = PullMessagesRequest(userUUID: userUUID, conversationUUID: conversationUUID, groupUUID: groupUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
+            MessageAPI.pullMessages(pullMessagesRequest: request)
+        }
     }
     
 }

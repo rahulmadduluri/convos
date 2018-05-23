@@ -10,3 +10,4 @@ github.com/auth0/go-jwt-middleware
 github.com/dgrijalva/jwt-go
 github.com/urfave/negroni
 github.com/joho/godotenv
+github.com/eclipse/paho.mqtt.golang
