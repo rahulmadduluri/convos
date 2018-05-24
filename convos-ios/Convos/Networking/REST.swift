@@ -190,4 +190,14 @@ class REST: NSObject {
         return URL(string: baseURL + "conversations")!
     }
     
+    static func createMessageURL(conversationUUID: String) -> URL {
+        let urlString = baseURL + "conversations/" + conversationUUID + "/messages"
+        return URL(string: urlString)!
+    }
+    
+    static func getMessagesURL(conversationUUID: String) -> URL {
+        let urlString = baseURL + "conversations/" + conversationUUID + "/messages"
+        return URL(string: urlString)!
+    }
+    
 }

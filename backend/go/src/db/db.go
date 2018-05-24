@@ -42,7 +42,7 @@ type DbHandler interface {
 	CreateConversation(conversationUUID string, groupUUID string, topic string, tagNames []string, createdTimestampServer int, photoURI string) error
 	// Messages
 	GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error)
-	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID string, conversationUUID string) (models.MessageObj, error)
+	InsertMessage(messageUUID string, messageText string, messageTimestamp int, senderUUID string, parentUUID string, conversationUUID string) error
 	// DB
 	Close()
 }

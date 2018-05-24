@@ -12,49 +12,10 @@ import SwiftWebSocket
 
 protocol SocketManaging {
     func createWebSocket(accessToken: String)
-    func send(packetType: String, json: JSON)
 }
 
 protocol SocketManagerDelegate {
-    func received(packet: Packet)
-}
-
-class Packet: NSObject, APIModel {
-    // vars
-    let type: String
-    let serverTimestamp: Int?
-    let data: JSON
-    
-    // init
-    required init?(json: JSON) {
-        guard let dictionary = json.dictionary,
-            let typeJSON = dictionary["Type"],
-            let dataJSON = dictionary["Data"] else {
-                return nil
-        }
-        type = typeJSON.stringValue
-        data = dataJSON
-        serverTimestamp = dictionary["ServerTimestamp"]?.int
-    }
-    
-    init(type: String, data: JSON) {
-        self.type = type
-        self.data = data
-        self.serverTimestamp = nil
-    }
-    
-    // APIModel
-    func toJSON() -> JSON {
-        var dict: [String: JSON] = ["Type": JSON(type), "Data": data]
-        if let serverTimestamp = serverTimestamp {
-            dict["ServerTimestamp"] = JSON(serverTimestamp)
-        }
-        return JSON(dict)
-    }
-    
-    func copy(with zone: NSZone? = nil) -> Any {
-        return Packet(type: type, data: data)
-    }
+    func received(obj: Any)
 }
 
 final class SocketManager: NSObject, SocketManaging {    
@@ -67,15 +28,6 @@ final class SocketManager: NSObject, SocketManaging {
     
     // MARK: SocketManaging
     
-    func send(packetType: String, json: JSON) {
-        let packet = Packet(type: packetType, data: json)
-        if let rawPacket = try? packet.toJSON().rawData() {
-            webSocket?.send(rawPacket)
-        } else {
-            print("Failed to send packet. could not be conveted to JSON")
-        }
-    }
-    
     func createWebSocket(accessToken: String) {
         if webSocket != nil {
             webSocket?.close()
@@ -86,7 +38,8 @@ final class SocketManager: NSObject, SocketManaging {
     // MARK: Private
     
     fileprivate func generateWebSocket(token: String) {
-        var urlRequest = URLRequest(url: URL(string: "ws://localhost:8000/ws")!)
+        // TODO: make this mqtt
+        var urlRequest = URLRequest(url: URL(string: "ws://mqttBroker")!)
         // add "Authorization" and "X-Uuid" fields to match HTTP calls (to verify auth token + user uuid)
         urlRequest.setValue(APIHeaders.authorizationValue(), forHTTPHeaderField: "Authorization")
         urlRequest.setValue(APIHeaders.uuidValue(), forHTTPHeaderField: "X-Uuid")
@@ -108,12 +61,8 @@ final class SocketManager: NSObject, SocketManaging {
             ws.event.message = { message in
                 if let message = message as? String {
                     let jsonMessage = JSON(parseJSON: message)
-                    if let p = Packet(json: jsonMessage) {
-                        self.delegates.invoke{
-                            $0.received(packet: p)
-                        }
-                    } else {
-                        print("failed to turn json message into a packet")
+                    self.delegates.invoke{
+                        $0.received(obj: jsonMessage)
                     }
                 }
             }

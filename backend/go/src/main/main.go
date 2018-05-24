@@ -52,6 +52,7 @@ func main() {
 	ar.HandleFunc("/conversations/{uuid}", api.UpdateConversation).Methods("PUT")
 	ar.HandleFunc("/conversations", api.CreateConversation).Methods("POST")
 	ar.HandleFunc("/conversations/{uuid}/messages", api.CreateMessage).Methods("POST")
+	ar.HandleFunc("/conversations/{uuid}/messages", api.GetMessages).Methods("GET")
 	// Static Resources
 	ar.Handle("/static/{s3_uri}",
 		http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))

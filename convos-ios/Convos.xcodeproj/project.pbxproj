@@ -30,7 +30,6 @@
 		B77BB15B20077B4F005FB88C /* DateTimeUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */; };
 		B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB15C20079974005FB88C /* GeneralUtilities.swift */; };
 		B77BB161200DF697005FB88C /* SearchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */; };
-		B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */; };
 		B77CE81E2020B0CA00B6D9A2 /* SearchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */; };
 		B77CE824202744D100B6D9A2 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE823202744D100B6D9A2 /* SocketManager.swift */; };
 		B77CE8262027450600B6D9A2 /* REST.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77CE8252027450600B6D9A2 /* REST.swift */; };
@@ -102,7 +101,6 @@
 		B77BB15A20077B4F005FB88C /* DateTimeUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTimeUtilities.swift; sourceTree = "<group>"; };
 		B77BB15C20079974005FB88C /* GeneralUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralUtilities.swift; sourceTree = "<group>"; };
 		B77BB160200DF697005FB88C /* SearchCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchCollectionViewCell.swift; sourceTree = "<group>"; };
-		B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageAPI.swift; sourceTree = "<group>"; };
 		B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAPI.swift; sourceTree = "<group>"; };
 		B77CE823202744D100B6D9A2 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		B77CE8252027450600B6D9A2 /* REST.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = REST.swift; sourceTree = "<group>"; };
@@ -204,7 +202,6 @@
 			isa = PBXGroup;
 			children = (
 				B7FFCCCE2079D07D008F0BDF /* APIHeaders.swift */,
-				B77CE81A2020B0CA00B6D9A2 /* MessageAPI.swift */,
 				B77CE81B2020B0CA00B6D9A2 /* SearchAPI.swift */,
 				B77CE837203085DE00B6D9A2 /* UserAPI.swift */,
 				B77CE83B20384DB200B6D9A2 /* GroupAPI.swift */,
@@ -569,7 +566,6 @@
 				B748CF721F73D91A00735F5D /* MessageTableViewHeader.swift in Sources */,
 				B77CE838203085DE00B6D9A2 /* UserAPI.swift in Sources */,
 				B7DED5BC20511AE30002BF2F /* ContactsTopBarView.swift in Sources */,
-				B77CE81D2020B0CA00B6D9A2 /* MessageAPI.swift in Sources */,
 				B77BB15D20079974005FB88C /* GeneralUtilities.swift in Sources */,
 				B723C27220834E2000B441DA /* MainNewUserView.swift in Sources */,
 				B77CE8442043947A00B6D9A2 /* ConversationInfoProtocols.swift in Sources */,

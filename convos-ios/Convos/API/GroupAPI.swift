@@ -55,10 +55,12 @@ class GroupAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
         }
@@ -79,10 +81,12 @@ class GroupAPI: NSObject {
                     completion(convertResponseToConversations(res: res))
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(nil)
                         }
+                    } else {
+                        completion(nil)
                     }
                 }
         }
@@ -123,10 +127,12 @@ class GroupAPI: NSObject {
                     completion(convertResponseToMembers(res: res))
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(nil)
                         }
+                    } else {
+                        completion(nil)
                     }
                 }
         }

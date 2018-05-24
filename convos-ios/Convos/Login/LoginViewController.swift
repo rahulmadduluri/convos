@@ -13,7 +13,6 @@ class LoginViewController: UIViewController, LoginUIComponentDelegate, NewUserVC
     var loginVCDelegate: LoginVCDelegate?
     
     fileprivate var containerView: MainLoginView? = nil
-    fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
     
     // MARK: UIViewController
     

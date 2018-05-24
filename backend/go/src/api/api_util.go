@@ -24,10 +24,13 @@ const (
 	_paramMemberUUID  = "memberuuid"
 	_paramMemberUUIDs = "memberuuids"
 	// Conversation
-	_paramMaxConversations = "maxconversations"
-	_paramAllText          = "alltext"
-	_paramParentUUID       = "parentuuid"
-	_paramConversationUUID = "conversationuuid"
+	_paramMaxConversations      = "maxconversations"
+	_paramAllText               = "alltext"
+	_paramParentUUID            = "parentuuid"
+	_paramConversationUUID      = "conversationuuid"
+	_paramLastXMessages         = "lastxmessages"
+	_paramLatestTimestampServer = "latesttimestampserver"
+	_paramSenderPhotoURI        = "senderphotouri"
 	// Tags
 	_paramTopic    = "topic"
 	_paramTagUUID  = "taguuid"

@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import Alamofire
 
-class ConversationViewController: UIViewController, SocketManagerDelegate, MessageTableVCDelegate, UITextFieldDelegate {
+class ConversationViewController: UIViewController, MessageTableVCDelegate, SocketManagerDelegate, UITextFieldDelegate {
     
     var containerView: MainConversationView?
     var conversationVCDelegate: ConversationVCDelegate?
@@ -33,7 +33,6 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
      Value: List of replies
     */
     fileprivate var messageViewData = OrderedDictionary<MessageViewData, [MessageViewData]>()
-    fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
     
     // MARK: UIViewController
     
@@ -81,19 +80,8 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     
     // MARK: SocketManagerDelegate
     
-    func received(packet: Packet) {
-        switch packet.type {
-        case MessageAPI._PullMessagesResponse:
-            if let pullMessagesResponse = PullMessagesResponse(json: packet.data) {
-                received(response: pullMessagesResponse)
-            }
-        case MessageAPI._PushMessageResponse:
-            if let pushMessageResponse = PushMessageResponse(json: packet.data) {
-                received(response: pushMessageResponse)
-            }
-        default:
-            break
-        }
+    func received(obj: Any) {
+        //received(response: pushMessageResponse)
     }
     
     // MARK: ConversationComponentDelegate
@@ -212,7 +200,7 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     fileprivate func configureConversation() {
         messageTableVC.messageTableVCDelegate = self
         containerView?.conversationVC = self
-        socketManager.delegates.add(delegate: self)
+        SocketManager.sharedInstance.delegates.add(delegate: self)
         
         if let messages = allCachedMessages[conversationUUID] {
             messageViewData = createMessageViewData(messages: messages)
@@ -293,9 +281,13 @@ class ConversationViewController: UIViewController, SocketManagerDelegate, Messa
     }
     
     fileprivate func remotePullMessages(lastXMessages: Int, latestTimestampServer: Int?) {
-        if let userUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let request = PullMessagesRequest(userUUID: userUUID, conversationUUID: conversationUUID, groupUUID: groupUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer)
-            MessageAPI.pullMessages(pullMessagesRequest: request)
+        ConversationAPI.GetMessages(groupUUID: groupUUID, conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer) { conversations in
+            if let conversations = conversations {
+                for c in conversations {
+                    self.allCachedConversations.insert(c)
+                }
+                self.conversationViewData = self.createConversationViewData(conversations: self.allCachedConversations)
+            }
         }
     }
     

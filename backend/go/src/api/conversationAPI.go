@@ -1,13 +1,16 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"db"
 	"middleware"
+	"models"
 	"networking"
 
 	"github.com/gorilla/mux"
@@ -56,41 +59,69 @@ func CreateConversation(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, nil)
 }
 
-type Message struct {
-	ID                     int
-	UUID                   string
-	AllText                null.String
-	CreatedTimestampServer int
-	SenderID               int
-	ParentID               int
-}
-
 func CreateMessage(w http.ResponseWriter, r *http.Request) {
 	groupUUID := r.PostFormValue(_paramGroupUUID)
 	userUUID := middleware.GetUUIDFromHeader(r.Header)
 
 	if IsMemberOfGroup(userUUID, groupUUID) {
+		// new message UUID + server timestamp
 		originalMessageUUID, _ := uuid.NewV4()
 		messageUUID := originalMessageUUID.String()
 		timestampServer := int(time.Now().Unix())
+
+		// params from POST form
 		allText := r.PostFormValue(_paramAllText)
 		parentUUID := r.PostFormValue(_paramParentUUID)
 		conversationUUID := r.PostFormValue(_paramConversationUUID)
+		senderPhotoURI := r.PostFormValue(_paramSenderPhotoURI)
 
-		// TODO: in background thread insert message? maybe in primary thread
-		message, err := db.GetHandler().InsertMessage(messageUUID, allText, timestampServer, userUUID, parentUUID, conversationUUID)
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "error: could not insert message")
+		mObj := models.MessageObj{
+			UUID:                   messageUUID,
+			AllText:                allText,
+			CreatedTimestampServer: timestampServer,
+			SenderUUID:             userUUID,
+			ParentUUID:             null.String{sql.NullString{}},
+			SenderPhotoURI:         senderPhotoURI,
+		}
+		if parentUUID != "" {
+			mObj.ParentUUID = null.NewString(parentUUID, true)
 		}
 
 		topicName := groupUUID + "/" + conversationUUID
-		messagePayload, err := json.Marshal(message)
+		messagePayload, err := json.Marshal(mObj)
 		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "error: could not insert message")
+			respondWithError(w, http.StatusInternalServerError, "error: could not marshall message")
 		}
 		networking.GetMQTTHandler().PublishToTopic(topicName, messagePayload)
 
-		respondWithJSON(w, http.StatusOK, nil)
+		// perform sql insert async?
+		err = db.GetHandler().InsertMessage(messageUUID, allText, timestampServer, userUUID, parentUUID, conversationUUID)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "error: could not insert message")
+		} else {
+			respondWithJSON(w, http.StatusOK, nil)
+		}
+	} else {
+		respondWithError(w, http.StatusUnauthorized, "unauthorized: user not in group")
+	}
+}
+
+func GetMessages(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	groupUUID := vars[_paramGroupUUID]
+	userUUID := middleware.GetUUIDFromHeader(r.Header)
+
+	if IsMemberOfGroup(userUUID, groupUUID) {
+		conversationUUID := vars[_paramConversationUUID]
+		lastXMessages, _ := strconv.Atoi(vars[_paramLastXMessages])
+		timestampServer, _ := strconv.Atoi(vars[_paramLatestTimestampServer])
+
+		messages, err := db.GetHandler().GetLastXMessages(conversationUUID, lastXMessages, timestampServer)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "error: failed to get messages")
+			return
+		}
+		respondWithJSON(w, http.StatusOK, messages)
 	} else {
 		respondWithError(w, http.StatusUnauthorized, "unauthorized: user not in group")
 	}

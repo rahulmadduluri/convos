@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"log"
 
 	"models"
@@ -22,49 +21,17 @@ func (dbh *dbHandler) InsertMessage(
 	senderUUID string,
 	parentUUID string,
 	conversationUUID string,
-) (models.MessageObj, error) {
-	// Returns message that was inserted
-	var obj models.MessageObj
-
-	nullableParentUUID := sql.NullString{}
-	if parentUUID != "" {
-		nullableParentUUID = sql.NullString{
-			String: parentUUID,
-			Valid:  true,
-		}
-	}
-
+) error {
 	m := map[string]interface{}{
 		"messageuuid":      messageUUID,
 		"messagetext":      messageText,
 		"messagetimestamp": messageTimestamp,
 		"senderuuid":       senderUUID,
-		"parentuuid":       nullableParentUUID,
+		"parentuuid":       parentUUID,
 		"conversationuuid": conversationUUID,
 	}
-
 	_, err := dbh.db.NamedExec(dbh.messageQueries[_insertMessage], m)
-	if err != nil {
-		return obj, err
-	}
-	rows, err := dbh.db.NamedQuery(dbh.messageQueries[_getMessage], map[string]interface{}{
-		"messageuuid": messageUUID,
-	})
-	if err != nil {
-		return obj, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.StructScan(&obj)
-		if err != nil {
-			log.Fatal("scan error: ", err)
-			continue
-		}
-		return obj, err
-	}
-
-	return obj, err
+	return err
 }
 
 func (dbh *dbHandler) GetLastXMessages(conversationUUID string, X int, latestTimestampServer int) ([]models.MessageObj, error) {

@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 import SwiftWebSocket
 
-class SearchViewController: UIViewController, SocketManagerDelegate, SearchComponentDelegate, SmartTextFieldDelegate {
+class SearchViewController: UIViewController, SearchComponentDelegate, SocketManagerDelegate, SmartTextFieldDelegate {
     
     var searchVCDelegate: SearchVCDelegate? = nil
 
@@ -23,8 +23,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
     // key: group
     // value: list of group's conversations
     fileprivate var searchViewData = OrderedDictionary<SearchViewData, [SearchViewData]>()
-    fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
-        
+    
     var searchText: String? {
         return containerView?.searchTextField.text
     }
@@ -142,20 +141,13 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         searchTableVC.reloadSearchViewData()
     }
     
-    // MARK: SocketManagerDelegate
-    
-    func received(packet: Packet) {
-        switch packet.type {
-        case SearchAPI._searchResponse:
-            if let searchResponse = SearchResponse(json: packet.data) {
-                received(response: searchResponse)
-            }
-        default:
-            break
-        }
-    }
-    
     // MARK: Private
+    
+    func received(obj: Any) {
+//        if let searchResponse = SearchResponse(json: packet.data) {
+//            received(response: searchResponse)
+//        }
+    }
     
     fileprivate func received(response: SearchResponse) {
         if let groups = response.groups {
@@ -194,7 +186,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
                         if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
                             APIHeaders.setUUID(uuid: uuid)
                         }
-                        self.socketManager.createWebSocket(accessToken: t)
+                        SocketManager.sharedInstance.createWebSocket(accessToken: t)
                     }
                 }
             }
@@ -203,7 +195,7 @@ class SearchViewController: UIViewController, SocketManagerDelegate, SearchCompo
         searchTableVC.searchVC = self
         containerView?.searchTextField.smartTextFieldDelegate = self
         containerView?.bottomBarView.searchVC = self
-        socketManager.delegates.add(delegate: self)
+        SocketManager.sharedInstance.delegates.add(delegate: self)
         
         searchTableVC.reloadSearchViewData()
         

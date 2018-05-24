@@ -25,10 +25,12 @@ class UserAPI: NSObject {
                     completion(convertResponseToUser(res: res))
                 } else {
                     print("Error while getting a user: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(nil)
                         }
+                    } else {
+                        completion(nil)
                     }
                 }
         }
@@ -50,10 +52,12 @@ class UserAPI: NSObject {
                 completion(convertResponseToContacts(res: res))
             } else {
                 print("Error while getting contacts: \(res.error)")
-                if res.response?.statusCode != 200 {
+                if res.response?.statusCode == 401 {
                     APIHeaders.resetAccessToken{ _ in
                         completion(nil)
                     }
+                } else {
+                    completion(nil)
                 }
             }
         }
@@ -74,10 +78,12 @@ class UserAPI: NSObject {
                     completion(convertResponseToContacts(res: res))
                 } else {
                     print("Error while getting people: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(nil)
                         }
+                    } else {
+                        completion(nil)
                     }
                 }
         }
@@ -97,10 +103,12 @@ class UserAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while adding a contact: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
         }
@@ -130,10 +138,12 @@ class UserAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating user: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
         }
@@ -154,10 +164,12 @@ class UserAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating user photo: \(res.error)")
-                    if res.response?.statusCode == nil || res.response!.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
         }

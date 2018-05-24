@@ -35,10 +35,12 @@ class ConversationAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
         }
@@ -59,10 +61,12 @@ class ConversationAPI: NSObject {
                     completion(true)
                 } else {
                     print("Error while updating group photo: \(res.error)")
-                    if res.response?.statusCode != 200 {
+                    if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
                             completion(false)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
         }
@@ -119,6 +123,99 @@ class ConversationAPI: NSObject {
                 }
             }
         }
+    }
+    
+    static func createMessage(
+        groupUUID: String,
+        allText: String,
+        parentUUID: String?,
+        conversationUUID: String,
+        senderPhotoURI: String,
+        completion: (@escaping (Bool) -> Void)) {
+        let url = REST.createMessageURL(conversationUUID: conversationUUID)
+        var params: [String: Any] = [:]
+        params["groupuuid"] = groupUUID
+        params["alltext"] = allText
+        params["conversationuuid"] = conversationUUID
+        params["senderphotouri"] = senderPhotoURI
+        if let parentUUID = parentUUID {
+            params["parentuuid"] = parentUUID
+        }
+        Alamofire.request(
+            url,
+            method: .post,
+            parameters: params,
+            headers: APIHeaders.defaultHeaders())
+            .validate()
+            .response { res in
+                if res.error == nil {
+                    completion(true)
+                } else {
+                    print("Error while creating message: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(false)
+                        }
+                    } else {
+                        completion(false)
+                    }
+                }
+        }
+    }
+    
+    static func getMessages(
+        groupUUID: String,
+        conversationUUID: String,
+        lastXMessages: Int,
+        latestTimestampServer: Int,
+        completion: (@escaping ([Message]?) -> Void)) {
+        let url = REST.getMessagesURL(conversationUUID: conversationUUID)
+        var params: [String: Any] = [:]
+        params["groupuuid"] = groupUUID
+        params["conversationuuid"] = conversationUUID
+        params["lastxmessages"] = lastXMessages
+        params["latesttimestampserver"] = latestTimestampServer
+        Alamofire.request(
+            url,
+            method: .post,
+            parameters: params,
+            headers: APIHeaders.defaultHeaders())
+            .validate()
+            .responseJSON { res in
+                if res.error == nil {
+                    completion(convertResponseToMessages(res: res))
+                } else {
+                    print("Error while getting messages: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(nil)
+                        }
+                    } else {
+                        completion(nil)
+                    }
+                }
+        }
+    }
+    
+    // MARK: Private
+    
+    private static func convertResponseToMessages(res: Alamofire.DataResponse<Any>) -> [Message]? {
+        guard res.result.isSuccess else {
+            print("Error while fetching messages: \(res.result.error)")
+            return nil
+        }
+        
+        if res.data != nil {
+            let jsonArray = JSON(data: res.data!)
+            var messages: [Message] = []
+            for (_, mRaw) in jsonArray {
+                if let m = Message(json: mRaw) {
+                    messages.append(m)
+                }
+            }
+            return messages
+        }
+        return nil
     }
     
 }

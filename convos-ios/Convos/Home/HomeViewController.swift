@@ -21,9 +21,7 @@ class HomeViewController: UIViewController, LoginVCDelegate, SearchVCDelegate, C
     
     // TODO: remove?
     private var hasBeenDisplayed = false
-    
-    fileprivate let socketManager: SocketManager = SocketManager.sharedInstance
-    
+        
     // MARK: UIViewController
     
     override func viewDidLoad() {
