@@ -159,7 +159,7 @@ class ContactsViewController: UIViewController, SmartTextFieldDelegate, UITextFi
     fileprivate func fetchPotentialContacts() {
         if let myUUID = UserDefaults.standard.object(forKey: "uuid") as? String {
             let searchText = contactSearchText ?? ""
-            UserAPI.getPeople(searchText: searchText, maxUsers: nil, completion: { allUsers in
+            UserAPI.getUsers(searchText: searchText, maxUsers: nil, completion: { allUsers in
                 if let allUsers = allUsers {
                     self.receivedPotentialContacts(potentialContacts: allUsers.filter{ $0.uuid != myUUID})
                 }

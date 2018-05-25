@@ -63,7 +63,7 @@ class UserAPI: NSObject {
         }
     }
     
-    static func getPeople(
+    static func getUsers(
         searchText: String?,
         maxUsers: Int?,
         completion: (@escaping ([User]?) -> Void)) {

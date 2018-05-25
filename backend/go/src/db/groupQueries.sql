@@ -1,4 +1,4 @@
--- name: memberInGroup
+-- name: membersInGroup
 select
 	users.uuid as uuid,
 	users.name as name,
@@ -6,7 +6,7 @@ select
 	users.photo_uri as photouri
 from (
 	select distinct 
-		members.user_id as person_id,
+		members.user_id as person_id
 	from members
 	where group_id in (
 		select id
@@ -68,11 +68,12 @@ where groups.uuid = :group_uuid
 ;
 
 -- name: updateGroupMembers
-insert into members (group_id, user_id, created_timestamp_server)
+insert into members (group_id, user_id, created_timestamp_server, is_admin)
 	select 
 		(select id from groups where groups.uuid = :group_uuid), 
 		(select id from users where users.uuid = :member_uuid),
-		:created_timestamp_server
+		:created_timestamp_server,
+		:is_admin
 ;
 
 -- name: createGroup

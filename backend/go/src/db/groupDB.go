@@ -15,7 +15,7 @@ const (
 	_updateGroupMembers        = "updateGroupMembers"
 	_createGroup               = "createGroup"
 	_createConversation        = "createConversation"
-	_memberInGroup             = "groupHasMember"
+	_membersInGroup            = "membersInGroup"
 
 	_newConversationName = "Hall"
 )
@@ -24,7 +24,7 @@ func (dbh *dbHandler) IsMemberOfGroup(userUUID string, groupUUID string) (bool, 
 	var obj models.UserObj
 
 	rows, err := dbh.db.NamedQuery(
-		dbh.groupQueries[_memberInGroup],
+		dbh.groupQueries[_membersInGroup],
 		map[string]interface{}{
 			"user_uuid":  userUUID,
 			"group_uuid": groupUUID,
@@ -138,6 +138,7 @@ func (dbh *dbHandler) UpdateGroup(
 }
 
 func (dbh *dbHandler) CreateGroup(
+	adminUUID string,
 	name string,
 	handle string,
 	createdTimestampServer int,
@@ -178,10 +179,15 @@ func (dbh *dbHandler) CreateGroup(
 	}
 
 	for _, mUUID := range memberUUIDs {
+		isAdmin := false
+		if mUUID == adminUUID {
+			isAdmin = true
+		}
 		q3Args := map[string]interface{}{
 			"group_uuid":               groupUUID,
 			"member_uuid":              mUUID,
 			"created_timestamp_server": createdTimestampServer,
+			"is_admin":                 isAdmin,
 		}
 		_, err = tx.NamedExec(dbh.groupQueries[_updateGroupMembers], q3Args)
 		if err != nil {

@@ -123,6 +123,8 @@ class NewUserViewController: UIViewController, NewUserUIComponentDelegate, UIIma
             imagePicker.sourceType = .camera
             imagePicker.cameraCaptureMode = .photo
         }
+        
+        panGestureRecognizer.addTarget(self, action: #selector(self.respondToPanGesture(gesture:)))
     }
     
     fileprivate func resetTextFields() {

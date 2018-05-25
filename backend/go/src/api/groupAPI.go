@@ -107,6 +107,7 @@ func UpdateGroupPhoto(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroup(w http.ResponseWriter, r *http.Request) {
+	adminUUID := middleware.GetUUIDFromHeader(r.Header)
 	name := r.PostFormValue(_paramName)
 	handle := r.PostFormValue(_paramHandle)
 	createdTimestampServer := int(time.Now().Unix())
@@ -115,7 +116,7 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 	var newMemberUUIDs []string
 	json.Unmarshal([]byte(r.PostFormValue(_paramMemberUUIDs)), &newMemberUUIDs)
 
-	err := db.GetHandler().CreateGroup(name, handle, createdTimestampServer, photoURI, newMemberUUIDs)
+	err := db.GetHandler().CreateGroup(adminUUID, name, handle, createdTimestampServer, photoURI, newMemberUUIDs)
 	if err != nil {
 		log.Println(err)
 		respondWithError(w, http.StatusInternalServerError, "failed to create group")

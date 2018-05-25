@@ -175,7 +175,7 @@ class REST: NSObject {
     }
     
     static func getGroupsURL(searchText: String) -> URL {
-        let urlString = baseURL + "groups/searchText=" + searchText
+        let urlString = baseURL + "groups?searchText=" + searchText
         return URL(string: urlString)!
     }
     
