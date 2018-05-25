@@ -92,25 +92,6 @@ class GroupAPI: NSObject {
         }
     }
     
-    private static func convertResponseToConversations(res: Alamofire.DataResponse<Any>) -> [Conversation]? {
-        guard res.result.isSuccess else {
-            print("Error while fetching conversations: \(res.result.error)")
-            return nil
-        }
-        
-        if res.data != nil {
-            let jsonArray = JSON(data: res.data!)
-            var conversations: [Conversation] = []
-            for (_, cRaw) in jsonArray {
-                if let c = Conversation(json: cRaw) {
-                    conversations.append(c)
-                }
-            }
-            return conversations
-        }
-        return nil
-    }
-    
     static func getMembers(
         groupUUID: String,
         searchText: String?,
@@ -202,6 +183,69 @@ class GroupAPI: NSObject {
                 }
             }
         }
+    }
+    
+    static func getGroups(searchText: String, completion: (@escaping ([Group]?) -> Void)) {
+        let url = REST.getGroupsURL(searchText: searchText)
+        Alamofire.request(
+            url,
+            method: .get,
+            headers: APIHeaders.defaultHeaders())
+            .validate()
+            .responseJSON { res in
+                if res.error == nil {
+                    completion(convertResponseToGroups(res: res))
+                } else {
+                    print("Error while getting groups: \(res.error)")
+                    if res.response?.statusCode == 401 {
+                        APIHeaders.resetAccessToken{ _ in
+                            completion(nil)
+                        }
+                    } else {
+                        completion(nil)
+                    }
+                }
+        }
+    }
+    
+    // MARK: Private
+    
+    private static func convertResponseToConversations(res: Alamofire.DataResponse<Any>) -> [Conversation]? {
+        guard res.result.isSuccess else {
+            print("Error while fetching conversations: \(res.result.error)")
+            return nil
+        }
+        
+        if res.data != nil {
+            let jsonArray = JSON(data: res.data!)
+            var conversations: [Conversation] = []
+            for (_, cRaw) in jsonArray {
+                if let c = Conversation(json: cRaw) {
+                    conversations.append(c)
+                }
+            }
+            return conversations
+        }
+        return nil
+    }
+    
+    private static func convertResponseToGroups(res: Alamofire.DataResponse<Any>) -> [Group]? {
+        guard res.result.isSuccess else {
+            print("Error while fetching groups: \(res.result.error)")
+            return nil
+        }
+        
+        if res.data != nil {
+            let jsonArray = JSON(data: res.data!)
+            var groups: [Group] = []
+            for (_, gRaw) in jsonArray {
+                if let g = Group(json: gRaw) {
+                    groups.append(g)
+                }
+            }
+            return groups
+        }
+        return nil
     }
 
 }

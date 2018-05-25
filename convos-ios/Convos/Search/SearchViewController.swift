@@ -141,27 +141,12 @@ class SearchViewController: UIViewController, SearchComponentDelegate, SocketMan
         searchTableVC.reloadSearchViewData()
     }
     
-    // MARK: Private
+    // MARK: SocketManagerDelegate
     
     func received(obj: Any) {
-//        if let searchResponse = SearchResponse(json: packet.data) {
-//            received(response: searchResponse)
-//        }
     }
     
-    fileprivate func received(response: SearchResponse) {
-        if let groups = response.groups {
-            for g in groups {
-                if allCachedGroups.contains(g) {
-                    allCachedGroups.remove(g)
-                }
-                allCachedGroups.insert(g)
-            }
-        }
-        let localSearchText = searchText ?? ""
-        smartTextUpdated(smartText: localSearchText)
-        containerView?.searchTextField.stopLoadingIndicator()
-    }
+    // MARK: Private
     
     fileprivate func createSearchViewData(groups: Set<Group>) -> OrderedDictionary<SearchViewData, [SearchViewData]> {
         var viewDataMap = OrderedDictionary<SearchViewData, [SearchViewData]>()
@@ -246,9 +231,17 @@ class SearchViewController: UIViewController, SearchComponentDelegate, SocketMan
     }
     
     fileprivate func remoteSearch(searchText: String) {
-        if let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let request = SearchRequest(senderUUID: uuid, searchText: searchText)
-            SearchAPI.search(searchRequest: request)
+        GroupAPI.getGroups(searchText: searchText) { groups in
+            if let groups = groups {
+                for g in groups {
+                    if self.allCachedGroups.contains(g) {
+                        self.allCachedGroups.remove(g)
+                    }
+                    self.allCachedGroups.insert(g)
+                }
+            }
+            self.smartTextUpdated(smartText: searchText)
+            self.containerView?.searchTextField.stopLoadingIndicator()
         }
     }
 }

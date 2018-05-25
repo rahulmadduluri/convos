@@ -174,6 +174,11 @@ class REST: NSObject {
         return URL(string: baseURL + "groups")!
     }
     
+    static func getGroupsURL(searchText: String) -> URL {
+        let urlString = baseURL + "groups/searchText=" + searchText
+        return URL(string: urlString)!
+    }
+    
     // Conversation
     
     static func updateConversationURL(conversationUUID: String) -> URL {

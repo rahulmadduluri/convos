@@ -34,8 +34,6 @@ func main() {
 	r := mux.NewRouter()  // unauth
 	ar := mux.NewRouter() // auth
 
-	// Search
-	ar.HandleFunc("/search", api.Search).Methods("GET")
 	// User
 	ar.HandleFunc("/users", api.GetUsers).Methods("GET")
 	ar.HandleFunc("/users/{uuid}", api.CreateUser).Methods("POST")
@@ -44,6 +42,7 @@ func main() {
 	ar.HandleFunc("/users/{uuid}/contacts", api.GetContactsForUser).Methods("GET")
 	ar.HandleFunc("/users/{uuid}/contacts", api.CreateContact).Methods("POST")
 	// Group
+	ar.HandleFunc("/groups", api.GetGroups).Methods("GET")
 	ar.HandleFunc("/groups/{uuid}/conversations", api.GetConversationsForGroup).Methods("GET")
 	ar.HandleFunc("/groups/{uuid}/members", api.GetMembersForGroup).Methods("GET")
 	ar.HandleFunc("/groups/{uuid}", api.UpdateGroup).Methods("PUT")

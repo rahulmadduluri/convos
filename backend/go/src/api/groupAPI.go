@@ -13,6 +13,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func GetGroups(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userUUID := middleware.GetUUIDFromHeader(r.Header)
+	searchText, _ := vars[_paramSearchText]
+
+	groups, err := db.GetHandler().GetGroups(userUUID, searchText)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "search: failed to get groups")
+	} else {
+		respondWithJSON(w, http.StatusOK, groups)
+	}
+}
+
 func GetConversationsForGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	groupUUID, _ := vars[_paramUUID]

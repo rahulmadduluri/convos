@@ -99,7 +99,7 @@ func CreateMessage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, "error: could not insert message")
 		} else {
-			respondWithJSON(w, http.StatusOK, nil)
+			respondWithJSON(w, http.StatusOK, mObj)
 		}
 	} else {
 		respondWithError(w, http.StatusUnauthorized, "unauthorized: user not in group")

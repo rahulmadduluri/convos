@@ -131,7 +131,7 @@ class ConversationAPI: NSObject {
         parentUUID: String?,
         conversationUUID: String,
         senderPhotoURI: String,
-        completion: (@escaping (Bool) -> Void)) {
+        completion: (@escaping (Message?) -> Void)) {
         let url = REST.createMessageURL(conversationUUID: conversationUUID)
         var params: [String: Any] = [:]
         params["groupuuid"] = groupUUID
@@ -147,17 +147,17 @@ class ConversationAPI: NSObject {
             parameters: params,
             headers: APIHeaders.defaultHeaders())
             .validate()
-            .response { res in
+            .responseJSON { res in
                 if res.error == nil {
-                    completion(true)
+                    completion(convertResponseToMessage(res: res))
                 } else {
                     print("Error while creating message: \(res.error)")
                     if res.response?.statusCode == 401 {
                         APIHeaders.resetAccessToken{ _ in
-                            completion(false)
+                            completion(nil)
                         }
                     } else {
-                        completion(false)
+                        completion(nil)
                     }
                 }
         }
@@ -167,14 +167,16 @@ class ConversationAPI: NSObject {
         groupUUID: String,
         conversationUUID: String,
         lastXMessages: Int,
-        latestTimestampServer: Int,
+        latestTimestampServer: Int?,
         completion: (@escaping ([Message]?) -> Void)) {
         let url = REST.getMessagesURL(conversationUUID: conversationUUID)
         var params: [String: Any] = [:]
         params["groupuuid"] = groupUUID
         params["conversationuuid"] = conversationUUID
         params["lastxmessages"] = lastXMessages
-        params["latesttimestampserver"] = latestTimestampServer
+        if let lts = latestTimestampServer {
+            params["latesttimestampserver"] = lts
+        }
         Alamofire.request(
             url,
             method: .post,
@@ -198,6 +200,19 @@ class ConversationAPI: NSObject {
     }
     
     // MARK: Private
+    
+    private static func convertResponseToMessage(res: Alamofire.DataResponse<Any>) -> Message? {
+        guard res.result.isSuccess else {
+            print("Error while fetching message: \(res.result.error)")
+            return nil
+        }
+        
+        if res.data != nil {
+            let mJSON = JSON(data: res.data!)
+            return Message(json: mJSON)
+        }
+        return nil
+    }
     
     private static func convertResponseToMessages(res: Alamofire.DataResponse<Any>) -> [Message]? {
         guard res.result.isSuccess else {

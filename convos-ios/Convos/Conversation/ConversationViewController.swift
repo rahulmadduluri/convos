@@ -177,10 +177,17 @@ class ConversationViewController: UIViewController, MessageTableVCDelegate, Sock
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text,
             text != "",
-            let uuid = UserDefaults.standard.object(forKey: "uuid") as? String {
-            let pushMessageRequest = PushMessageRequest(conversationUUID: conversationUUID, groupUUID: groupUUID, allText: text, senderUUID: uuid, parentUUID: nil)
-            MessageAPI.pushMessage(pushMessageRequest: pushMessageRequest)
+            let senderPhotoURI = UserDefaults.standard.object(forKey: "senderPhotoURI") as? String {
             textField.text = ""
+            ConversationAPI.createMessage(groupUUID: groupUUID, allText: text, parentUUID: nil, conversationUUID: conversationUUID, senderPhotoURI: senderPhotoURI) { message in
+                if let m = message {
+                    self.addMessageToCache(m: m)
+                    if let ms = self.allCachedMessages[self.conversationUUID] {
+                        self.messageViewData = self.createMessageViewData(messages: ms)
+                    }
+                    self.messageTableVC.reloadMessageViewData()
+                }
+            }
         }
         textField.resignFirstResponder()
         return true
@@ -223,27 +230,6 @@ class ConversationViewController: UIViewController, MessageTableVCDelegate, Sock
         }
     }
     
-    fileprivate func received(response: PullMessagesResponse) {
-        // sort messages so that messages with no parent are first
-        for m in (response.messages.sorted { $0.parentUUID == nil && $1.parentUUID != nil }) {
-            addMessageToCache(m: m)
-        }
-        if let messages = allCachedMessages[conversationUUID] {
-            messageViewData = createMessageViewData(messages: messages)
-        }
-        messageTableVC.reloadMessageViewData()
-    }
-    
-    fileprivate func received(response: PushMessageResponse) {
-        if let m = response.message {
-            addMessageToCache(m: m)
-        }
-        if let messages = allCachedMessages[conversationUUID] {
-            messageViewData = createMessageViewData(messages: messages)
-        }
-        messageTableVC.reloadMessageViewData()
-    }
-    
     fileprivate func addMessageToCache(m: Message) {
         if allCachedMessages[conversationUUID] == nil {
             allCachedMessages[conversationUUID] = OrderedDictionary<Message, Set<Message>>()
@@ -281,12 +267,15 @@ class ConversationViewController: UIViewController, MessageTableVCDelegate, Sock
     }
     
     fileprivate func remotePullMessages(lastXMessages: Int, latestTimestampServer: Int?) {
-        ConversationAPI.GetMessages(groupUUID: groupUUID, conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer) { conversations in
-            if let conversations = conversations {
-                for c in conversations {
-                    self.allCachedConversations.insert(c)
+        ConversationAPI.getMessages(groupUUID: groupUUID, conversationUUID: conversationUUID, lastXMessages: lastXMessages, latestTimestampServer: latestTimestampServer) { messages in
+            if let messages = messages {
+                for m in (messages.sorted { $0.parentUUID == nil && $1.parentUUID != nil }) {
+                    self.addMessageToCache(m: m)
                 }
-                self.conversationViewData = self.createConversationViewData(conversations: self.allCachedConversations)
+                if let cachedMessages = self.allCachedMessages[self.conversationUUID] {
+                    self.messageViewData = self.createMessageViewData(messages: cachedMessages)
+                }
+                self.messageTableVC.reloadMessageViewData()
             }
         }
     }
